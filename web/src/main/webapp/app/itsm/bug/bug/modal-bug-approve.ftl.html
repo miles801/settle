@@ -1,0 +1,67 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width: 800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <h4 class="modal-title">
+                    <span>漏洞评审</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="form" class="form-horizontal">
+                    <div class="row float">
+                        <div class="item w600">
+                            <div class="form-label w100">
+                                <label validate-error="form.repair">修复结果:</label>
+                            </div>
+                            <div class="w500">
+                                <label class="w80">
+                                    <input type="radio" name="repair" ng-model="beans.repair" ng-value="true" disabled>
+                                    <span style="margin-left: 3px;">已修复</span>
+                                </label>
+                                <label class="w80" style="margin-left:20px;">
+                                    <input type="radio" name="repair" ng-model="beans.repair" ng-value="false" disabled>
+                                    <span style="margin-left: 3px;">无法修复</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="item w600">
+                            <div class="form-label w100">
+                                <label>修复证据:</label>
+                            </div>
+                            <div class="w500" id="certify" style="padding-top: 5px;"></div>
+                        </div>
+                        <div class="w600 item">
+                            <div class="form-label w100">
+                                <label>审批结果:</label>
+                            </div>
+                            <div class="w500">
+                                <label class="w80">
+                                    <input type="radio" name="finish" ng-model="beans.finish" ng-value="true">
+                                    <span style="margin-left: 3px;">通过</span>
+                                </label>
+                                <label class="w80" style="margin-left:20px;">
+                                    <input type="radio" name="finish" ng-model="beans.finish" ng-value="false">
+                                    <span style="margin-left: 3px;">不通过</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="item w700 break">
+                            <div class="form-label w100">
+                                <label validate-error="form.approveDesc">审批说明:</label>
+                            </div>
+                            <textarea rows="6" class="w600" ng-model="beans.approveDesc" maxlength="1000"
+                                      validate validate-required name="approveDesc"
+                                      placeholder="请在这里输入必要的说明...."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-primary" ng-click="commit();" ng-if="!view" ng-cloak>保存</button>
+                <button type="button" class="btn btn-default" ng-click="$hide()">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
