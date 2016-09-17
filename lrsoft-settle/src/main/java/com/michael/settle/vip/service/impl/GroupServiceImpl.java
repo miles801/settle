@@ -136,6 +136,15 @@ public class GroupServiceImpl implements GroupService, BeanWrapCallback<Group, G
     }
 
 
+    @Override
+    public GroupVo findByCode(String code) {
+        Assert.hasText(code, "查询失败!团队编号不能为空!");
+        Group group = groupDao.findByCode(code);
+        return BeanWrapBuilder.newInstance()
+                .setCallback(this)
+                .wrap(group, GroupVo.class);
+    }
+
     public void importData(final String company, String[] attachmentIds) {
         Assert.hasText(company, "团队导入失败!请指定团队所属文交所!");
         Logger logger = Logger.getLogger(GroupServiceImpl.class);

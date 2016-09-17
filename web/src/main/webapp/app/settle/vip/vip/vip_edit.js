@@ -1,33 +1,44 @@
 /**
- * 团队编辑
+ * 会员编辑
  * Created by Michael .
  */
 (function (window, angular, $) {
-    var app = angular.module('settle.vip.group.edit', [
+    var app = angular.module('settle.vip.vip.edit', [
         'eccrm.angular',
         'eccrm.angularstrap',
-        'settle.vip.group'
+        'settle.vip.vip'
     ]);
 
-    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, GroupService, GroupParam) {
+    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, VipService, VipParam) {
 
         var pageType = $('#pageType').val();
         var id = $('#id').val();
-        var code = $('#code').val();
 
         $scope.back = CommonUtils.back;
 
 
+        // 参数：签约状态
+        $scope.assignStatuss = [{name: '请选择...'}];
+        VipParam.assignStatus(function (o) {
+            $scope.assignStatuss.push.apply($scope.assignStatuss, o);
+        });
+
+        // 参数：状态
+        $scope.statuss = [{name: '请选择...'}];
+        VipParam.status(function (o) {
+            $scope.statuss.push.apply($scope.statuss, o);
+        });
+
         // 参数：所属文交所
         $scope.companys = [{name: '请选择...'}];
-        GroupParam.company(function (o) {
+        VipParam.company(function (o) {
             $scope.companys.push.apply($scope.companys, o);
         });
 
 
         // 保存
         $scope.save = function (createNew) {
-            var promise = GroupService.save($scope.beans, function (data) {
+            var promise = VipService.save($scope.beans, function (data) {
                 AlertFactory.success('保存成功!');
                 CommonUtils.addTab('update');
                 if (createNew === true) {
@@ -43,7 +54,7 @@
 
         // 更新
         $scope.update = function () {
-            var promise = GroupService.update($scope.beans, function (data) {
+            var promise = VipService.update($scope.beans, function (data) {
                 AlertFactory.success('更新成功!');
                 $scope.form.$setValidity('committed', false);
                 CommonUtils.addTab('update');
@@ -54,14 +65,7 @@
 
         // 加载数据
         $scope.load = function (id, callback) {
-            var promise = GroupService.get({id: id, code: code}, function (data) {
-                if (!data.data) {
-                    AlertFactory.error('团队不存在!页面即将关闭!');
-                    CommonUtils.delay(function () {
-                        CommonUtils.back();
-                    }, 1500);
-                    return;
-                }
+            var promise = VipService.get({id: id}, function (data) {
                 $scope.beans = data.data || {};
                 callback && callback();
             });

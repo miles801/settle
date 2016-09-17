@@ -67,4 +67,12 @@ public interface GroupService {
      * @param attachmentIds 上传的附件列表
      */
     void importData(String company, String[] attachmentIds);
+
+    /**
+     * 根据编号查找团队
+     *
+     * @param code 团队编号
+     * @return 团队信息
+     */
+    GroupVo findByCode(String code);
 }

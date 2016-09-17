@@ -1,35 +1,35 @@
 package com.michael.settle.vip.dao;
 
-import com.michael.settle.vip.bo.GroupBo;
-import com.michael.settle.vip.domain.Group;
+import com.michael.settle.vip.bo.VipBo;
+import com.michael.settle.vip.domain.Vip;
 
 import java.util.List;
 
 /**
  * @author Michael
  */
-public interface GroupDao {
+public interface VipDao {
 
-    String save(Group group);
+    String save(Vip vip);
 
-    void update(Group group);
+    void update(Vip vip);
 
     /**
      * 高级查询接口，不使用分页
      */
-    List<Group> query(GroupBo bo);
+    List<Vip> query(VipBo bo);
 
     /**
      * 高级查询接口，使用分页
      */
-    List<Group> pageQuery(GroupBo bo);
+    List<Vip> pageQuery(VipBo bo);
 
     /**
      * 查询总记录数
      */
-    Long getTotal(GroupBo bo);
+    Long getTotal(VipBo bo);
 
-    Group findById(String id);
+    Vip findById(String id);
 
     void deleteById(String id);
 
@@ -37,7 +37,7 @@ public interface GroupDao {
      * 根据实体对象删除
      * 必须保证该实体是存在的（一般是get或者load得到的对象）
      */
-    void delete(Group group);
+    void delete(Vip vip);
 
     /**
      * 判断是否具有重复的项
@@ -47,12 +47,4 @@ public interface GroupDao {
      * @return true：存在
      */
     boolean hasCode(String code, String id);
-
-    /**
-     * 根据编号查询团队
-     *
-     * @param code 编号
-     * @return 团队
-     */
-    Group findByCode(String code);
 }

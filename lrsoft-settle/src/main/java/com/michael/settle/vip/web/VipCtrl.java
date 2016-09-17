@@ -8,13 +8,12 @@ import com.michael.common.JspAccessType;
 import com.michael.core.pager.PageVo;
 import com.michael.core.web.BaseController;
 import com.michael.poi.exp.ExportEngine;
-import com.michael.settle.vip.bo.GroupBo;
-import com.michael.settle.vip.domain.Group;
-import com.michael.settle.vip.service.GroupService;
-import com.michael.settle.vip.vo.GroupVo;
+import com.michael.settle.vip.bo.VipBo;
+import com.michael.settle.vip.domain.Vip;
+import com.michael.settle.vip.service.VipService;
+import com.michael.settle.vip.vo.VipVo;
 import com.michael.utils.gson.DateStringConverter;
 import com.michael.utils.gson.GsonUtils;
-import com.michael.utils.string.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -38,28 +37,28 @@ import java.util.List;
  * @author Michael
  */
 @Controller
-@RequestMapping(value = {"/settle/vip/group"})
-public class GroupCtrl extends BaseController {
+@RequestMapping(value = {"/settle/vip/vip"})
+public class VipCtrl extends BaseController {
     @Resource
-    private GroupService groupService;
+    private VipService vipService;
 
 
     @RequestMapping(value = {""}, method = RequestMethod.GET)
     public String toList() {
-        return "settle/vip/group/group_list";
+        return "settle/vip/vip/vip_list";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String toAdd(HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.ADD);
-        return "settle/vip/group/group_edit";
+        return "settle/vip/vip/vip_edit";
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
     public void save(HttpServletRequest request, HttpServletResponse response) {
-        Group group = GsonUtils.wrapDataToEntity(request, Group.class);
-        groupService.save(group);
+        Vip vip = GsonUtils.wrapDataToEntity(request, Vip.class);
+        vipService.save(vip);
         GsonUtils.printSuccess(response);
     }
 
@@ -67,90 +66,52 @@ public class GroupCtrl extends BaseController {
     public String toModify(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.MODIFY);
         request.setAttribute("id", id);
-        return "settle/vip/group/group_edit";
+        return "settle/vip/vip/vip_edit";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public void update(HttpServletRequest request, HttpServletResponse response) {
-        Group group = GsonUtils.wrapDataToEntity(request, Group.class);
-        groupService.update(group);
+        Vip vip = GsonUtils.wrapDataToEntity(request, Vip.class);
+        vipService.update(vip);
         GsonUtils.printSuccess(response);
     }
 
-    @RequestMapping(value = {"/detail"}, method = RequestMethod.GET)
-    public String toDetail(
-            @RequestParam(required = false) String id,
-            @RequestParam(required = false) String code,
-            HttpServletRequest request) {
+    @RequestMapping(value = {"/detail"}, params = {"id"}, method = RequestMethod.GET)
+    public String toDetail(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.DETAIL);
-        Assert.isTrue(StringUtils.isNotEmpty(id) || StringUtils.isNotEmpty(code), "团队编号和ID必须存在一个!");
         request.setAttribute("id", id);
-        request.setAttribute("code", code);
-        return "settle/vip/group/group_edit";
+        return "settle/vip/vip/vip_edit";
     }
 
-
     @ResponseBody
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public void findById(@RequestParam(required = false) String id,
-                         @RequestParam(required = false) String code, HttpServletResponse response) {
-        Assert.isTrue(StringUtils.isNotEmpty(id) || StringUtils.isNotEmpty(code), "团队编号和ID必须存在一个!");
-        GroupVo vo = null;
-        if (StringUtils.isNotEmpty(id)) {
-            vo = groupService.findById(id);
-        } else if (StringUtils.isNotEmpty(code)) {
-            vo = groupService.findByCode(code);
-        }
+    @RequestMapping(value = "/get", params = {"id"}, method = RequestMethod.GET)
+    public void findById(@RequestParam String id, HttpServletResponse response) {
+        VipVo vo = vipService.findById(id);
         GsonUtils.printData(response, vo);
     }
 
     @ResponseBody
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)
     public void pageQuery(HttpServletRequest request, HttpServletResponse response) {
-        GroupBo bo = GsonUtils.wrapDataToEntity(request, GroupBo.class);
-        PageVo pageVo = groupService.pageQuery(bo);
+        VipBo bo = GsonUtils.wrapDataToEntity(request, VipBo.class);
+        PageVo pageVo = vipService.pageQuery(bo);
         GsonUtils.printData(response, pageVo);
     }
 
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public void query(HttpServletRequest request, HttpServletResponse response) {
-        GroupBo bo = GsonUtils.wrapDataToEntity(request, GroupBo.class);
-        List<GroupVo> vos = groupService.query(bo);
+        VipBo bo = GsonUtils.wrapDataToEntity(request, VipBo.class);
+        List<VipVo> vos = vipService.query(bo);
         GsonUtils.printData(response, vos);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/enable", params = {"ids"}, method = RequestMethod.POST)
-    public void enable(@RequestParam String ids, HttpServletResponse response) {
-        String[] idArr = ids.split(",");
-        groupService.enable(idArr);
-        GsonUtils.printSuccess(response);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/disable", params = {"ids"}, method = RequestMethod.POST)
-    public void disable(@RequestParam String ids, HttpServletResponse response) {
-        String[] idArr = ids.split(",");
-        groupService.disable(idArr);
-        GsonUtils.printSuccess(response);
-    }
-
-    // 查询所有有效的数据，不使用分页
-    @ResponseBody
-    @RequestMapping(value = "/query-valid", method = RequestMethod.POST)
-    public void queryValid(HttpServletRequest request, HttpServletResponse response) {
-        GroupBo bo = GsonUtils.wrapDataToEntity(request, GroupBo.class);
-        List<Group> data = groupService.queryValid(bo);
-        GsonUtils.printData(response, data);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", params = {"ids"}, method = RequestMethod.DELETE)
     public void deleteByIds(@RequestParam String ids, HttpServletResponse response) {
         String[] idArr = ids.split(",");
-        groupService.deleteByIds(idArr);
+        vipService.deleteByIds(idArr);
         GsonUtils.printSuccess(response);
     }
 
@@ -159,22 +120,22 @@ public class GroupCtrl extends BaseController {
     public String export(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
                 .create();
-        GroupBo bo = GsonUtils.wrapDataToEntity(request, GroupBo.class);
-        List<GroupVo> data = groupService.query(bo);
+        VipBo bo = GsonUtils.wrapDataToEntity(request, VipBo.class);
+        List<VipVo> data = vipService.query(bo);
         String json = gson.toJson(data);
         JsonElement element = gson.fromJson(json, JsonElement.class);
         JsonObject o = new JsonObject();
         o.add("c", element);
         String disposition = null;//
         try {
-            disposition = "attachment;filename=" + URLEncoder.encode("团队数据" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xlsx", "UTF-8");
+            disposition = "attachment;filename=" + URLEncoder.encode("会员数据" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xlsx", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-disposition", disposition);
         try {
-            InputStream inputStream = GroupCtrl.class.getClassLoader().getResourceAsStream("export_group.xlsx");
+            InputStream inputStream = VipCtrl.class.getClassLoader().getResourceAsStream("export_vip.xlsx");
             Assert.notNull(inputStream, "数据导出失败!模板文件不存在，请与管理员联系!");
             new ExportEngine().export(response.getOutputStream(), inputStream, o);
         } catch (IOException e) {
@@ -188,12 +149,12 @@ public class GroupCtrl extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/template", method = RequestMethod.GET)
     public void downloadTemplate(HttpServletResponse response) {
-        InputStream input = GroupCtrl.class.getClassLoader().getResourceAsStream("import_group.xlsx");
-        Assert.notNull(input, "模板下载失败!团队数据导入模板不存在!");
+        InputStream input = VipCtrl.class.getClassLoader().getResourceAsStream("import_vip.xlsx");
+        Assert.notNull(input, "模板下载失败!会员数据导入模板不存在!");
         response.setContentType("application/vnd.ms-excel");
         String disposition = null;//
         try {
-            disposition = "attachment;filename=" + URLEncoder.encode("团队数据导入模板.xlsx", "UTF-8");
+            disposition = "attachment;filename=" + URLEncoder.encode("会员数据导入模板.xlsx", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -208,7 +169,7 @@ public class GroupCtrl extends BaseController {
     // 跳转到导入页面
     @RequestMapping(value = "/import", method = RequestMethod.GET)
     public String toImport(HttpServletRequest request) {
-        return "settle/vip/group/group_import";
+        return "settle/vip/vip/vip_import";
     }
 
     // 执行导入
@@ -217,7 +178,7 @@ public class GroupCtrl extends BaseController {
     public void importData(
             @RequestParam String company,
             @RequestParam String attachmentIds, HttpServletResponse response) {
-        groupService.importData(company, attachmentIds.split(","));
+        vipService.importData(company, attachmentIds.split(","));
         GsonUtils.printSuccess(response);
     }
 }

@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>团队编辑</title>
+    <title>会员编辑</title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/vendor/bootstrap-v3.0/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/style/standard/css/eccrm-common-new.css">
@@ -18,7 +18,7 @@
     </script>
 </head>
 <body>
-<div class="main" ng-app="settle.vip.group.edit" ng-controller="Ctrl" style="overflow: auto;">
+<div class="main" ng-app="settle.vip.vip.edit" ng-controller="Ctrl" style="overflow: auto;">
     <div class="block">
         <div class="block-header">
                 <span class="header-button">
@@ -38,7 +38,6 @@
                     <div style="display: none;">
                         <input type="hidden" id="pageType" value="${pageType}"/>
                         <input type="hidden" id="id" value="${id}"/>
-                        <input type="hidden" id="code" value="${code}"/>
                     </div>
                     <div class="row float">
                         <div class="item w300">
@@ -48,19 +47,46 @@
                             <input type="text" class="w200" ng-model="beans.code" validate validate-required
                                    maxlength="40"/>
                         </div>
-                        <div class="item w600">
+                        <div class="item w300">
                             <div class="form-label w100">
                                 <label>名称:</label>
                             </div>
-                            <input type="text" class="w500" ng-model="beans.name" validate validate-required
+                            <input type="text" class="w200" ng-model="beans.name" validate validate-required
                                    maxlength="40"/>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>所属团队:</label>
+                            </div>
+                            <input type="text" class="w200" ng-model="beans.groupId" validate validate-required
+                                   maxlength="40"/>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label validate-error="form.assignStatus">签约状态:</label>
+                            </div>
+                            <select class="w200" ng-model="beans.assignStatus" validate validate-required
+                                    name="assignStatus"
+                                    ng-options="foo.value as foo.name for foo in assignStatuss"></select>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label validate-error="form.status">状态:</label>
+                            </div>
+                            <select class="w200" ng-model="beans.status" validate validate-required name="status"
+                                    ng-options="foo.value as foo.name for foo in statuss"></select>
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
                                 <label>所属文交所:</label>
                             </div>
-                            <select class="w200" ng-model="beans.company"
-                                    ng-options="foo.value as foo.name for foo in companys"></select>
+                            <input type="text" class="w200" ng-model="beans.company" maxlength="40"/>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>推荐人:</label>
+                            </div>
+                            <input type="text" class="w200" ng-model="beans.recommend" maxlength="40"/>
                         </div>
                         <div class="item w900 break">
                             <div class="form-label w100">
@@ -68,7 +94,7 @@
                             </div>
                             <textarea type="text" class="w800" ng-model="beans.description" maxlength="1000" rows="6"
                                       placeholder="说点什么吧...">
-                            </textarea>
+                                </textarea>
                         </div>
                     </div>
                     <c:if test="${pageType ne 'add'}">
@@ -105,6 +131,6 @@
     </div>
 </div>
 </body>
-<script type="text/javascript" src="<%=contextPath%>/app/settle/vip/group/group.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/app/settle/vip/group/group_edit.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/settle/vip/vip/vip.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/settle/vip/vip/vip_edit.js"></script>
 </html>
