@@ -9,12 +9,13 @@ import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
 import com.michael.core.hibernate.validator.ValidatorUtils;
 import com.michael.core.pager.PageVo;
-import com.michael.poi.adapter.AnnotationCfgAdapter;
 import com.michael.poi.core.Context;
 import com.michael.poi.core.Handler;
 import com.michael.poi.core.ImportEngine;
 import com.michael.poi.core.RuntimeContext;
+import com.michael.poi.imp.cfg.ColMapping;
 import com.michael.poi.imp.cfg.Configuration;
+import com.michael.settle.mapping.dao.MappingDao;
 import com.michael.settle.vip.bo.GroupBo;
 import com.michael.settle.vip.dao.GroupDao;
 import com.michael.settle.vip.domain.Group;
@@ -34,6 +35,7 @@ import org.springframework.util.Assert;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +45,9 @@ import java.util.List;
 public class GroupServiceImpl implements GroupService, BeanWrapCallback<Group, GroupVo> {
     @Resource
     private GroupDao groupDao;
+
+    @Resource
+    private MappingDao mappingDao;
 
     @Override
     public String save(Group group) {
@@ -149,6 +154,8 @@ public class GroupServiceImpl implements GroupService, BeanWrapCallback<Group, G
         Assert.hasText(company, "团队导入失败!请指定团队所属文交所!");
         Logger logger = Logger.getLogger(GroupServiceImpl.class);
         Assert.notEmpty(attachmentIds, "数据导入失败!数据文件不能为空，请重试!");
+        // 获取团队映射模板
+        String mapping = mappingDao.getMapping(company, "2");
         for (String id : attachmentIds) {
             AttachmentVo vo = AttachmentProvider.getInfo(id);
             Assert.notNull(vo, "附件已经不存在，请刷新后重试!");
@@ -158,7 +165,17 @@ public class GroupServiceImpl implements GroupService, BeanWrapCallback<Group, G
             long start = System.currentTimeMillis();
 
             // 初始化引擎
-            Configuration configuration = new AnnotationCfgAdapter(GroupDTO.class).parse();
+            Configuration configuration = new Configuration();
+            configuration.setClazz(GroupDTO.class);
+            List<ColMapping> mappings = new ArrayList<>();
+            for (String map : mapping.split("@")) {
+                String values[] = map.split(":");
+                ColMapping cp = new ColMapping();
+                cp.setColName(values[0]);
+                cp.setIndex(Integer.parseInt(values[1]) - 1);
+                mappings.add(cp);
+            }
+            configuration.setMappings(mappings);
             configuration.setStartRow(1);
             String newFilePath = file.getAbsolutePath() + vo.getFileName().substring(vo.getFileName().lastIndexOf(".")); //获取路径
             try {
