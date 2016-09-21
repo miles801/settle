@@ -9,12 +9,13 @@ import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
 import com.michael.core.hibernate.validator.ValidatorUtils;
 import com.michael.core.pager.PageVo;
-import com.michael.poi.adapter.AnnotationCfgAdapter;
 import com.michael.poi.core.Context;
 import com.michael.poi.core.Handler;
 import com.michael.poi.core.ImportEngine;
 import com.michael.poi.core.RuntimeContext;
+import com.michael.poi.imp.cfg.ColMapping;
 import com.michael.poi.imp.cfg.Configuration;
+import com.michael.settle.mapping.dao.MappingDao;
 import com.michael.settle.vip.bo.VipBo;
 import com.michael.settle.vip.dao.VipDao;
 import com.michael.settle.vip.domain.Vip;
@@ -37,6 +38,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +49,9 @@ import java.util.List;
 public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> {
     @Resource
     private VipDao vipDao;
+
+    @Resource
+    private MappingDao mappingDao;
 
     @Override
     public String save(Vip vip) {
@@ -115,6 +120,10 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         Logger logger = Logger.getLogger(VipServiceImpl.class);
         Assert.notEmpty(attachmentIds, "数据导入失败!数据文件不能为空，请重试!");
         final String[] parsePatterns = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.0", "yyyy-MM-dd HH:mm:ss.SSS"};
+
+        // 获取会员映射模板
+        String mapping = mappingDao.getMapping(company, "1");
+        Assert.hasText(mapping, "导入会员失败!该文交所还未配置映射模板!");
         for (String id : attachmentIds) {
             AttachmentVo vo = AttachmentProvider.getInfo(id);
             Assert.notNull(vo, "附件已经不存在，请刷新后重试!");
@@ -124,7 +133,17 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             long start = System.currentTimeMillis();
 
             // 初始化引擎
-            Configuration configuration = new AnnotationCfgAdapter(VipDTO.class).parse();
+            Configuration configuration = new Configuration();
+            configuration.setClazz(VipDTO.class);
+            List<ColMapping> mappings = new ArrayList<>();
+            for (String map : mapping.split("@")) {
+                String values[] = map.split(":");
+                ColMapping cp = new ColMapping();
+                cp.setColName(values[0]);
+                cp.setIndex(Integer.parseInt(values[1]) - 1);
+                mappings.add(cp);
+            }
+            configuration.setMappings(mappings);
             configuration.setStartRow(1);
             String newFilePath = file.getAbsolutePath() + vo.getFileName().substring(vo.getFileName().lastIndexOf(".")); //获取路径
             try {

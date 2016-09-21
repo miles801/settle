@@ -77,8 +77,8 @@
                     $scope.form.$setValidity('committed', false);
                     CommonUtils.delay($scope.back, 2000);
                 }
+                $scope.beans.content = null;    // 清空
             });
-            $scope.beans.content = null;    // 清空
             CommonUtils.loading(promise);
         };
 
@@ -91,6 +91,9 @@
                 var index = o.index;
                 if (o.description == 1 && !index) {
                     error.push('[' + o.name + ']是必填项!');
+                    return;
+                }
+                if (!index) {
                     return;
                 }
                 names.push(o.value + ":" + index);
