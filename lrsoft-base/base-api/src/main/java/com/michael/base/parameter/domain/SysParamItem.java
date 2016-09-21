@@ -45,6 +45,17 @@ public class SysParamItem extends CommonDomain {
     @Column(name = "sequence_no")
     private Integer sequenceNo;
 
+    @Column(length = 200)
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }
