@@ -7,6 +7,7 @@ import com.michael.settle.mapping.dao.MappingDao;
 import com.michael.settle.mapping.domain.Mapping;
 import com.michael.utils.string.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -44,6 +45,7 @@ public class MappingDaoImpl extends HibernateDaoHelper implements MappingDao {
     public List<Mapping> pageQuery(MappingBo bo) {
         Criteria criteria = createPagerCriteria(Mapping.class);
         initCriteria(criteria, bo);
+        criteria.addOrder(Order.asc("company"));
         return criteria.list();
     }
 

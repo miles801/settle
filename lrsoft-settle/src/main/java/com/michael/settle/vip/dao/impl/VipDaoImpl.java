@@ -7,6 +7,7 @@ import com.michael.settle.vip.dao.VipDao;
 import com.michael.settle.vip.domain.Vip;
 import com.michael.utils.string.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -43,6 +44,8 @@ public class VipDaoImpl extends HibernateDaoHelper implements VipDao {
     public List<Vip> pageQuery(VipBo bo) {
         Criteria criteria = createPagerCriteria(Vip.class);
         initCriteria(criteria, bo);
+        criteria.addOrder(Order.asc("company"));
+        criteria.addOrder(Order.asc("code"));
         return criteria.list();
     }
 

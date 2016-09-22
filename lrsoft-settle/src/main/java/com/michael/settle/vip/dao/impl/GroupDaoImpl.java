@@ -7,6 +7,7 @@ import com.michael.settle.vip.dao.GroupDao;
 import com.michael.settle.vip.domain.Group;
 import com.michael.utils.string.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -43,6 +44,8 @@ public class GroupDaoImpl extends HibernateDaoHelper implements GroupDao {
     public List<Group> pageQuery(GroupBo bo) {
         Criteria criteria = createPagerCriteria(Group.class);
         initCriteria(criteria, bo);
+        criteria.addOrder(Order.asc("company"));
+        criteria.addOrder(Order.asc("code"));
         return criteria.list();
     }
 

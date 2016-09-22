@@ -6,6 +6,7 @@ import com.michael.settle.vip.bo.ContactBo;
 import com.michael.settle.vip.dao.ContactDao;
 import com.michael.settle.vip.domain.Contact;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -41,6 +42,9 @@ public class ContactDaoImpl extends HibernateDaoHelper implements ContactDao {
     public List<Contact> pageQuery(ContactBo bo) {
         Criteria criteria = createPagerCriteria(Contact.class);
         initCriteria(criteria, bo);
+        criteria.addOrder(Order.asc("company"));
+        criteria.addOrder(Order.asc("groupId"));
+        criteria.addOrder(Order.asc("name"));
         return criteria.list();
     }
 
