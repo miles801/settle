@@ -61,6 +61,10 @@
                     error.push('[' + o.name + ']是必填项!');
                     return;
                 }
+                if (!index) {
+                    return;
+                }
+
                 names.push(o.value + ":" + index);
             });
             if (error.length > 0) {
