@@ -37,6 +37,17 @@ public class BusinessBo implements BO {
     @Condition
     private Boolean deleted;
 
+    @Condition
+    private String creatorId;
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
+
     public Boolean getDeleted() {
         return deleted;
     }

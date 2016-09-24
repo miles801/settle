@@ -64,4 +64,19 @@ public interface VipDao {
      * @return map
      */
     List<Map<String, Object>> sqlQuery(String sql, List<Object> params);
+
+    /**
+     * 根据编号查询名称
+     *
+     * @param vipCode 编号
+     * @return 名称
+     */
+    String findName(String vipCode);
+
+    /**
+     * 根据编号查找
+     *
+     * @param vipCode 编号
+     */
+    Vip findByCode(String vipCode);
 }

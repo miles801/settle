@@ -113,6 +113,24 @@ public class VipDaoImpl extends HibernateDaoHelper implements VipDao {
         return query.list();
     }
 
+    @Override
+    public String findName(String vipCode) {
+        Assert.hasText(vipCode, "查询失败!编号不能为空!");
+        return (String) getSession().createQuery("select v.name from " + Vip.class.getName() + " v where v.code=?")
+                .setParameter(0, vipCode)
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+
+    @Override
+    public Vip findByCode(String vipCode) {
+        Assert.hasText(vipCode, "查询失败!编号不能为空!");
+        return (Vip) createCriteria(Vip.class)
+                .add(Restrictions.eq("code", vipCode))
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+
     private void initCriteria(Criteria criteria, VipBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         CriteriaUtils.addCondition(criteria, bo);

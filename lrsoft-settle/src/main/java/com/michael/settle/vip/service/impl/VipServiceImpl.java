@@ -11,6 +11,7 @@ import com.michael.core.context.SecurityContext;
 import com.michael.core.hibernate.HibernateUtils;
 import com.michael.core.hibernate.validator.ValidatorUtils;
 import com.michael.core.pager.PageVo;
+import com.michael.core.pager.Pager;
 import com.michael.poi.core.Context;
 import com.michael.poi.core.Handler;
 import com.michael.poi.core.ImportEngine;
@@ -22,18 +23,24 @@ import com.michael.settle.conf.dao.StepPercentDao;
 import com.michael.settle.conf.domain.CompanyConf;
 import com.michael.settle.conf.domain.StepPercent;
 import com.michael.settle.mapping.dao.MappingDao;
+import com.michael.settle.report.dao.BusinessLogDao;
 import com.michael.settle.report.dao.GroupBonusDao;
 import com.michael.settle.report.dao.GroupVipDao;
+import com.michael.settle.report.domain.BusinessLog;
 import com.michael.settle.report.domain.GroupBonus;
 import com.michael.settle.report.domain.GroupVip;
+import com.michael.settle.vip.bo.BusinessBo;
 import com.michael.settle.vip.bo.VipBo;
+import com.michael.settle.vip.dao.BusinessDao;
 import com.michael.settle.vip.dao.VipDao;
+import com.michael.settle.vip.domain.Business;
 import com.michael.settle.vip.domain.Vip;
 import com.michael.settle.vip.dto.VipDTO;
 import com.michael.settle.vip.service.Params;
 import com.michael.settle.vip.service.VipService;
 import com.michael.settle.vip.vo.VipVo;
 import com.michael.utils.beans.BeanCopyUtils;
+import com.michael.utils.number.IntegerUtils;
 import com.michael.utils.string.StringUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -74,6 +81,12 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
     @Resource
     private StepPercentDao stepPercentDao;
+
+    @Resource
+    private BusinessDao businessDao;
+
+    @Resource
+    private BusinessLogDao businessLogDao;
 
     @Override
     public String save(Vip vip) {
@@ -144,6 +157,11 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
     @Override
     public void report() {
 
+        Logger logger = Logger.getLogger(VipServiceImpl.class);
+        logger.info("******** 产生报表数据 ********");
+
+        logger.info("******** 1. 交易会员 ********");
+        Session session = HibernateUtils.getSession(false);
         // 查询当前人所创建的会员数据
         VipBo bo = new VipBo();
         bo.setCreatorId(SecurityContext.getEmpId());
@@ -162,7 +180,6 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         // 创建团队会员报表数据
         Assert.notEmpty(o, "报表生成失败!没有查询到符合的结果集!");
         int index = 0;
-        Session session = HibernateUtils.getSession(false);
         Date occurDate = DateUtils.addDays(new Date(), -7); // 时间往前推一周
         for (Map<String, Object> foo : o) {
             GroupVip vip = new GroupVip();
@@ -188,12 +205,13 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             groupVipDao.save(vip);
             index++;
             if (index % 20 == 0) {
-                session.clear();
+                session.flush();
                 session.clear();
             }
         }
 
         // 创建团队佣金数据
+        logger.info("******** 2. 团队佣金 ********");
         String sql2 = "SELECT b.company ,b.groupCode,sum(b.money) money,sum(b.fee) fee FROM " +
                 "settle_business b where b.creatorId=? group by b.company,b.groupCode";
         List<Map<String, Object>> gb = vipDao.sqlQuery(sql2, new ArrayList<Object>() {{
@@ -262,11 +280,52 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             groupBonusDao.save(bonus);
             index++;
             if (index % 20 == 0) {
-                session.clear();
+                session.flush();
                 session.clear();
             }
         }
 
+        // 保存交易历史
+        logger.info("******** 3. 交易历史 ********");
+        BusinessBo bb = new BusinessBo();
+        bb.setCreatorId(SecurityContext.getEmpId());
+        Long bbTotal = businessDao.getTotal(bb);
+        Assert.isTrue(bbTotal != null && bbTotal > 0, "报表生成失败!未查询到交易记录!");
+        long times = IntegerUtils.times(bbTotal, 20);
+        index = 0;
+        for (int i = 0; i < times; i++) {
+            Pager.setLimit(20);
+            Pager.setStart(i * 20);
+            logger.info(String.format("******** 交易历史明细： %d/%d ********", i + 1, times));
+            List<Business> data = businessDao.pageQuery(bb);
+            for (Business b : data) {
+                BusinessLog bl = new BusinessLog();
+                bl.setCompany(b.getCompany());
+                bl.setGroupCode(b.getGroupCode());
+                bl.setGroupName(b.getGroupCode());
+                bl.setVipName(b.getVipCode());
+                if (StringUtils.isNotEmpty(b.getVipCode())) {
+                    Vip vip = vipDao.findByCode(b.getVipCode());
+                    if (vip != null) {
+                        bl.setVipName(vip.getName());
+                        bl.setRecommend(vip.getRecommend());
+                    }
+                }
+                if (StringUtils.isEmpty(bl.getVipName())) {
+                    bl.setVipName("匿名");
+                }
+                bl.setOccurDate(b.getBusinessTime());
+                bl.setMoney(b.getMoney());
+                businessLogDao.save(bl);
+                index++;
+                if (index % 20 == 0) {
+                    session.flush();
+                    session.clear();
+                }
+            }
+        }
+
+        logger.info("******** 4.  ********");
     }
 
     public void importData(final String company, String[] attachmentIds) {

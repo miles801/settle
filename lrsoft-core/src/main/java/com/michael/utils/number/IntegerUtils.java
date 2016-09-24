@@ -128,30 +128,18 @@ public class IntegerUtils {
     }
 
     /**
-     * 将Long型的数字转换成Integer，如果超出范围，则抛出异常
-     * 如果num为null，则同样返回null
+     * 获取一个数字分批次后的批次数
      *
-     * @param num 要转换的数字
+     * @param total 总数量
+     * @param batch 每一批的数量
+     * @return 批数
      */
-    public static Integer parse(Long num) {
-        if (num == null) {
-            return null;
+    public static long times(long total, int batch) {
+        Assert.isTrue(batch != 0, "除数不能为0!");
+        long times = total / batch;
+        if (total % batch > 0) {
+            times++;
         }
-        Assert.isTrue(num <= Integer.MAX_VALUE, "转换失败!Long的值[" + num + "]超出了Integer的最大范围!");
-        return Integer.parseInt(num.toString());
-    }
-
-    /**
-     * 将Long型的数字转换成Integer，如果超出范围，则抛出异常
-     * 如果num为null，则返回默认值
-     *
-     * @param num          要转换的数字
-     * @param defaultValue 为空时返回的值
-     */
-    public static Integer parse(Long num, int defaultValue) {
-        if (num == null) {
-            return defaultValue;
-        }
-        return parse(num);
+        return times;
     }
 }
