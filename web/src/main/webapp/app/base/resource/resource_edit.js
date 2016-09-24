@@ -170,6 +170,7 @@
             });
         } else if (pageType == 'add') {
             $scope.beans = {
+                authorization: true,
                 type: type
             };
         }
