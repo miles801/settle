@@ -6,6 +6,7 @@ import com.michael.settle.conf.bo.StepPercentBo;
 import com.michael.settle.conf.dao.StepPercentDao;
 import com.michael.settle.conf.domain.StepPercent;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -71,6 +72,26 @@ public class StepPercentDaoImpl extends HibernateDaoHelper implements StepPercen
         return (StepPercent) getSession().get(StepPercent.class, id);
     }
 
+    @Override
+    public Double getPercent(String company, Double value) {
+        Assert.hasText(company, "查询失败!文交所不能为空!");
+        Assert.notNull(value, "查询失败!值不能为空!");
+        return (Double) getSession().createQuery(" select sp.percent from " + StepPercent.class.getName() + " sp where sp.company=? and sp.minValue<? and sp.maxValue>?")
+                .setParameter(0, company)
+                .setParameter(1, value)
+                .setParameter(2, value)
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<StepPercent> queryByCompany(String company) {
+        Assert.hasText(company, "查询失败!文交所不能为空!");
+        return createCriteria(StepPercent.class)
+                .add(Restrictions.eq("company", company))
+                .list();
+    }
 
     private void initCriteria(Criteria criteria, StepPercentBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");

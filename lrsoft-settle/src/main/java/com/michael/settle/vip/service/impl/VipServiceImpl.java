@@ -17,9 +17,14 @@ import com.michael.poi.core.ImportEngine;
 import com.michael.poi.core.RuntimeContext;
 import com.michael.poi.imp.cfg.ColMapping;
 import com.michael.poi.imp.cfg.Configuration;
+import com.michael.settle.conf.dao.CompanyConfDao;
+import com.michael.settle.conf.dao.StepPercentDao;
+import com.michael.settle.conf.domain.CompanyConf;
+import com.michael.settle.conf.domain.StepPercent;
 import com.michael.settle.mapping.dao.MappingDao;
 import com.michael.settle.report.dao.GroupBonusDao;
 import com.michael.settle.report.dao.GroupVipDao;
+import com.michael.settle.report.domain.GroupBonus;
 import com.michael.settle.report.domain.GroupVip;
 import com.michael.settle.vip.bo.VipBo;
 import com.michael.settle.vip.dao.VipDao;
@@ -45,10 +50,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Michael
@@ -66,6 +68,12 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
     @Resource
     private GroupBonusDao groupBonusDao;
+
+    @Resource
+    private CompanyConfDao companyConfDao;
+
+    @Resource
+    private StepPercentDao stepPercentDao;
 
     @Override
     public String save(Vip vip) {
@@ -151,7 +159,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             add(SecurityContext.getEmpId());
         }});
 
-        // 创建报表数据
+        // 创建团队会员报表数据
         Assert.notEmpty(o, "报表生成失败!没有查询到符合的结果集!");
         int index = 0;
         Session session = HibernateUtils.getSession(false);
@@ -184,6 +192,81 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
                 session.clear();
             }
         }
+
+        // 创建团队佣金数据
+        String sql2 = "SELECT b.company ,b.groupCode,sum(b.money) money,sum(b.fee) fee FROM " +
+                "settle_business b where b.creatorId=? group by b.company,b.groupCode";
+        List<Map<String, Object>> gb = vipDao.sqlQuery(sql2, new ArrayList<Object>() {{
+            add(SecurityContext.getEmpId());
+        }});
+        Assert.notEmpty(gb, "报表生成失败!未获取到交易数据!");
+        index = 0;
+        final Map<String, CompanyConf> companyMap = new HashMap<>();
+        final Map<String, List<StepPercent>> percentMap = new HashMap<>();
+        for (Map<String, Object> foo : gb) {
+            String company = foo.get("company").toString();
+            String companyName = ParameterContainer.getInstance().getSystemName(Params.COMPANY, company);
+            String groupCode = foo.get("groupCode").toString();
+            if (StringUtils.isEmpty(groupCode)) {
+                groupCode = "默认团队";
+            }
+            BigDecimal moneyBD = (BigDecimal) foo.get("money");
+            Double money = new BigDecimal(moneyBD == null ? 0D : Double.parseDouble(moneyBD.toString())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+            BigDecimal feeBD = (BigDecimal) foo.get("fee");
+            Double fee = new BigDecimal(feeBD == null ? 0D : Double.parseDouble(feeBD.toString())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+            GroupBonus bonus = new GroupBonus();
+            bonus.setCompany(company);
+            bonus.setGroupCode(groupCode);
+            bonus.setGroupName(groupCode);
+            bonus.setTotalMoney(money); // 成交额
+
+            bonus.setFee(fee);          // 手续费
+            CompanyConf conf = companyMap.get(company);
+            if (conf == null) {
+                conf = companyConfDao.findByCompany(company);
+                companyMap.put(company, conf);
+            }
+            Assert.notNull(conf, "报表生成失败!文交所[" + company + "]所对应的各项系数未配置!");
+            // 标准佣金
+            bonus.setCommission(new BigDecimal(fee * conf.getCommission()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+            // 阶梯比例
+            List<StepPercent> percents = percentMap.get(company);
+            if (percents == null) {
+                percents = stepPercentDao.queryByCompany(company);
+                Assert.notEmpty(percents, "报表生成失败!文交所[" + companyName + "]对应的阶梯比例未配置!");
+                percentMap.put(company, percents);
+            }
+            Double p = null;
+            for (StepPercent sp : percents) {
+                if (sp.getMinValue() < money && sp.getMaxValue() > money) {
+                    p = sp.getPercent();
+                    break;
+                }
+            }
+            Assert.notNull(p, String.format("报表生成失败!文交所[%s]下团队[%s]的交易额为[%s]，不在阶梯比例范围内!", companyName, groupCode, money));
+            bonus.setStepPercent(p);
+
+            // 含税服务费 = 标准佣金*阶梯比例
+            bonus.setTaxServerFee(new BigDecimal(bonus.getCommission() * bonus.getStepPercent()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+            // 支付金额 = 含税服务费*固定比例
+            bonus.setPercent(conf.getPercent());
+            bonus.setPayMoney(new BigDecimal(bonus.getTaxServerFee() * conf.getPercent()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+            // 除税支付金额 = 支付金额 * 税率
+            bonus.setOutofTax(new BigDecimal(bonus.getPayMoney() * (1 - conf.getTax())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+            // 税金 = 支付金额 - 除税支付金额
+            bonus.setTax(new BigDecimal(bonus.getPayMoney() - bonus.getOutofTax()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+            bonus.setOccurDate(occurDate);
+            groupBonusDao.save(bonus);
+            index++;
+            if (index % 20 == 0) {
+                session.clear();
+                session.clear();
+            }
+        }
+
     }
 
     public void importData(final String company, String[] attachmentIds) {

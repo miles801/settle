@@ -39,4 +39,19 @@ public interface StepPercentDao {
      */
     void delete(StepPercent stepPercent);
 
+    /**
+     * 获取指定文交所指定的值的阶梯比例
+     *
+     * @param company 文交所
+     * @param value   值
+     * @return 比例
+     */
+    Double getPercent(String company, Double value);
+
+    /**
+     * 查询指定文交所的所有配置
+     *
+     * @param company 文交所
+     */
+    List<StepPercent> queryByCompany(String company);
 }
