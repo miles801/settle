@@ -49,4 +49,14 @@ public interface VipService {
      * @param attachmentIds 上传的附件列表
      */
     void importData(String company, String[] attachmentIds);
+
+    /**
+     * 清空当前所有人创建的所有会员数据
+     */
+    void clear();
+
+    /**
+     * 根据当前所有人创建的会员产生报表
+     */
+    void report();
 }

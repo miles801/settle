@@ -5,14 +5,18 @@ import com.michael.core.hibernate.criteria.CriteriaUtils;
 import com.michael.settle.vip.bo.VipBo;
 import com.michael.settle.vip.dao.VipDao;
 import com.michael.settle.vip.domain.Vip;
+import com.michael.utils.collection.CollectionUtils;
 import com.michael.utils.string.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -85,6 +89,28 @@ public class VipDaoImpl extends HibernateDaoHelper implements VipDao {
             criteria.add(Restrictions.ne("id", id));
         }
         return (Long) criteria.uniqueResult() > 0;
+    }
+
+    @Override
+    public void clear(String empId) {
+        Assert.hasText(empId, "操作失败!用户ID不能为空!");
+        getSession().createQuery("delete from " + Vip.class.getName() + " v where v.creatorId=?")
+                .setParameter(0, empId)
+                .executeUpdate();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> sqlQuery(String sql, List<Object> params) {
+        Assert.hasText(sql, "查询失败!SQL不能为没空!");
+        Query query = getSession().createSQLQuery(sql);
+        if (CollectionUtils.isNotEmpty(params)) {
+            for (int i = 0; i < params.size(); i++) {
+                query.setParameter(i, params.get(i));
+            }
+        }
+        query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        return query.list();
     }
 
     private void initCriteria(Criteria criteria, VipBo bo) {

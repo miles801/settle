@@ -50,4 +50,42 @@ public class HibernateUtils {
         // 驱逐
         session.evict(object);
     }
+
+    /**
+     * 获取一个session，如果session不存在，则创建一个新的（如果设置为true的话）
+     *
+     * @param create true表示当session不存在时创建新的
+     * @return session
+     */
+    public static Session getSession(boolean create) {
+        SessionFactory sessionFactory = (SessionFactory) SystemContainer.getInstance().getBean("sessionFactory");
+        Assert.notNull(sessionFactory, "操作失败!在获取sessionFactory对象时失败!");
+        Session session = sessionFactory.getCurrentSession();
+        if (session == null && create) {
+            return sessionFactory.openSession();
+        }
+        return session;
+    }
+
+    /**
+     * 创建一个新的session
+     */
+    public static Session openSession() {
+        SessionFactory sessionFactory = (SessionFactory) SystemContainer.getInstance().getBean("sessionFactory");
+        Assert.notNull(sessionFactory, "操作失败!在获取sessionFactory对象时失败!");
+        return sessionFactory.openSession();
+    }
+
+    /**
+     * 关闭当前事务中的session
+     */
+    public static void closeSession() {
+        SessionFactory sessionFactory = (SessionFactory) SystemContainer.getInstance().getBean("sessionFactory");
+        Assert.notNull(sessionFactory, "操作失败!在获取sessionFactory对象时失败!");
+        Session session = sessionFactory.getCurrentSession();
+        if (session != null) {
+            session.clear();
+            session.close();
+        }
+    }
 }

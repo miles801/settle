@@ -37,6 +37,17 @@ public class VipBo implements BO {
     @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
     private String recommend;
 
+    @Condition
+    private String creatorId;
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
+
     public void setCode(String code) {
         this.code = code;
     }

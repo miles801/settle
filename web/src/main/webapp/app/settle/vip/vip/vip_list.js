@@ -140,5 +140,33 @@
             window.open(CommonUtils.contextPathURL('/settle/vip/vip/export?' + encodeURI(encodeURI($.param(o)))));
         };
 
+        // 清空数据
+        $scope.clearAll = function () {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '<span class="text-danger">清空所有的会员数据，请确保已经生成了报表!</span>',
+                callback: function () {
+                    var promise = VipService.clearAll(function () {
+                        AlertFactory.success('删除成功!');
+                        $scope.query();
+                    });
+                    CommonUtils.loading((promise));
+                }
+            });
+        };
+
+        // 产生报表
+        $scope.generateReport = function () {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '<span class="text-danger">利用现有会员产生报表数据,请确认!</span>',
+                callback: function () {
+                    var promise = VipService.report(function () {
+                        AlertFactory.success('操作成功!');
+                    });
+                    CommonUtils.loading((promise));
+                }
+            });
+        };
     });
 })(window, angular, jQuery);

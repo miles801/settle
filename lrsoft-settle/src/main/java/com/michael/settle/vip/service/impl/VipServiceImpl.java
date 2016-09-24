@@ -7,6 +7,8 @@ import com.michael.base.parameter.service.ParameterContainer;
 import com.michael.core.SystemContainer;
 import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
+import com.michael.core.context.SecurityContext;
+import com.michael.core.hibernate.HibernateUtils;
 import com.michael.core.hibernate.validator.ValidatorUtils;
 import com.michael.core.pager.PageVo;
 import com.michael.poi.core.Context;
@@ -16,6 +18,9 @@ import com.michael.poi.core.RuntimeContext;
 import com.michael.poi.imp.cfg.ColMapping;
 import com.michael.poi.imp.cfg.Configuration;
 import com.michael.settle.mapping.dao.MappingDao;
+import com.michael.settle.report.dao.GroupBonusDao;
+import com.michael.settle.report.dao.GroupVipDao;
+import com.michael.settle.report.domain.GroupVip;
 import com.michael.settle.vip.bo.VipBo;
 import com.michael.settle.vip.dao.VipDao;
 import com.michael.settle.vip.domain.Vip;
@@ -37,10 +42,13 @@ import org.springframework.util.Assert;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael
@@ -52,6 +60,12 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
     @Resource
     private MappingDao mappingDao;
+
+    @Resource
+    private GroupVipDao groupVipDao;
+
+    @Resource
+    private GroupBonusDao groupBonusDao;
 
     @Override
     public String save(Vip vip) {
@@ -114,6 +128,63 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         return vos;
     }
 
+    @Override
+    public void clear() {
+        vipDao.clear(SecurityContext.getEmpId());
+    }
+
+    @Override
+    public void report() {
+
+        // 查询当前人所创建的会员数据
+        VipBo bo = new VipBo();
+        bo.setCreatorId(SecurityContext.getEmpId());
+        Long total = vipDao.getTotal(bo);
+        Assert.isTrue(total != null && total > 0, "报表生成失败!当前用户还未导入任何会员数据!");
+
+        // 获取统计结果
+        String sql = "SELECT v.company company,  v.groupId groupId, count(id) total, \n" +
+                "sum(case v.assignStatus when '1' then 1 else 0 end)  assignCounts,\n" +
+                "sum(case v.status when '1' then 1 else 0 end)  normalCounts \n" +
+                "FROM settle_vip v where v.creatorId=? group by v.company,v.groupId ";
+        List<Map<String, Object>> o = vipDao.sqlQuery(sql, new ArrayList<Object>() {{
+            add(SecurityContext.getEmpId());
+        }});
+
+        // 创建报表数据
+        Assert.notEmpty(o, "报表生成失败!没有查询到符合的结果集!");
+        int index = 0;
+        Session session = HibernateUtils.getSession(false);
+        Date occurDate = DateUtils.addDays(new Date(), -7); // 时间往前推一周
+        for (Map<String, Object> foo : o) {
+            GroupVip vip = new GroupVip();
+            vip.setCompany(foo.get("company").toString());
+            vip.setGroupName(foo.get("groupId").toString());
+            vip.setGroupCode(foo.get("groupId").toString());
+            // 会员数量
+            BigInteger vipCounts = (BigInteger) foo.get("total");
+            vip.setVipCounts(vipCounts == null ? 0 : Integer.parseInt(vipCounts.toString()));
+            // 正常数量
+            BigDecimal normalCounts = (BigDecimal) foo.get("normalCounts");
+            vip.setNormalCounts(normalCounts == null ? 0 : Integer.parseInt(normalCounts.toString()));
+
+            // 非正常数量
+            vip.setOtherCounts(vip.getVipCounts() - vip.getNormalCounts());
+            // 签约数量
+            BigDecimal assignCounts = (BigDecimal) foo.get("assignCounts");
+            vip.setAssignCounts(assignCounts == null ? 0 : Integer.parseInt(assignCounts.toString()));
+
+            // 未签约数量
+            vip.setNotAssignCounts(vip.getVipCounts() - vip.getAssignCounts());
+            vip.setOccurDate(occurDate);
+            groupVipDao.save(vip);
+            index++;
+            if (index % 20 == 0) {
+                session.clear();
+                session.clear();
+            }
+        }
+    }
 
     public void importData(final String company, String[] attachmentIds) {
         Assert.hasText(company, "导入失败!会员所属文交所不能为空!");

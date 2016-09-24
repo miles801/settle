@@ -91,10 +91,9 @@
                     <span>会员列表</span>
                 </div>
                 <span class="header-button">
-                        <a type="button" class="btn btn-green btn-min" ng-click="exportData();"
-                           ng-disabled="!pager.total" ng-cloak> 导出数据 </a>
-                        <a type="button" class="btn btn-green btn-min" ng-click="add();"> 新建 </a>
                         <a type="button" class="btn btn-green btn-min" ng-click="importData();"> 导入会员 </a>
+                        <a type="button" class="btn btn-green btn-min" ng-click="clearAll();"> 清空 </a>
+                        <a type="button" class="btn btn-green btn-min" ng-click="generateReport();"> 产生报表 </a>
                 </span>
             </div>
             <div class="block-content">
@@ -113,12 +112,11 @@
                                 <td style="width: 120px;">推荐人</td>
                                 <td style="width: 120px;">创建时间</td>
                                 <td>备注</td>
-                                <td class="text-left">操作</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="11" class="text-center">没有查询到数据！</td>
+                                <td colspan="10" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td bo-text="pager.start+$index+1"></td>
@@ -142,10 +140,6 @@
                                 <td bo-text="foo.recommend"></td>
                                 <td bo-text="foo.occurDate|eccrmDatetime"></td>
                                 <td class="text-left" bo-text="foo.description|substr:30"></td>
-                                <td class="text-left">
-                                    <a class="btn-op blue" ng-click="modify(foo.id);">编辑</a>
-                                    <a class="btn-op red" ng-click="remove(foo.id);">删除</a>
-                                </td>
                             </tr>
                             </tbody>
                         </table>

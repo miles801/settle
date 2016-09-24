@@ -45,7 +45,13 @@
             },
 
             // 根据id字符串（使用逗号分隔多个值）
-            deleteByIds: {method: 'DELETE', params: {method: 'delete', ids: '@ids'}, isArray: false}
+            deleteByIds: {method: 'DELETE', params: {method: 'delete', ids: '@ids'}, isArray: false},
+
+            // 清空现有的所有会员数据
+            clear: {method: 'POST', params: {method: 'clear'}, isArray: false},
+
+            // 产生报表
+            report: {method: 'POST', params: {method: 'report'}, isArray: false}
         })
     });
 

@@ -4,6 +4,7 @@ import com.michael.settle.vip.bo.VipBo;
 import com.michael.settle.vip.domain.Vip;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael
@@ -47,4 +48,20 @@ public interface VipDao {
      * @return true：存在
      */
     boolean hasCode(String code, String id);
+
+    /**
+     * 删除指定人创建的会员数据
+     *
+     * @param empId 员工ID
+     */
+    void clear(String empId);
+
+    /**
+     * sql查询
+     *
+     * @param sql    sql语句
+     * @param params 参数
+     * @return map
+     */
+    List<Map<String, Object>> sqlQuery(String sql, List<Object> params);
 }
