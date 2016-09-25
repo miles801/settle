@@ -20,7 +20,7 @@
         };
 
 
-        // 参数：所属文交所
+        // 参数：文交所
         $scope.companys = [{name: '全部'}];
         GroupBonusParam.company(function (o) {
             $scope.companys.push.apply($scope.companys, o);

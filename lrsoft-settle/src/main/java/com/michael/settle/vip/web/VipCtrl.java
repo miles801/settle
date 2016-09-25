@@ -32,6 +32,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael
@@ -183,7 +184,7 @@ public class VipCtrl extends BaseController {
     }
 
     // 清空
-    @RequestMapping(value = "/import", method = RequestMethod.POST)
+    @RequestMapping(value = "/clear", method = RequestMethod.POST)
     public void clear(HttpServletRequest request, HttpServletResponse response) {
         vipService.clear();
         GsonUtils.printSuccess(response);
@@ -195,4 +196,14 @@ public class VipCtrl extends BaseController {
         vipService.report();
         GsonUtils.printSuccess(response);
     }
+
+    // 统计
+    @RequestMapping(value = "/analysis", method = RequestMethod.GET)
+    public void analysis(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> o = GsonUtils.wrapDataToEntity(request, Map.class);
+        List<Map<String, Object>> data = vipService.analysis(o);
+        GsonUtils.printData(response, data);
+    }
+
+
 }

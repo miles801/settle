@@ -85,7 +85,7 @@ public class GroupVipServiceImpl implements GroupVipService, BeanWrapCallback<Gr
     public void doCallback(GroupVip groupVip, GroupVipVo vo) {
         ParameterContainer container = ParameterContainer.getInstance();
 
-        // 所属文交所
+        // 文交所
         vo.setCompanyName(container.getSystemName(Params.COMPANY, groupVip.getCompany()));
 
     }

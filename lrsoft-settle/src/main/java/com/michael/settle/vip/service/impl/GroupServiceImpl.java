@@ -151,7 +151,7 @@ public class GroupServiceImpl implements GroupService, BeanWrapCallback<Group, G
     }
 
     public void importData(final String company, String[] attachmentIds) {
-        Assert.hasText(company, "团队导入失败!请指定团队所属文交所!");
+        Assert.hasText(company, "团队导入失败!请指定团队文交所!");
         Logger logger = Logger.getLogger(GroupServiceImpl.class);
         Assert.notEmpty(attachmentIds, "数据导入失败!数据文件不能为空，请重试!");
         // 获取团队映射模板
@@ -223,7 +223,7 @@ public class GroupServiceImpl implements GroupService, BeanWrapCallback<Group, G
     public void doCallback(Group group, GroupVo vo) {
         ParameterContainer container = ParameterContainer.getInstance();
 
-        // 所属文交所
+        // 文交所
         vo.setCompanyName(container.getSystemName(Params.COMPANY, group.getCompany()));
 
     }

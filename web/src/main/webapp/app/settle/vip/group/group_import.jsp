@@ -28,7 +28,7 @@
                 <form name="form" class="form-horizontal" role="form">
                     <div class="row">
                         <div class="form-label col-1-half">
-                            <label validate-error="form.company">所属文交所:</label>
+                            <label validate-error="form.company">文交所:</label>
                         </div>
                         <select class="col-2" ng-model="company" name="company"
                                 ng-options="foo.value as foo.name for foo in companys"

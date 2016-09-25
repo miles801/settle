@@ -27,7 +27,7 @@ public class GroupBonus extends CommonDomain {
     @Column(name = "groupName", nullable = false, length = 20)
     private String groupName;
 
-    @ApiField(value = "所属文交所", desc = "参数:VIP_COMPANY")
+    @ApiField(value = "文交所", desc = "参数:VIP_COMPANY")
     @NotNull
     @Column(name = "company", nullable = false, length = 40)
     private String company;

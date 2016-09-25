@@ -21,7 +21,7 @@ public class ContactBo implements BO {
     @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
     private String groupId;
 
-    // 所属文交所
+    // 文交所
     @Condition
     private String company;
 

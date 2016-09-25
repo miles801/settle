@@ -47,7 +47,7 @@
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
-                                <label>所属文交所:</label>
+                                <label>文交所:</label>
                             </div>
                             <select class="w200" ng-model="condition.company"
                                     ng-options="foo.value as foo.name for foo in companys"
@@ -92,7 +92,7 @@
                                 <td class="width-min">序号</td>
                                 <td style="width: 120px;">会员编号</td>
                                 <td style="width: 150px">团队编号</td>
-                                <td style="width: 120px;">所属文交所</td>
+                                <td style="width: 120px;">文交所</td>
                                 <td style="width: 120px;">交易金额</td>
                                 <td style="width: 120px;">手续费</td>
                                 <td style="width: 120px;">交易时间</td>

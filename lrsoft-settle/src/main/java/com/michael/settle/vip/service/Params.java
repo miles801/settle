@@ -21,7 +21,7 @@ public interface Params {
     String VIP_STATUS = "VIP_STATUS";
 
     /**
-     * 所属文交所
+     * 文交所
      */
     String COMPANY = "VIP_COMPANY";
 }

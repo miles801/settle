@@ -18,7 +18,7 @@ public class ContactDTO implements DTO {
     // 所属团队
     @Col(index = 2)
     private String groupId;
-    // 所属文交所
+    // 文交所
     private String company;
     // 返佣银行
     @Col(index = 3)

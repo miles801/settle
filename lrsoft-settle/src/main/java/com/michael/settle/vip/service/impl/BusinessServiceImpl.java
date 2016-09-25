@@ -18,12 +18,14 @@ import com.michael.poi.imp.cfg.Configuration;
 import com.michael.settle.mapping.dao.MappingDao;
 import com.michael.settle.vip.bo.BusinessBo;
 import com.michael.settle.vip.dao.BusinessDao;
+import com.michael.settle.vip.dao.GroupDao;
 import com.michael.settle.vip.domain.Business;
 import com.michael.settle.vip.dto.BusinessDTO;
 import com.michael.settle.vip.service.BusinessService;
 import com.michael.settle.vip.vo.BusinessVo;
 import com.michael.utils.beans.BeanCopyUtils;
 import com.michael.utils.string.RandomUtils;
+import com.michael.utils.string.StringUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
@@ -37,9 +39,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Michael
@@ -51,6 +51,9 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
 
     @Resource
     private MappingDao mappingDao;
+
+    @Resource
+    private GroupDao groupDao;
 
     @Override
     public String save(Business business) {
@@ -179,6 +182,7 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
             final Session session = sessionFactory.getCurrentSession();
             configuration.setPath(newFilePath);
             final String batchNo = new SimpleDateFormat("yyyyMMddHHmm").format(new Date()) + "-" + RandomUtils.generate(3);
+            final Map<String, String> nameMap = new HashMap<>();    // key为团队名称，value为团队编号
             configuration.setHandler(new Handler<BusinessDTO>() {
                 @Override
                 public void execute(BusinessDTO dto) {
@@ -188,14 +192,32 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
                     if (BeanCopyUtils.isEmpty(business)) {
                         return;
                     }
+                    // 交易团队的编号，如果值不是数字，则是名称，可以通过名称查询出对应的编号
+                    String groupCode = dto.getGroupCode();
+                    if (StringUtils.isEmpty(groupCode)) {
+                        groupCode = "默认团队";
+                    }
+                    if (groupCode.matches("\\d+")) {
+                        business.setGroupCode(groupCode);
+                    } else {
+                        String code = nameMap.get(groupCode);
+                        if (StringUtils.isEmpty(code)) {// 根据名称查询编号
+                            code = groupDao.findCode(company, groupCode);
+                            Assert.hasText(code, String.format("导入失败!文交所[%s]对应的团队[%s]在系统中还未注册!", company, groupCode));
+                            nameMap.put(groupCode, code);
+                        }
+                        business.setGroupCode(code);
+                    }
                     // 交易时间
                     if (date != null) {
                         business.setBusinessTime(new Date(date));
                     } else {
-                        business.setBusinessTime(DateUtils.addDays(new Date(), -1));
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(Calendar.DAY_OF_MONTH, 1);
+                        business.setBusinessTime(DateUtils.addMonths(calendar.getTime(), -1));  // 上个月的1号
                     }
 
-                    // 所属文交所
+                    // 文交所
                     business.setCompany(company);
                     // 批次号
                     business.setBatchNo(batchNo);
@@ -226,7 +248,7 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
     public void doCallback(Business business, BusinessVo vo) {
         ParameterContainer container = ParameterContainer.getInstance();
 
-        // 所属文交所
+        // 文交所
         vo.setCompanyName(container.getSystemName("VIP_COMPANY", business.getCompany()));
 
     }

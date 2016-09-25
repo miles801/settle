@@ -10,7 +10,7 @@ public class VipVo extends Vip {
     private String assignStatusName;
     // 状态--参数名称
     private String statusName;
-    // 所属文交所--参数名称
+    // 文交所--参数名称
     private String companyName;
 
     public void setAssignStatusName(String assignStatusName) {

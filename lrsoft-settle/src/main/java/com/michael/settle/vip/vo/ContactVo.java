@@ -6,7 +6,7 @@ import com.michael.settle.vip.domain.Contact;
  * @author Michael
  */
 public class ContactVo extends Contact {
-    // 所属文交所--参数名称
+    // 文交所--参数名称
     private String companyName;
     // 返佣银行--参数名称
     private String bankName;

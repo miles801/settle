@@ -6,6 +6,7 @@ import com.michael.settle.vip.domain.Vip;
 import com.michael.settle.vip.vo.VipVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael
@@ -59,4 +60,11 @@ public interface VipService {
      * 根据当前所有人创建的会员产生报表
      */
     void report();
+
+    /**
+     * 统计报表
+     *
+     * @param params 参数
+     */
+    List<Map<String, Object>> analysis(Map<String, Object> params);
 }

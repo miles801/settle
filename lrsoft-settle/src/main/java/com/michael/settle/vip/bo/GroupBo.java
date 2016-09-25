@@ -15,7 +15,7 @@ public class GroupBo implements BO {
     @Condition
     private String name;
 
-    // 所属文交所
+    // 文交所
     @Condition
     private String company;
 

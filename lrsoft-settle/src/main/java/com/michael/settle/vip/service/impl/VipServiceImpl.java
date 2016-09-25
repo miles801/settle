@@ -158,7 +158,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
     public void report() {
 
         Logger logger = Logger.getLogger(VipServiceImpl.class);
-        logger.info("******** 产生报表数据 ********");
+        logger.info("******** 产生报表数据 : start ********");
 
         logger.info("******** 1. 交易会员 ********");
         Session session = HibernateUtils.getSession(false);
@@ -303,14 +303,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
                 bl.setCompany(b.getCompany());
                 bl.setGroupCode(b.getGroupCode());
                 bl.setGroupName(b.getGroupCode());
-                bl.setVipName(b.getVipCode());
-                if (StringUtils.isNotEmpty(b.getVipCode())) {
-                    Vip vip = vipDao.findByCode(b.getVipCode());
-                    if (vip != null) {
-                        bl.setVipName(vip.getName());
-                        bl.setRecommend(vip.getRecommend());
-                    }
-                }
+                bl.setVipName(b.getVipName());
                 if (StringUtils.isEmpty(bl.getVipName())) {
                     bl.setVipName("匿名");
                 }
@@ -325,11 +318,33 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             }
         }
 
-        logger.info("******** 4.  ********");
+        logger.info("******** 产生报表数据 : end ********");
+    }
+
+    @Override
+    public List<Map<String, Object>> analysis(final Map<String, Object> params) {
+        String sql = "SELECT " +
+                "v.company,v.groupCode,v.vipCounts,v.normalCounts,v.assignCounts,b.totalMoney,b.fee,b.commission,b.stepPercent,b.taxServerFee,b.payMoney,b.percent,b.outofTax,b.tax,b.occurDate,b.description " +
+                "FROM settle_group_vip v left join " +
+                "settle_group_bonus b on v.company=b.company where v.groupCode=b.groupCode and b.occurDate between ? and ? and v.creatorId=? ";
+        final String company = (String) params.get("company");
+        if (StringUtils.isNotEmpty(company)) {
+            sql += " and company=? ";
+        }
+        sql += "order by totalMoney desc";
+        List<Map<String, Object>> o = vipDao.sqlQuery(sql, new ArrayList<Object>() {{
+            add(new Date(Long.parseLong(params.get("occurDate1").toString())));
+            add(new Date(Long.parseLong(params.get("occurDate2").toString())));
+            add(SecurityContext.getEmpId());
+            if (StringUtils.isNotEmpty(company)) {
+                add(company);
+            }
+        }});
+        return o;
     }
 
     public void importData(final String company, String[] attachmentIds) {
-        Assert.hasText(company, "导入失败!会员所属文交所不能为空!");
+        Assert.hasText(company, "导入失败!会员文交所不能为空!");
         Logger logger = Logger.getLogger(VipServiceImpl.class);
         Assert.notEmpty(attachmentIds, "数据导入失败!数据文件不能为空，请重试!");
         final String[] parsePatterns = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.0", "yyyy-MM-dd HH:mm:ss.SSS"};
@@ -438,7 +453,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         // 状态
         vo.setStatusName(container.getSystemName(Params.VIP_STATUS, vip.getStatus()));
 
-        // 所属文交所
+        // 文交所
         vo.setCompanyName(container.getSystemName(Params.COMPANY, vip.getCompany()));
 
     }

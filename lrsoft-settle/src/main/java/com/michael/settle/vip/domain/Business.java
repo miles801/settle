@@ -22,6 +22,10 @@ public class Business extends CommonDomain {
     @Column(name = "vipCode", nullable = false, length = 40)
     private String vipCode;
 
+    @ApiField("会员名称")
+    @Column(length = 40)
+    private String vipName;
+
     @ApiField(value = "团队编号")
     @NotNull
     @Column(name = "groupCode", nullable = false, length = 40)
@@ -32,7 +36,7 @@ public class Business extends CommonDomain {
     @Column(name = "money", nullable = false)
     private Double money;
 
-    @ApiField(value = "所属文交所", desc = "参数:VIP_COMPANY")
+    @ApiField(value = "文交所", desc = "参数:VIP_COMPANY")
     @Column(name = "company", length = 40)
     private String company;
 
@@ -54,6 +58,14 @@ public class Business extends CommonDomain {
     @ApiField("批次号")
     @Column(length = 20)
     private String batchNo;
+
+    public String getVipName() {
+        return vipName;
+    }
+
+    public void setVipName(String vipName) {
+        this.vipName = vipName;
+    }
 
     public String getBatchNo() {
         return batchNo;

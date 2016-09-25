@@ -51,7 +51,10 @@
             clear: {method: 'POST', params: {method: 'clear'}, isArray: false},
 
             // 产生报表
-            report: {method: 'POST', params: {method: 'report'}, isArray: false}
+            report: {method: 'POST', params: {method: 'report'}, isArray: false},
+
+            // 统计分析
+            analysis: {method: 'GET', params: {method: 'analysis'}, isArray: false}
         })
     });
 
@@ -70,7 +73,7 @@
         };
 
 
-        // 所属文交所
+        // 文交所
         o['company'] = function (callback) {
             ParameterLoader.loadSysParam('VIP_COMPANY', callback);
         };

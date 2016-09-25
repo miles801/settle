@@ -14,13 +14,14 @@ public class BusinessDTO implements DTO {
     // 会员编号
     @Col(index = 0)
     private String vipCode;
+    private String vipName;
     // 团队编号
     @Col(index = 1)
     private String groupCode;
     // 交易金额
     @Col(index = 2)
     private Double money;
-    // 所属文交所
+    // 文交所
     @Col(index = 3)
     private String company;
     // 手续费
@@ -32,6 +33,14 @@ public class BusinessDTO implements DTO {
 
     // 备注
     private String description;
+
+    public String getVipName() {
+        return vipName;
+    }
+
+    public void setVipName(String vipName) {
+        this.vipName = vipName;
+    }
 
     public String getDescription() {
         return description;

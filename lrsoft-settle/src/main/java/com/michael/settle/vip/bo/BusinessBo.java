@@ -21,7 +21,7 @@ public class BusinessBo implements BO {
     @Condition
     private Double money;
 
-    // 所属文交所
+    // 文交所
     @Condition
     private String company;
 

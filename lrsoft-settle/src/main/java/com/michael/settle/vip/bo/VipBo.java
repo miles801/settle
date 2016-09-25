@@ -29,7 +29,7 @@ public class VipBo implements BO {
     @Condition
     private String status;
 
-    // 所属文交所
+    // 文交所
     @Condition
     private String company;
 

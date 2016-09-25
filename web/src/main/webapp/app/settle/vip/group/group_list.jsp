@@ -44,7 +44,7 @@
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
-                                <label>所属文交所:</label>
+                                <label>文交所:</label>
                             </div>
                             <select class="w200" ng-model="condition.company"
                                     ng-options="foo.value as foo.name for foo in companys"></select>
@@ -76,7 +76,7 @@
                                 <td class="width-min">序号</td>
                                 <td style="width: 120px;">编号</td>
                                 <td style="width: 150px;">名称</td>
-                                <td style="width: 150px;">所属文交所</td>
+                                <td style="width: 150px;">文交所</td>
                                 <td style="width: 120px;">状态</td>
                                 <td>备注</td>
                                 <td class="text-left">操作</td>

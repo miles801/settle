@@ -9,7 +9,7 @@
     app.controller('Ctrl', function ($scope, ModalFactory, CommonUtils, AlertFactory, BusinessService, BusinessParam) {
         $scope.beans = {};
 
-        // 参数：所属文交所
+        // 参数：文交所
         $scope.companys = [{name: '全部'}];
         BusinessParam.company(function (o) {
             $scope.companys.push.apply($scope.companys, o);
@@ -27,11 +27,10 @@
                 AlertFactory.error('请选择本批次交易所属的文交所!');
                 return;
             }
-            console.dir($scope.date);
             var promise = BusinessService.importData({
                 attachmentIds: ids.join(','),
                 company: $scope.company,
-                date: $scope.date
+                date: new Date($scope.date).getTime()
             }, function () {
                 AlertFactory.success('导入成功!页面即将刷新!');
                 CommonUtils.addTab('update');

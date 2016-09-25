@@ -42,7 +42,7 @@ public class Vip extends CommonDomain {
     @Column(name = "status", nullable = false, length = 40)
     private String status;
 
-    @ApiField(value = "所属文交所", desc = "参数:VIP_COMPANY")
+    @ApiField(value = "文交所", desc = "参数:VIP_COMPANY")
     @Column(name = "company", length = 40)
     private String company;
 

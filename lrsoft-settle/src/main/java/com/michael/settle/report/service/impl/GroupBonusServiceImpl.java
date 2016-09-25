@@ -84,7 +84,7 @@ public class GroupBonusServiceImpl implements GroupBonusService, BeanWrapCallbac
     public void doCallback(GroupBonus groupBonus, GroupBonusVo vo) {
         ParameterContainer container = ParameterContainer.getInstance();
 
-        // 所属文交所
+        // 文交所
         vo.setCompanyName(container.getSystemName("VIP_COMPANY", groupBonus.getCompany()));
 
     }

@@ -78,7 +78,7 @@
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
-                                <label>所属文交所:</label>
+                                <label>文交所:</label>
                             </div>
                             <input type="text" class="w200" ng-model="beans.company" maxlength="40"/>
                         </div>

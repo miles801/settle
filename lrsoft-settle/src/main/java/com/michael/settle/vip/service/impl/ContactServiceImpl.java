@@ -200,7 +200,7 @@ public class ContactServiceImpl implements ContactService, BeanWrapCallback<Cont
     public void doCallback(Contact contact, ContactVo vo) {
         ParameterContainer container = ParameterContainer.getInstance();
 
-        // 所属文交所
+        // 文交所
         vo.setCompanyName(container.getSystemName(Params.COMPANY, contact.getCompany()));
 
         // 返佣银行

@@ -30,7 +30,7 @@ public class Contact extends CommonDomain {
     @Column(name = "groupId", length = 40)
     private String groupId;
 
-    @ApiField(value = "所属文交所", desc = "参数:VIP_COMPANY")
+    @ApiField(value = "文交所", desc = "参数:VIP_COMPANY")
     @Column(name = "company", length = 40)
     private String company;
 

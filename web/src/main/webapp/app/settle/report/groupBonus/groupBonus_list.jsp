@@ -33,7 +33,7 @@
                     <div class="row float">
                         <div class="item w300">
                             <div class="form-label w100">
-                                <label>所属文交所:</label>
+                                <label>文交所:</label>
                             </div>
                             <select class="w200" ng-model="condition.company"
                                     ng-options="foo.value as foo.name for foo in companys"
@@ -76,7 +76,7 @@
                                 <td class="width-min">序号</td>
                                 <td>团队编号</td>
                                 <td>团队名称</td>
-                                <td>所属文交所</td>
+                                <td>文交所</td>
                                 <td>成交额</td>
                                 <td>交易手续费</td>
                                 <td>标准佣金</td>

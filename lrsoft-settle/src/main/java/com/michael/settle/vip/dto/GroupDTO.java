@@ -15,7 +15,7 @@ public class GroupDTO implements DTO {
     // 名称
     @Col(index = 1)
     private String name;
-    // 所属文交所
+    // 文交所
     private String company;
     // 备注
     @Col(index = 2)

@@ -2,6 +2,7 @@ package com.michael.settle.vip.dao.impl;
 
 import com.michael.core.hibernate.HibernateDaoHelper;
 import com.michael.core.hibernate.criteria.CriteriaUtils;
+import com.michael.core.pager.Pager;
 import com.michael.settle.vip.bo.VipBo;
 import com.michael.settle.vip.dao.VipDao;
 import com.michael.settle.vip.domain.Vip;
@@ -110,6 +111,12 @@ public class VipDaoImpl extends HibernateDaoHelper implements VipDao {
             }
         }
         query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        if (Pager.getStart() != null) {
+            query.setFirstResult(Pager.getStart());
+        }
+        if (Pager.getLimit() != null) {
+            query.setMaxResults(Pager.getLimit());
+        }
         return query.list();
     }
 

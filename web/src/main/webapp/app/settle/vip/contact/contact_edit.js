@@ -17,7 +17,7 @@
         $scope.back = CommonUtils.back;
 
 
-        // 参数：所属文交所
+        // 参数：文交所
         $scope.companys = [{name: '请选择...'}];
         ContactParam.company(function (o) {
             $scope.companys.push.apply($scope.companys, o);

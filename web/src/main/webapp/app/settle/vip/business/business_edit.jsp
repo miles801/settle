@@ -64,7 +64,7 @@
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
-                                <label validate-error="form.company">所属文交所:</label>
+                                <label validate-error="form.company">文交所:</label>
                             </div>
                             <select class="w200" ng-model="beans.company" name="company"
                                     ng-options="foo.value as foo.name for foo in companys">

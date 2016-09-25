@@ -8,6 +8,7 @@ import com.michael.settle.vip.domain.Group;
 import com.michael.utils.string.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -92,6 +93,18 @@ public class GroupDaoImpl extends HibernateDaoHelper implements GroupDao {
         Assert.hasText(code, "查询失败!团队编号不能为空!");
         return (Group) createCriteria(Group.class)
                 .add(Restrictions.eq("code", code))
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+
+    @Override
+    public String findCode(String company, String groupName) {
+        Assert.hasText(company, "查询失败!文交所编号不能为空!");
+        Assert.hasText(groupName, "查询失败!团队名称不能为空!");
+        return (String) createCriteria(Group.class)
+                .setProjection(Projections.property("code"))
+                .add(Restrictions.eq("company", company))
+                .add(Restrictions.eq("name", groupName))
                 .setMaxResults(1)
                 .uniqueResult();
     }

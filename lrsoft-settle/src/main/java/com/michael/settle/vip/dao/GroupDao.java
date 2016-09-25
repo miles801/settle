@@ -55,4 +55,13 @@ public interface GroupDao {
      * @return 团队
      */
     Group findByCode(String code);
+
+    /**
+     * 查询指定文交所指定名称的团队的编号，如果有多个，则取第一个
+     *
+     * @param company   文交所编号
+     * @param groupName 团队名称
+     * @return 团队编号
+     */
+    String findCode(String company, String groupName);
 }
