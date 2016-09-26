@@ -220,4 +220,12 @@ public class GroupCtrl extends BaseController {
         groupService.importData(company, attachmentIds.split(","));
         GsonUtils.printSuccess(response);
     }
+
+    // 执行导入
+    @ResponseBody
+    @RequestMapping(value = "/clear", method = RequestMethod.POST)
+    public void clear(HttpServletRequest request, HttpServletResponse response) {
+        groupService.clear();
+        GsonUtils.printSuccess(response);
+    }
 }

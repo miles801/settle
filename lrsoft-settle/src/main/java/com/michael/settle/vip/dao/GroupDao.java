@@ -64,4 +64,11 @@ public interface GroupDao {
      * @return 团队编号
      */
     String findCode(String company, String groupName);
+
+    /**
+     * 删除指定人创建的所有团队数据
+     *
+     * @param empId 员工ID
+     */
+    void clear(String empId);
 }

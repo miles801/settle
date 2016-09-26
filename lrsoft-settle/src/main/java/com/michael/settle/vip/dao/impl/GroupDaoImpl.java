@@ -109,6 +109,14 @@ public class GroupDaoImpl extends HibernateDaoHelper implements GroupDao {
                 .uniqueResult();
     }
 
+    @Override
+    public void clear(String empId) {
+        Assert.hasText(empId, "操作失败!员工ID不能为空!");
+        getSession().createQuery("delete from " + Group.class.getName() + " g where g.creatorId=?")
+                .setParameter(0, empId)
+                .executeUpdate();
+    }
+
     private void initCriteria(Criteria criteria, GroupBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         CriteriaUtils.addCondition(criteria, bo);

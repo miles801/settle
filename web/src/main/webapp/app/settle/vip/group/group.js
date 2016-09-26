@@ -46,8 +46,8 @@
                 isArray: false
             },
 
-            // 根据id字符串（使用逗号分隔多个值）
-            deleteByIds: {method: 'DELETE', params: {method: 'delete', ids: '@ids'}, isArray: false}
+            // 清空
+            clear: {method: 'POST', params: {method: 'clear'}, isArray: false}
         })
     });
 

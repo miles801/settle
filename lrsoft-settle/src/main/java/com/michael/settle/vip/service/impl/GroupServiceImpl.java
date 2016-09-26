@@ -7,6 +7,7 @@ import com.michael.base.parameter.service.ParameterContainer;
 import com.michael.core.SystemContainer;
 import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
+import com.michael.core.context.SecurityContext;
 import com.michael.core.hibernate.validator.ValidatorUtils;
 import com.michael.core.pager.PageVo;
 import com.michael.poi.core.Context;
@@ -148,6 +149,11 @@ public class GroupServiceImpl implements GroupService, BeanWrapCallback<Group, G
         return BeanWrapBuilder.newInstance()
                 .setCallback(this)
                 .wrap(group, GroupVo.class);
+    }
+
+    @Override
+    public void clear() {
+        groupDao.clear(SecurityContext.getEmpId());
     }
 
     public void importData(final String company, String[] attachmentIds) {

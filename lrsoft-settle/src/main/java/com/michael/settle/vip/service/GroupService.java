@@ -75,4 +75,9 @@ public interface GroupService {
      * @return 团队信息
      */
     GroupVo findByCode(String code);
+
+    /**
+     * 清空所有的团队数据
+     */
+    void clear();
 }
