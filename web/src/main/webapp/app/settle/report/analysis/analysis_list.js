@@ -10,6 +10,8 @@
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, VipService, VipParam) {
         var defaults = {// 默认查询条件
+            orderBy: 'totalMoney',
+            reverse: true,
             occurDate: new Date().getTime()
         };
 
@@ -30,7 +32,7 @@
 
         // 查询数据
         $scope.query = function () {
-            var param = angular.extend({}, {start: this.start, limit: this.limit}, $scope.condition);
+            var param = angular.extend({}, $scope.condition);
             if (!param.occurDate) {
                 AlertFactory.error('请选择需要统计的时间段!');
                 return;
@@ -116,6 +118,16 @@
             o.start = null;
             o.limit = null;
             window.open(CommonUtils.contextPathURL('/settle/report/groupBonus/export?' + encodeURI(encodeURI($.param(o)))));
+        };
+
+        $scope.order = function (key) {
+            if ($scope.condition.orderBy == key) {
+                $scope.condition.reverse = !$scope.condition.reverse;
+            } else {
+                $scope.condition.orderBy = key;
+                $scope.condition.reverse = false;
+            }
+            $scope.query();
         };
 
         $scope.query();

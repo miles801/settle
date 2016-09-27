@@ -10,6 +10,7 @@ import com.michael.core.beans.BeanWrapCallback;
 import com.michael.core.context.SecurityContext;
 import com.michael.core.hibernate.HibernateUtils;
 import com.michael.core.hibernate.validator.ValidatorUtils;
+import com.michael.core.pager.Order;
 import com.michael.core.pager.PageVo;
 import com.michael.core.pager.Pager;
 import com.michael.poi.core.Context;
@@ -335,14 +336,19 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
     @Override
     public List<Map<String, Object>> analysis(final Map<String, Object> params) {
         String sql = "SELECT " +
-                "v.company,v.groupCode,v.vipCounts,v.normalCounts,v.assignCounts,b.totalMoney,b.fee,b.commission,b.stepPercent,b.taxServerFee,b.payMoney,b.percent,b.outofTax,b.tax,b.occurDate,b.description " +
+                "v.company,v.groupCode,v.groupName,v.vipCounts,v.normalCounts,v.assignCounts,b.totalMoney,b.fee,b.commission,b.stepPercent,b.taxServerFee,b.payMoney,b.percent,b.outofTax,b.tax,b.occurDate,b.description " +
                 "FROM settle_group_vip v left join " +
                 "settle_group_bonus b on v.company=b.company where v.groupCode=b.groupCode and b.occurDate between ? and ? and v.creatorId=? ";
         final String company = (String) params.get("company");
         if (StringUtils.isNotEmpty(company)) {
             sql += " and company=? ";
         }
-        sql += "order by totalMoney desc";
+        if (Pager.getOrder() != null && Pager.getOrder().hasNext()) {
+            Order order = Pager.getOrder().next();
+            sql += " order by " + order.getName() + (order.isReverse() ? " desc " : " asc ");
+        } else {
+            sql += " order by totalMoney desc";
+        }
         List<Map<String, Object>> o = vipDao.sqlQuery(sql, new ArrayList<Object>() {{
             add(new Date(Long.parseLong(params.get("occurDate1").toString())));
             add(new Date(Long.parseLong(params.get("occurDate2").toString())));

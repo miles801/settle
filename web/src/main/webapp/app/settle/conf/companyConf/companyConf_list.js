@@ -109,5 +109,25 @@
             window.open(CommonUtils.contextPathURL('/settle/conf/companyConf/export?' + encodeURI(encodeURI($.param(o)))));
         };
 
+
+        var initTab = function () {
+            // 删除之前的
+            $(window.parent.document.body).find('ul.nav-tabs>li:gt(0),div.tab-content>iframe:gt(0)').remove();
+
+            CommonUtils.addTab({
+                title: '阶梯比例',
+                canClose: false,
+                active: false,
+                url: '/settle/conf/stepPercent'
+            });
+            CommonUtils.addTab({
+                title: '模板映射',
+                canClose: false,
+                active: false,
+                url: '/settle/mapping/mapping'
+            });
+        };
+
+        initTab();
     });
 })(window, angular, jQuery);
