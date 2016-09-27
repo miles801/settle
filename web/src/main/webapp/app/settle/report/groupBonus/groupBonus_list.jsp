@@ -65,6 +65,7 @@
                     <span>团队佣金列表</span>
                 </div>
                 <span class="header-button">
+                    <a type="button" class="btn btn-green btn-min" ng-click="exportData();"> 导出 </a>
                 </span>
             </div>
             <div class="block-content">
@@ -74,18 +75,62 @@
                             <thead class="table-header">
                             <tr>
                                 <td class="width-min">序号</td>
-                                <td>团队编号</td>
-                                <td>团队名称</td>
                                 <td>文交所</td>
-                                <td>成交额</td>
-                                <td>交易手续费</td>
-                                <td>标准佣金</td>
-                                <td>阶梯比例</td>
-                                <td>含税服务费</td>
-                                <td>设定比例</td>
-                                <td>支付金额</td>
-                                <td>除税支付金额</td>
-                                <td>税金</td>
+                                <td>团队名称</td>
+                                <td class="cp" ng-click="order('totalMoney');">成交额
+                                    <span ng-show="condition.orderBy=='totalMoney'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('fee');">交易手续费
+                                    <span ng-show="condition.orderBy=='fee'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('commission');">标准佣金
+                                    <span ng-show="condition.orderBy=='commission'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('stepPercent');">阶梯比例
+                                    <span ng-show="condition.orderBy=='stepPercent'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('taxServerFee');">含税服务费
+                                    <span ng-show="condition.orderBy=='taxServerFee'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('percent');">设定比例
+                                    <span ng-show="condition.orderBy=='percent'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('payMoney');">支付金额
+                                    <span ng-show="condition.orderBy=='payMoney'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('outofTax');">除税支付金额
+                                    <span ng-show="condition.orderBy=='outofTax'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('tax');">税金
+                                    <span ng-show="condition.orderBy=='tax'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
                                 <td>统计时间</td>
                                 <td>备注</td>
                                 <td>操作</td>
@@ -93,15 +138,14 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="16" class="text-center">没有查询到数据！</td>
+                                <td colspan="15" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td bo-text="pager.start+$index+1"></td>
-                                <td>
-                                    <a ng-click="view(foo.id)" bo-text="foo.groupCode" class="cp" title="点击查看详情"></a>
-                                </td>
-                                <td bo-text="foo.groupName"></td>
                                 <td bo-text="foo.companyName"></td>
+                                <td>
+                                    <a ng-click="view(foo.id)" bo-text="foo.groupName" class="cp" title="点击查看详情"></a>
+                                </td>
                                 <td bo-text="foo.totalMoney|number"></td>
                                 <td bo-text="foo.fee|number"></td>
                                 <td bo-text="foo.commission"></td>

@@ -216,8 +216,8 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
         // 创建团队佣金数据
         logger.info("******** 2. 团队佣金 ********");
-        String sql2 = "SELECT b.company ,b.groupCode,sum(b.money) money,sum(b.fee) fee FROM " +
-                "settle_business b where b.creatorId=? group by b.company,b.groupCode";
+        String sql2 = "SELECT b.company ,b.groupCode,b.groupName,sum(b.money) money,sum(b.fee) fee FROM " +
+                "settle_business b where b.creatorId=? group by b.company,b.groupCode,b.groupName";
         List<Map<String, Object>> gb = vipDao.sqlQuery(sql2, new ArrayList<Object>() {{
             add(SecurityContext.getEmpId());
         }});
@@ -229,9 +229,6 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             String company = foo.get("company").toString();
             String companyName = ParameterContainer.getInstance().getSystemName(Params.COMPANY, company);
             String groupCode = foo.get("groupCode").toString();
-            if (StringUtils.isEmpty(groupCode)) {
-                groupCode = "默认团队";
-            }
             BigDecimal moneyBD = (BigDecimal) foo.get("money");
             Double money = new BigDecimal(moneyBD == null ? 0D : Double.parseDouble(moneyBD.toString())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
             BigDecimal feeBD = (BigDecimal) foo.get("fee");
@@ -239,7 +236,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             GroupBonus bonus = new GroupBonus();
             bonus.setCompany(company);
             bonus.setGroupCode(groupCode);
-            bonus.setGroupName(groupCode);
+            bonus.setGroupName((String) foo.get("groupName"));
             bonus.setTotalMoney(money); // 成交额
 
             bonus.setFee(fee);          // 手续费
@@ -250,7 +247,17 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             }
             Assert.notNull(conf, "报表生成失败!文交所[" + company + "]所对应的各项系数未配置!");
             // 标准佣金
-            bonus.setCommission(new BigDecimal(fee * conf.getCommission()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+            String commission = conf.getCommission();
+            Double c = null;
+            if (commission.matches("\\d+(\\.\\d+)?")) {
+                c = fee * Double.parseDouble(commission);
+            } else if (commission.matches("\\d+/\\d+")) {
+                String[] tmp = commission.split("/");
+                c = fee * Integer.parseInt(tmp[0]) / Integer.parseInt(tmp[1]);
+            } else {
+                Assert.isTrue(false, "不合法的标准佣金配置：" + commission);
+            }
+            bonus.setCommission(new BigDecimal(c).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
             // 阶梯比例
             List<StepPercent> percents = percentMap.get(company);
             if (percents == null) {

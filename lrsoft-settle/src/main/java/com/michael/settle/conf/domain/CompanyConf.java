@@ -23,8 +23,8 @@ public class CompanyConf extends CommonDomain {
 
     @ApiField(value = "标准佣金")
     @NotNull
-    @Column(name = "commission", nullable = false)
-    private Double commission;
+    @Column(name = "commission", nullable = false, length = 10)
+    private String commission;
 
     @ApiField(value = "设定比例")
     @NotNull
@@ -45,12 +45,12 @@ public class CompanyConf extends CommonDomain {
         return this.company;
     }
 
-    public void setCommission(Double commission) {
-        this.commission = commission;
+    public String getCommission() {
+        return commission;
     }
 
-    public Double getCommission() {
-        return this.commission;
+    public void setCommission(String commission) {
+        this.commission = commission;
     }
 
     public void setPercent(Double percent) {

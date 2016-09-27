@@ -118,7 +118,7 @@ public class GroupBonusCtrl extends BaseController {
     // 导出数据
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public String export(HttpServletRequest request, HttpServletResponse response) {
-        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM"))
                 .create();
         GroupBonusBo bo = GsonUtils.wrapDataToEntity(request, GroupBonusBo.class);
         List<GroupBonusVo> data = groupBonusService.query(bo);
