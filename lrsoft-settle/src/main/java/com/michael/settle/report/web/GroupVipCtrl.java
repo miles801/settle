@@ -118,7 +118,7 @@ public class GroupVipCtrl extends BaseController {
     // 导出数据
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public String export(HttpServletRequest request, HttpServletResponse response) {
-        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM"))
                 .create();
         GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
         List<GroupVipVo> data = groupVipService.query(bo);

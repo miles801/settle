@@ -108,6 +108,13 @@ public class HibernateDaoHelper {
                 dynamicDataFilter.addFilterCondition(criteria, filterName, fieldName, filterFieldType);
             }
         }
+        //设置排序
+        OrderNode orderNode = Pager.getOrder();
+        while (orderNode != null && orderNode.hasNext()) {
+            com.michael.core.pager.Order order = orderNode.next();
+            String propertyName = order.getName();
+            criteria.addOrder(order.isReverse() ? Order.desc(propertyName) : Order.asc(propertyName));
+        }
         return criteria;
     }
 

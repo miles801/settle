@@ -9,7 +9,10 @@
         'settle.report.groupVip'
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, GroupVipService, GroupVipParam) {
-        var defaults = {}; // 默认查询条件
+        var defaults = {    // 默认查询条件
+            orderBy: 'vipCounts',
+            reverse: true
+        };
 
         $scope.condition = angular.extend({}, defaults);
 
@@ -114,5 +117,15 @@
             window.open(CommonUtils.contextPathURL('/settle/report/groupVip/export?' + encodeURI(encodeURI($.param(o)))));
         };
 
+
+        $scope.order = function (key) {
+            if ($scope.condition.orderBy == key) {
+                $scope.condition.reverse = !$scope.condition.reverse;
+            } else {
+                $scope.condition.orderBy = key;
+                $scope.condition.reverse = false;
+            }
+            $scope.query();
+        }
     });
 })(window, angular, jQuery);

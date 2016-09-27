@@ -65,6 +65,7 @@
                     <span>团队会员列表</span>
                 </div>
                 <span class="header-button">
+                        <a type="button" class="btn btn-green btn-min" ng-click="exportData();"> 导出 </a>
                 </span>
             </div>
             <div class="block-content">
@@ -75,19 +76,54 @@
                             <tr>
                                 <td class="width-min">序号</td>
                                 <td>文交所</td>
-                                <td>团队名称</td>
-                                <td>交易商数量</td>
-                                <td>正常数量</td>
-                                <td>其他数量</td>
-                                <td>已签约数量</td>
-                                <td>未签约数量</td>
-                                <td>统计时间</td>
+                                <td class="cp" ng-click="order('groupName');">团队名称
+                                    <span ng-show="condition.orderBy=='groupName'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('vipCounts');">交易商数量
+                                    <span ng-show="condition.orderBy=='vipCounts'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('normalCounts');">正常数量
+                                    <span ng-show="condition.orderBy=='normalCounts'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('otherCounts');">其他数量
+                                    <span ng-show="condition.orderBy=='otherCounts'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('assignCounts');">签约数量
+                                    <span ng-show="condition.orderBy=='assignCounts'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('notAssignCounts');">未签约数量
+                                    <span ng-show="condition.orderBy=='notAssignCounts'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
+                                <td class="cp" ng-click="order('occurDate');">统计时间
+                                    <span ng-show="condition.orderBy=='occurDate'">
+                                        <span ng-show="condition.reverse">▼</span>
+                                        <span ng-show="!condition.reverse">▲</span>
+                                    </span>
+                                </td>
                                 <td>操作</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="11" class="text-center">没有查询到数据！</td>
+                                <td colspan="10" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td bo-text="pager.start+$index+1"></td>
@@ -116,8 +152,6 @@
     <div class="list-pagination" eccrm-page="pager"></div>
 </div>
 </body>
-<script type="text/javascript"
-        src="<%=contextPath%>/app/settle/report/groupVip/groupVip.js"></script>
-<script type="text/javascript"
-        src="<%=contextPath%>/app/settle/report/groupVip/groupVip_list.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/settle/report/groupVip/groupVip.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/settle/report/groupVip/groupVip_list.js"></script>
 </html>

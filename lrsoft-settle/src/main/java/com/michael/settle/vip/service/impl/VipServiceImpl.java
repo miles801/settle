@@ -169,10 +169,10 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         Assert.isTrue(total != null && total > 0, "报表生成失败!当前用户还未导入任何会员数据!");
 
         // 获取统计结果
-        String sql = "SELECT v.company company,  v.groupId groupId, count(id) total, \n" +
+        String sql = "SELECT v.company company,  v.groupId groupId,g.name as groupName, count(v.id) total, \n" +
                 "sum(case v.assignStatus when '1' then 1 else 0 end)  assignCounts,\n" +
                 "sum(case v.status when '1' then 1 else 0 end)  normalCounts \n" +
-                "FROM settle_vip v where v.creatorId=? group by v.company,v.groupId ";
+                "FROM settle_vip v left join settle_group g on v.groupId=g.code and v.creatorId=? group by v.company,v.groupId ";
         List<Map<String, Object>> o = vipDao.sqlQuery(sql, new ArrayList<Object>() {{
             add(SecurityContext.getEmpId());
         }});
@@ -184,8 +184,12 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         for (Map<String, Object> foo : o) {
             GroupVip vip = new GroupVip();
             vip.setCompany(foo.get("company").toString());
-            vip.setGroupName(foo.get("groupId").toString());
             vip.setGroupCode(foo.get("groupId").toString());
+            String groupName = (String) foo.get("groupName");
+            if (StringUtils.isEmpty(groupName)) {
+                groupName = vip.getGroupCode();
+            }
+            vip.setGroupName(groupName);
             // 会员数量
             BigInteger vipCounts = (BigInteger) foo.get("total");
             vip.setVipCounts(vipCounts == null ? 0 : Integer.parseInt(vipCounts.toString()));
