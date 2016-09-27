@@ -71,6 +71,13 @@ public class BusinessDaoImpl extends HibernateDaoHelper implements BusinessDao {
         return (Business) getSession().get(Business.class, id);
     }
 
+    @Override
+    public void clear(String empId) {
+        Assert.hasText(empId, "操作失败!员工ID不能为空!");
+        getSession().createQuery("delete from " + Business.class.getName() + " g where g.creatorId=?")
+                .setParameter(0, empId)
+                .executeUpdate();
+    }
 
     private void initCriteria(Criteria criteria, BusinessBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");

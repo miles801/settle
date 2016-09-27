@@ -221,7 +221,7 @@ public class GroupCtrl extends BaseController {
         GsonUtils.printSuccess(response);
     }
 
-    // 执行导入
+    // 清空所有的团队数据
     @ResponseBody
     @RequestMapping(value = "/clear", method = RequestMethod.POST)
     public void clear(HttpServletRequest request, HttpServletResponse response) {

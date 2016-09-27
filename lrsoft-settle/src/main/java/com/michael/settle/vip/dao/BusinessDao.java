@@ -39,4 +39,5 @@ public interface BusinessDao {
      */
     void delete(Business business);
 
+    void clear(String empId);
 }

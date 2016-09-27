@@ -63,7 +63,6 @@
                 <span class="header-button">
                     <a type="button" class="btn btn-green btn-min" ng-click="add();"> 新建 </a>
                     <a type="button" class="btn btn-green btn-min" ng-click="clear();"> 清空 </a>
-                    <a type="button" class="btn btn-green btn-min" ng-click="importData();"> 导入团队 </a>
                 </span>
             </div>
             <div class="block-content">

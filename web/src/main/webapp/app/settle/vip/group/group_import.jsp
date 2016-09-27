@@ -44,8 +44,6 @@
 
                     </div>
                     <div class="button-row">
-                        <a class="btn" ng-href="<%=contextPath%>/settle/vip/group/template" target="_blank"
-                           style="width: 160px;height: 50px;line-height: 50px;">下载数据模板</a>
                         <button class="btn" ng-click="importData();" ng-disabled="!canImport"
                                 style="margin-left:80px;width: 150px;">执行导入
                         </button>

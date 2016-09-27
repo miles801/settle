@@ -67,4 +67,7 @@ public interface BusinessService {
      * @param attachmentIds 上传的附件列表
      */
     void importData(String company, Long date, String[] attachmentIds);
+
+    void clear();
+
 }

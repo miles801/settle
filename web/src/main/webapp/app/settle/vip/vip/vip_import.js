@@ -48,9 +48,30 @@
                 });
             },
             swfOption: {
-                fileTypeExts: '*.xls;*.xlsx'
+                fileType: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                fileTypeExts: '*.xls;*.xlsx;'
             }
         };
+
+        var initTab = function () {
+            // 删除之前的
+            $(window.parent.document.body).find('ul.nav-tabs>li:gt(0),div.tab-content>iframe:gt(0)').remove();
+
+            CommonUtils.addTab({
+                title: '导入团队',
+                canClose: false,
+                active: false,
+                url: '/settle/vip/group/import'
+            });
+            CommonUtils.addTab({
+                title: '导入交易',
+                canClose: false,
+                active: false,
+                url: '/settle/vip/business/import'
+            });
+        };
+
+        initTab();
 
     });
 })(window, angular, jQuery);

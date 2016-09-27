@@ -79,14 +79,6 @@
                 url: '/settle/vip/group/detail?id=' + id
             });
         };
-        // 导入团队
-        $scope.importData = function (id) {
-            CommonUtils.addTab({
-                title: '查看团队',
-                url: '/settle/vip/group/import',
-                onUpdate: $scope.query
-            });
-        };
 
     });
 })(window, angular, jQuery);

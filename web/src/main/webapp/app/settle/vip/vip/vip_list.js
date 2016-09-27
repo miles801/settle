@@ -118,14 +118,6 @@
                 url: '/settle/vip/group/detail?code=' + code
             });
         };
-        // 导入会员
-        $scope.importData = function () {
-            CommonUtils.addTab({
-                title: '导入会员',
-                url: '/settle/vip/vip/import',
-                onUpdate: $scope.query
-            });
-        };
 
 
         // 导出数据
@@ -168,5 +160,26 @@
                 }
             });
         };
+
+        // 创建团队的列表
+        var initTab = function () {
+            // 删除之前的
+            $(window.parent.document.body).find('ul.nav-tabs>li:gt(0),div.tab-content>iframe:gt(0)').remove();
+
+            CommonUtils.addTab({
+                title: '团队',
+                canClose: false,
+                active: false,
+                url: '/settle/vip/group'
+            });
+            CommonUtils.addTab({
+                title: '交易',
+                canClose: false,
+                active: false,
+                url: '/settle/vip/business'
+            });
+        };
+
+        initTab();
     });
 })(window, angular, jQuery);

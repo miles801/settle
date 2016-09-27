@@ -39,7 +39,7 @@
                         </div>
                         <div class="col-2-half">
                             <input type="text" class="col-12" ng-model="date" name="date"
-                                   validate validate-required readonly eccrm-my97="{}"/>
+                                   validate validate-required readonly eccrm-my97="{dateFmt:'yyyy-MM'}"/>
                             <span class="add-on"><i class="icons icon clock" ng-click="date=null"></i></span>
                         </div>
                     </div>
@@ -53,8 +53,6 @@
 
                     </div>
                     <div class="button-row">
-                        <a class="btn" ng-href="<%=contextPath%>/settle/vip/business/template" target="_blank"
-                           style="width: 160px;height: 50px;line-height: 50px;">下载数据模板</a>
                         <button class="btn" ng-click="importData();" ng-disabled="!canImport"
                                 style="margin-left:80px;width: 150px;">执行导入
                         </button>

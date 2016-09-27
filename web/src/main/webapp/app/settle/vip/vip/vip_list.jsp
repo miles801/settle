@@ -91,7 +91,6 @@
                     <span>会员列表</span>
                 </div>
                 <span class="header-button">
-                        <a type="button" class="btn btn-green btn-min" ng-click="importData();"> 导入会员 </a>
                         <a type="button" class="btn btn-green btn-min" ng-click="clearAll();"> 清空 </a>
                         <a type="button" class="btn btn-green btn-min" ng-click="generateReport();"> 产生报表 </a>
                 </span>

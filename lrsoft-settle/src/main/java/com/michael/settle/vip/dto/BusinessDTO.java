@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @ImportConfig(file = "", startRow = 1)
 public class BusinessDTO implements DTO {
-    // 会员编号
+    // 交易商代码
     @Col(index = 0)
     private String vipCode;
     private String vipName;

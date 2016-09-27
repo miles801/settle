@@ -33,7 +33,7 @@
                     <div class="row float">
                         <div class="item w300">
                             <div class="form-label w100">
-                                <label>会员编号:</label>
+                                <label>交易商代码:</label>
                             </div>
                             <input type="text" class="w200" ng-model="condition.vipCode"
                                    maxlength="40"/>
@@ -78,9 +78,11 @@
                     <span>交易列表</span>
                 </div>
                 <span class="header-button">
-                        <a type="button" class="btn btn-green btn-min" ng-click="exportData();"
-                           ng-disabled="!pager.total" ng-cloak> 导出数据 </a>
-                    <a type="button" class="btn btn-green btn-min" ng-click="importData();"> 导入数据 </a>
+                    <a type="button" class="btn btn-green btn-min" ng-click="remove();" ng-cloak> 删除
+                        <span ng-if="items.length">({{items.length}})</span>
+                    </a>
+                    <a type="button" class="btn btn-green btn-min" ng-click="clear();" ng-cloak
+                       ng-disabled="!beans.total"> 清空 </a>
                 </span>
             </div>
             <div class="block-content">
@@ -89,30 +91,35 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-header">
                             <tr>
+                                <td class="width-min">
+                                    <div select-all-checkbox checkboxes="beans.data" selected-items="items"
+                                         anyone-selected="anyone"></div>
+                                </td>
                                 <td class="width-min">序号</td>
-                                <td style="width: 120px;">会员编号</td>
-                                <td style="width: 150px">团队编号</td>
                                 <td style="width: 120px;">文交所</td>
-                                <td style="width: 120px;">交易金额</td>
-                                <td style="width: 120px;">手续费</td>
-                                <td style="width: 120px;">交易时间</td>
+                                <td style="width: 120px;">交易商代码</td>
+                                <td style="width: 120px;">交易商名称</td>
+                                <td style="width: 150px">团队</td>
+                                <td style="width: 120px;">成交金额</td>
+                                <td style="width: 120px;">交易手续费</td>
                                 <td>备注</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="8" class="text-center">没有查询到数据！</td>
+                                <td colspan="9" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
+                                <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td bo-text="pager.start+$index+1"></td>
+                                <td bo-text="foo.companyName"></td>
                                 <td>
                                     <a ng-click="view(foo.id)" bo-text="foo.vipCode" class="cp" title="点击查看详情"></a>
                                 </td>
-                                <td bo-text="foo.groupCode"></td>
-                                <td bo-text="foo.companyName"></td>
+                                <td bo-text="foo.vipName"></td>
+                                <td bo-text="foo.groupName"></td>
                                 <td bo-text="foo.money"></td>
                                 <td bo-text="foo.fee"></td>
-                                <td bo-text="foo.businessTime|eccrmDate"></td>
                                 <td bo-text="foo.description"></td>
                             </tr>
                             </tbody>

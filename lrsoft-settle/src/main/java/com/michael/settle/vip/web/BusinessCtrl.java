@@ -205,4 +205,13 @@ public class BusinessCtrl extends BaseController {
         businessService.importData(company, date == null ? null : Long.parseLong(date), attachmentIds.split(","));
         GsonUtils.printSuccess(response);
     }
+
+
+    // 清空所有的团队数据
+    @ResponseBody
+    @RequestMapping(value = "/clear", method = RequestMethod.POST)
+    public void clear(HttpServletRequest request, HttpServletResponse response) {
+        businessService.clear();
+        GsonUtils.printSuccess(response);
+    }
 }

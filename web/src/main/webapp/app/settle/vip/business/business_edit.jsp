@@ -43,7 +43,7 @@
                     <div class="row float">
                         <div class="item w300">
                             <div class="form-label w100">
-                                <label>会员编号:</label>
+                                <label>交易商代码:</label>
                             </div>
                             <input type="text" class="w200" ng-model="beans.vipCode" validate validate-required
                                    maxlength="40"/>

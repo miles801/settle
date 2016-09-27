@@ -17,7 +17,7 @@ import java.util.Date;
 @Entity
 @Table(name = "settle_business")
 public class Business extends CommonDomain {
-    @ApiField(value = "会员编号")
+    @ApiField(value = "交易商代码")
     @NotNull
     @Column(name = "vipCode", nullable = false, length = 40)
     private String vipCode;
@@ -30,6 +30,10 @@ public class Business extends CommonDomain {
     @NotNull
     @Column(name = "groupCode", nullable = false, length = 40)
     private String groupCode;
+
+    @ApiField(value = "团队名称")
+    @Column(name = "groupName", length = 100)
+    private String groupName;
 
     @ApiField(value = "交易金额")
     @NotNull
@@ -58,6 +62,14 @@ public class Business extends CommonDomain {
     @ApiField("批次号")
     @Column(length = 20)
     private String batchNo;
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
 
     public String getVipName() {
         return vipName;

@@ -29,7 +29,6 @@
             }
             var promise = GroupService.importData({company: $scope.company, attachmentIds: ids.join(',')}, function () {
                 AlertFactory.success('导入成功!页面即将刷新!');
-                CommonUtils.addTab('update');
                 CommonUtils.delay(function () {
                     window.location.reload();
                 }, 2000);
@@ -51,7 +50,8 @@
                 });
             },
             swfOption: {
-                fileTypeExts: '*.xls;*.xlsx'
+                fileType: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                fileTypeExts: '*.xls;*.xlsx;'
             }
         };
 

@@ -7,6 +7,7 @@ import com.michael.base.parameter.service.ParameterContainer;
 import com.michael.core.SystemContainer;
 import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
+import com.michael.core.context.SecurityContext;
 import com.michael.core.hibernate.validator.ValidatorUtils;
 import com.michael.core.pager.PageVo;
 import com.michael.poi.core.Context;
@@ -20,6 +21,7 @@ import com.michael.settle.vip.bo.BusinessBo;
 import com.michael.settle.vip.dao.BusinessDao;
 import com.michael.settle.vip.dao.GroupDao;
 import com.michael.settle.vip.domain.Business;
+import com.michael.settle.vip.domain.Group;
 import com.michael.settle.vip.dto.BusinessDTO;
 import com.michael.settle.vip.service.BusinessService;
 import com.michael.settle.vip.vo.BusinessVo;
@@ -182,7 +184,8 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
             final Session session = sessionFactory.getCurrentSession();
             configuration.setPath(newFilePath);
             final String batchNo = new SimpleDateFormat("yyyyMMddHHmm").format(new Date()) + "-" + RandomUtils.generate(3);
-            final Map<String, String> nameMap = new HashMap<>();    // key为团队名称，value为团队编号
+            final Map<String, String> codeMap = new HashMap<>();    // key为团队名称，value为团队编号
+            final Map<String, String> nameMap = new HashMap<>();    // key为团队编号，value为团队名称
             configuration.setHandler(new Handler<BusinessDTO>() {
                 @Override
                 public void execute(BusinessDTO dto) {
@@ -199,13 +202,23 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
                     }
                     if (groupCode.matches("\\d+")) {
                         business.setGroupCode(groupCode);
+                        // 根据编号查询名称
+                        String groupName = nameMap.get(groupCode);
+                        if (StringUtils.isEmpty(groupName)) {
+                            Group group = groupDao.findByCode(groupCode);
+                            Assert.notNull(group, String.format("导入失败!文交所[%s]对应的团队编号[%s]在系统中还未注册!", company, groupCode));
+                            groupName = group.getName();
+                            nameMap.put(groupCode, groupName);
+                        }
+                        business.setGroupName(groupName);
                     } else {
-                        String code = nameMap.get(groupCode);
+                        String code = codeMap.get(groupCode);
                         if (StringUtils.isEmpty(code)) {// 根据名称查询编号
                             code = groupDao.findCode(company, groupCode);
                             Assert.hasText(code, String.format("导入失败!文交所[%s]对应的团队[%s]在系统中还未注册!", company, groupCode));
-                            nameMap.put(groupCode, code);
+                            codeMap.put(groupCode, code);
                         }
+                        business.setGroupName(groupCode);
                         business.setGroupCode(code);
                     }
                     // 交易时间
@@ -242,6 +255,12 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
             new File(newFilePath).delete();
 
         }
+    }
+
+
+    @Override
+    public void clear() {
+        businessDao.clear(SecurityContext.getEmpId());
     }
 
     @Override

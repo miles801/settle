@@ -14,8 +14,7 @@
         BusinessParam.company(function (o) {
             $scope.companys.push.apply($scope.companys, o);
         });
-        var now = new Date();
-        $scope.date = moment(now.getFullYear() + '-' + now.getMonth() + '-' + 1, 'YYYY-MM-DD').toDate().getTime();
+        $scope.date = new Date().getTime();
         // 导入数据
         $scope.importData = function () {
             var ids = $scope.fileUpload.getAttachment() || [];
@@ -27,13 +26,18 @@
                 AlertFactory.error('请选择本批次交易所属的文交所!');
                 return;
             }
+            var now = null;
+            if (typeof $scope.date === 'string') {
+                now = new Date($scope.date + '-01');
+            } else {
+                now = new Date($scope.date);
+            }
             var promise = BusinessService.importData({
                 attachmentIds: ids.join(','),
                 company: $scope.company,
-                date: new Date($scope.date).getTime()
+                date: now.getTime()
             }, function () {
                 AlertFactory.success('导入成功!页面即将刷新!');
-                CommonUtils.addTab('update');
                 CommonUtils.delay(function () {
                     window.location.reload();
                 }, 1500);
@@ -55,7 +59,8 @@
                 });
             },
             swfOption: {
-                fileTypeExts: '*.xls;*.xlsx'
+                fileType: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                fileTypeExts: '*.xls;*.xlsx;'
             }
         };
 

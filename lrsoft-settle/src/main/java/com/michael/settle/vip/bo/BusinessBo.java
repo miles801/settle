@@ -2,6 +2,8 @@ package com.michael.settle.vip.bo;
 
 import com.michael.core.hibernate.criteria.BO;
 import com.michael.core.hibernate.criteria.Condition;
+import com.michael.core.hibernate.criteria.LikeModel;
+import com.michael.core.hibernate.criteria.MatchModel;
 
 import java.util.Date;
 
@@ -9,13 +11,16 @@ import java.util.Date;
  * @author Michael
  */
 public class BusinessBo implements BO {
-    // 会员编号
+    // 交易商代码
     @Condition
     private String vipCode;
 
     // 团队编号
     @Condition
     private String groupCode;
+
+    @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
+    private String groupName;
 
     // 交易金额
     @Condition
@@ -39,6 +44,14 @@ public class BusinessBo implements BO {
 
     @Condition
     private String creatorId;
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
 
     public String getCreatorId() {
         return creatorId;
