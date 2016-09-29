@@ -126,6 +126,7 @@
                 $scope.condition.reverse = false;
             }
             $scope.query();
-        }
+        };
+
     });
 })(window, angular, jQuery);
