@@ -6,11 +6,11 @@
     var app = angular.module('settle.report.vip', [
         'eccrm.angular',
         'eccrm.angularstrap',
-        'settle.vip.vip'
+        'settle.report.groupVip'
     ]);
-    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, VipService, VipParam) {
+    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, GroupVipService, GroupVipParam) {
         var defaults = {// 默认查询条件
-            orderBy: 'totalMoney',
+            orderBy: 'assignCounts',
             reverse: true,
             occurDate: new Date().getTime()
         };
@@ -25,26 +25,19 @@
 
 
         // 参数：文交所
-        $scope.companys = [{name: '全部'}];
-        VipParam.company(function (o) {
+        $scope.companys = [{name: '请选择...'}];
+        GroupVipParam.company(function (o) {
             $scope.companys.push.apply($scope.companys, o);
         });
 
         // 查询数据
         $scope.query = function () {
-            var param = angular.extend({}, $scope.condition);
-            if (!param.occurDate) {
-                AlertFactory.error('请选择需要统计的时间段!');
+            if (!$scope.condition.company) {
+                AlertFactory.warning('请选择文交所!');
                 return;
             }
-            var d = moment(param.occurDate);
-            param.occurDate1 = new Date(d.format('YYYY-MM-01')).getTime();
-            d.add(1, 'M');
-            param.occurDate2 = new Date(d.format('YYYY-MM-01')).getTime();
-            param.occurDate = null;
             $scope.beans = [];
-            var promise = VipService.analysis(param, function (data) {
-                param = null;
+            var promise = GroupVipService.analysis1($scope.condition, function (data) {
                 $scope.beans = data.data || [];
 
                 // 设置文交所名称
@@ -57,54 +50,6 @@
                 });
             });
             CommonUtils.loading(promise, 'Loading...');
-        };
-
-        // 删除或批量删除
-        $scope.remove = function (id) {
-            if (!id) {
-                var ids = [];
-                angular.forEach($scope.items || [], function (o) {
-                    ids.push(o.id);
-                });
-                id = ids.join(',');
-            }
-            ModalFactory.confirm({
-                scope: $scope,
-                content: '<span class="text-danger">数据一旦删除将不可恢复，请确认!</span>',
-                callback: function () {
-                    var promise = GroupBonusService.deleteByIds({ids: id}, function () {
-                        AlertFactory.success('删除成功!');
-                        $scope.query();
-                    });
-                    CommonUtils.loading((promise));
-                }
-            });
-        };
-
-        // 新增
-        $scope.add = function () {
-            CommonUtils.addTab({
-                title: '新增团队佣金',
-                url: '/settle/report/groupBonus/add',
-                onUpdate: $scope.query
-            });
-        };
-
-        // 更新
-        $scope.modify = function (id) {
-            CommonUtils.addTab({
-                title: '更新团队佣金',
-                url: '/settle/report/groupBonus/modify?id=' + id,
-                onUpdate: $scope.query
-            });
-        };
-
-        // 查看明细
-        $scope.view = function (id) {
-            CommonUtils.addTab({
-                title: '查看团队佣金',
-                url: '/settle/report/groupBonus/detail?id=' + id
-            });
         };
 
 
@@ -129,9 +74,6 @@
             }
             $scope.query();
         };
-
-        $scope.query();
-
     });
 
 })(window, angular, jQuery);

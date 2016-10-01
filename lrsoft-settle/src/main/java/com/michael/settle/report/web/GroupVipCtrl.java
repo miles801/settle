@@ -14,6 +14,7 @@ import com.michael.settle.report.service.GroupVipService;
 import com.michael.settle.report.vo.GroupVipVo;
 import com.michael.utils.gson.DateStringConverter;
 import com.michael.utils.gson.GsonUtils;
+import com.michael.utils.string.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -32,6 +33,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael
@@ -184,5 +186,29 @@ public class GroupVipCtrl extends BaseController {
         GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
         int total = groupVipService.sendSms(bo);
         GsonUtils.printData(response, total);
+    }
+
+    // 分析1
+    @RequestMapping(value = "/analysis1", method = RequestMethod.POST)
+    @ResponseBody
+    public void analysis1(HttpServletRequest request, HttpServletResponse response) {
+        List<Map<String, Object>> data = groupVipService.analysis1(request.getParameter("company"));
+        GsonUtils.printData(response, data);
+    }
+
+    // 分析2
+    @RequestMapping(value = "/analysis2", method = RequestMethod.POST)
+    @ResponseBody
+    public void analysis2(HttpServletRequest request, HttpServletResponse response) {
+        List<Map<String, Object>> data = groupVipService.analysis2(request.getParameter("company"));
+        GsonUtils.printData(response, data);
+    }
+
+    // 分析3
+    @RequestMapping(value = "/analysis3", method = RequestMethod.POST)
+    @ResponseBody
+    public void analysis3(HttpServletRequest request, HttpServletResponse response) {
+        List<Map<String, Object>> data = groupVipService.analysis3(StringUtils.decodeByUTF8(request.getParameter("groupName")));
+        GsonUtils.printData(response, data);
     }
 }

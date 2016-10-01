@@ -6,6 +6,7 @@ import com.michael.settle.report.domain.GroupVip;
 import com.michael.settle.report.vo.GroupVipVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael
@@ -52,4 +53,31 @@ public interface GroupVipService {
      * 设置返佣
      */
     void setBonus(GroupVipBo bo);
+
+    /**
+     * company:
+     * companyName:
+     * groupCode:
+     * groupName:
+     * signCounts:签约增减
+     * businessCounts：交易增减
+     * payCounts：佣金增减
+     *
+     * @param company 文交所
+     */
+    List<Map<String, Object>> analysis1(String company);
+
+    /**
+     * 同一平台当月不同团队的情况
+     *
+     * @param company 文交所
+     */
+    List<Map<String, Object>> analysis2(String company);
+
+    /**
+     * 不同平台，统一团队当月情况
+     *
+     * @param groupName 团队名称
+     */
+    List<Map<String, Object>> analysis3(String groupName);
 }

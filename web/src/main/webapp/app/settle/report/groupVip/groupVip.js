@@ -44,7 +44,17 @@
             setBonus: {method: 'POST', params: {method: 'bonus'}, isArray: false},
 
             // 发送短信
-            sendSms: {method: 'POST', params: {method: 'sendSms'}, isArray: false}
+            sendSms: {method: 'POST', params: {method: 'sendSms'}, isArray: false},
+            // 分析1
+            analysis1: {
+                method: 'POST', params: {
+                    method: 'analysis1', company: '@company', orderBy: '@orderBy', reverse: '@reverse'
+                }, isArray: false
+            },
+            // 分析2
+            analysis2: {method: 'POST', params: {method: 'analysis2', company: '@company'}, isArray: false},
+            // 分析3
+            analysis3: {method: 'POST', params: {method: 'analysis3', groupName: '@groupName'}, isArray: false}
         })
     });
 

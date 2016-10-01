@@ -5,7 +5,9 @@ import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
 import com.michael.core.hibernate.HibernateUtils;
 import com.michael.core.hibernate.validator.ValidatorUtils;
+import com.michael.core.pager.Order;
 import com.michael.core.pager.PageVo;
+import com.michael.core.pager.Pager;
 import com.michael.settle.conf.service.BonusUtils;
 import com.michael.settle.report.bo.GroupVipBo;
 import com.michael.settle.report.dao.GroupVipDao;
@@ -14,6 +16,7 @@ import com.michael.settle.report.service.GroupVipService;
 import com.michael.settle.report.vo.GroupVipVo;
 import com.michael.settle.vip.bo.ContactBo;
 import com.michael.settle.vip.dao.ContactDao;
+import com.michael.settle.vip.dao.VipDao;
 import com.michael.settle.vip.domain.Contact;
 import com.michael.settle.vip.service.Params;
 import com.michael.utils.string.StringUtils;
@@ -23,10 +26,7 @@ import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Michael
@@ -38,6 +38,9 @@ public class GroupVipServiceImpl implements GroupVipService, BeanWrapCallback<Gr
 
     @Resource
     private ContactDao contactDao;
+
+    @Resource
+    private VipDao vipDao;
 
     @Override
     public String save(GroupVip groupVip) {
@@ -175,6 +178,42 @@ public class GroupVipServiceImpl implements GroupVipService, BeanWrapCallback<Gr
                 vip.setBonus(true);
             }
         }
+    }
+
+    @Override
+    public List<Map<String, Object>> analysis1(final String company) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String sql = "select t1.company company, t1.groupName groupName," +
+                "t2.assignCounts-t1.assignCounts assignCounts, " +
+                "t2.businessCounts-t1.businessCounts businessCounts, " +
+                "t2.payMoney-t1.payMoney payMoney " +
+                "from settle_group_vip t1 " +
+                " join settle_group_vip t2 on month(t1.occurDate)+1  = month(t2.occurDate) " +
+                " where month(t1.occurDate)=? and year(t1.occurDate)=? and t1.company=? " +
+                " group by t1.company, t1.groupName ";
+        if (Pager.getOrder() != null && Pager.getOrder().hasNext()) {
+            Order order = Pager.getOrder().next();
+            sql += " order by " + order.getName() + (order.isReverse() ? " desc " : " asc ");
+        } else {
+            sql += " order by assignCounts desc";
+        }
+        List<Map<String, Object>> o = vipDao.sqlQuery(sql, new ArrayList<Object>() {{
+            add(calendar.get(Calendar.MONTH));
+            add(calendar.get(Calendar.YEAR));
+            add(company);
+        }});
+        return o;
+    }
+
+    @Override
+    public List<Map<String, Object>> analysis2(final String company) {
+        return null;
+    }
+
+    @Override
+    public List<Map<String, Object>> analysis3(final String groupName) {
+        return null;
     }
 
     @Override

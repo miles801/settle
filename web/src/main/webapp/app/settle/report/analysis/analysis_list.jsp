@@ -25,7 +25,6 @@
         <div class="block">
             <div class="block-header">
                     <span class="header-button">
-                        <a type="button" class="btn btn-green btn-min" ng-click="reset();"> 重置 </a>
                         <a type="button" class="btn btn-green btn-min" ng-click="query();"> 查询 </a>
                     </span>
             </div>
@@ -39,20 +38,6 @@
                             <select class="w200" ng-model="condition.company"
                                     ng-options="foo.value as foo.name for foo in companys"
                                     ng-change="query();"> </select>
-                        </div>
-                        <div class="item w300">
-                            <div class="form-label w100">
-                                <label>统计时间:</label>
-                            </div>
-                            <div class="w200 pr">
-                                <input type="text" class="w200" ng-model="condition.occurDate"
-                                       eccrm-my97="{dateFmt:'yyyy-MM'}" readonly placeholder="点击选择日期"
-                                       ng-change="query();"/>
-                                <span class="add-on">
-                                    <i class="icons icon clock" ng-click="condition.occurDate=null"
-                                       title="点击清除日期"></i>
-                                </span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -75,113 +60,43 @@
                             <thead class="table-header">
                             <tr>
                                 <td class="width-min">序号</td>
-                                <td>文交所</td>
                                 <td>团队名称</td>
-                                <td class="cp" ng-click="order('vipCounts');">交易数量
-                                    <span ng-show="condition.orderBy=='vipCounts'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
-                                    </span>
-                                </td>
-                                <td class="cp" ng-click="order('normalCounts');">正常交易
-                                    <span ng-show="condition.orderBy=='normalCounts'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
-                                    </span>
-                                </td>
-                                <td class="cp" ng-click="order('assignCounts');">已签约
+                                <td class="cp" ng-click="order('assignCounts');">签约数量增幅
                                     <span ng-show="condition.orderBy=='assignCounts'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
-                                <td class="cp" ng-click="order('assignCounts');">有交易
-                                    <span ng-show="condition.orderBy=='assignCounts'">
+                                <td class="cp" ng-click="order('businessCounts');">活跃会员增幅
+                                    <span ng-show="condition.orderBy=='businessCounts'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
-                                <td class="cp" ng-click="order('totalMoney');">成交额
-                                    <span ng-show="condition.orderBy=='totalMoney'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
-                                    </span>
-                                </td>
-                                <td class="cp" ng-click="order('fee');">交易手续费
-                                    <span ng-show="condition.orderBy=='fee'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
-                                    </span>
-                                </td>
-                                <td class="cp" ng-click="order('commission');">标准佣金
-                                    <span ng-show="condition.orderBy=='commission'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
-                                    </span>
-                                </td>
-                                <td class="cp" ng-click="order('stepPercent');">阶梯比例
-                                    <span ng-show="condition.orderBy=='stepPercent'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
-                                    </span>
-                                </td>
-                                <td class="cp" ng-click="order('taxServerFee');">含税服务费
-                                    <span ng-show="condition.orderBy=='taxServerFee'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
-                                    </span>
-                                </td>
-                                <td class="cp" ng-click="order('percent');">设定比例
-                                    <span ng-show="condition.orderBy=='percent'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
-                                    </span>
-                                </td>
-                                <td class="cp" ng-click="order('payMoney');">支付金额
+                                <td class="cp" ng-click="order('payMoney');">支付佣金增幅
                                     <span ng-show="condition.orderBy=='payMoney'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
-                                <td class="cp" ng-click="order('outofTax');">除税支付金额
-                                    <span ng-show="condition.orderBy=='outofTax'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
-                                    </span>
-                                </td>
-                                <td class="cp" ng-click="order('tax');">税金
-                                    <span ng-show="condition.orderBy=='tax'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
-                                    </span>
-                                </td>
-                                <td>时间</td>
-                                <td>备注</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans.length">
-                                <td colspan="18" class="text-center">没有查询到数据！</td>
+                                <td colspan="5" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans" ng-cloak>
                                 <td bo-text="pager.start+$index+1"></td>
-                                <td bo-text="foo.companyName"></td>
                                 <td bo-text="foo.groupName"></td>
-                                <td bo-text="foo.vipCounts"></td>
-                                <td bo-text="foo.normalCounts"></td>
-                                <td bo-text="foo.assignCounts"></td>
-                                <td bo-text="foo.assignCounts"></td>
-                                <td bo-text="foo.totalMoney|number"></td>
-                                <td bo-text="foo.fee|number"></td>
-                                <td bo-text="foo.commission"></td>
-                                <td bo-text="foo.stepPercent"></td>
-                                <td bo-text="foo.taxServerFee"></td>
-                                <td bo-text="foo.percent"></td>
-                                <td bo-text="foo.payMoney|number"></td>
-                                <td bo-text="foo.outofTax|number"></td>
-                                <td bo-text="foo.tax|number"></td>
-                                <td bo-text="foo.occurDate|date:'yyyy-MM'"></td>
-                                <td bo-text="foo.description"></td>
+                                <td>
+                                    <span bo-text="foo.assignCounts"></span>
+                                </td>
+                                <td>
+                                    <span bo-text="foo.businessCounts"></span>
+                                </td>
+                                <td>
+                                    <span bo-text="foo.payMoney"></span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -192,6 +107,6 @@
     </div>
 </div>
 </body>
-<script type="text/javascript" src="<%=contextPath%>/app/settle/vip/vip/vip.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/settle/report/groupVip/groupVip.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/settle/report/analysis/analysis_list.js"></script>
 </html>

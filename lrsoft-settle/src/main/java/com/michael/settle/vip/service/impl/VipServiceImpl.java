@@ -27,20 +27,16 @@ import com.michael.settle.mapping.dao.MappingDao;
 import com.michael.settle.report.dao.BusinessLogDao;
 import com.michael.settle.report.dao.GroupBonusDao;
 import com.michael.settle.report.dao.GroupVipDao;
-import com.michael.settle.report.domain.BusinessLog;
 import com.michael.settle.report.domain.GroupVip;
-import com.michael.settle.vip.bo.BusinessBo;
 import com.michael.settle.vip.bo.VipBo;
 import com.michael.settle.vip.dao.BusinessDao;
 import com.michael.settle.vip.dao.VipDao;
-import com.michael.settle.vip.domain.Business;
 import com.michael.settle.vip.domain.Vip;
 import com.michael.settle.vip.dto.VipDTO;
 import com.michael.settle.vip.service.Params;
 import com.michael.settle.vip.service.VipService;
 import com.michael.settle.vip.vo.VipVo;
 import com.michael.utils.beans.BeanCopyUtils;
-import com.michael.utils.number.IntegerUtils;
 import com.michael.utils.string.StringUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -169,13 +165,13 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         Assert.isTrue(total != null && total > 0, "报表生成失败!当前用户还未导入任何会员数据!");
 
         // 获取统计结果
-        String sql = "select t1.*,t2.businessCounts businessCounts ,t3.groupName,t3.money,t3.fee \n" +
+        String sql = "select t1.*,t2.businessCounts businessCounts ,t2.businessTime businessTime,t3.groupName,t3.money,t3.fee \n" +
                 "\tfrom (SELECT v.company company,  v.groupId groupId, count(v.id) total, \n" +
                 "\t\tsum(case v.assignStatus when '1' then 1 else 0 end)  assignCounts,\n" +
                 "\t\tsum(case v.status when '1' then 1 else 0 end)  normalCounts  FROM " +
                 "settle_vip v where v.creatorId=?  group by v.company, v.groupId) \n" +
                 "t1 left join (\n" +
-                "\t\tselect count(DISTINCT b.vipCode) businessCounts ,b.company company,b.groupCode groupCode from settle_business b group by b.company, b.groupCode) \n" +
+                "\t\tselect count(DISTINCT b.vipCode) businessCounts ,b.company company,b.groupCode groupCode,b.businessTime from settle_business b group by b.company, b.groupCode,b.businessTime) \n" +
                 "t2 on t1.company=t2.company and  t1.groupId=t2.groupCode\n" +
                 "left join (\n" +
                 "\t\tSELECT b.company company,b.groupCode groupCode,b.groupName groupName,sum(b.money) money,sum(b.fee) fee FROM settle_business b group by b.company,b.groupCode,b.groupName\n" +
@@ -221,7 +217,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
             // 未签约数量
             vip.setNotAssignCounts(vip.getVipCounts() - vip.getAssignCounts());
-            vip.setOccurDate(occurDate);
+
 
             // 有交易的会员数量
             BigInteger businessCounts = (BigInteger) foo.get("businessCounts");
@@ -232,10 +228,21 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             final double money = totalMoney == null ? 0 : Double.parseDouble(totalMoney.toString());
             vip.setTotalMoney(money);
 
+            // 交易时间
+            vip.setOccurDate(occurDate);
+
             if (money > 0) {
                 Double p = null;
                 BigDecimal feeBD = (BigDecimal) foo.get("fee");
                 Double fee = new BigDecimal(feeBD == null ? 0D : Double.parseDouble(feeBD.toString())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+
+
+                // 交易时间
+                Date businessTime = (Date) foo.get("businessTime");
+                if (businessTime != null) {
+                    occurDate = businessTime;
+                    vip.setOccurDate(occurDate);
+                }
 
                 vip.setFee(fee);          // 手续费
                 CompanyConf conf = companyMap.get(company);
@@ -286,7 +293,6 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
                 // 税金 = 支付金额 - 除税支付金额
                 vip.setTax(new BigDecimal(vip.getPayMoney() - vip.getOutofTax()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
-                vip.setOccurDate(occurDate);
             }
 
 
@@ -299,6 +305,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         }
 
         // 保存交易历史
+        /*
         logger.info("******** 3. 交易历史 ********");
         BusinessBo bb = new BusinessBo();
         bb.setCreatorId(SecurityContext.getEmpId());
@@ -330,6 +337,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
                 }
             }
         }
+        */
 
         logger.info("******** 产生报表数据 : end ********");
     }
