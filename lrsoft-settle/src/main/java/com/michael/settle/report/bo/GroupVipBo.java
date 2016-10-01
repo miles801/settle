@@ -65,6 +65,69 @@ public class GroupVipBo implements BO {
     @Condition(matchMode = MatchModel.GT)
     private Double tax;
 
+    // 是否返佣
+    @Condition
+    private Boolean bonus;
+    // 是否发送了短信
+    @Condition
+    private Boolean sendSms;
+
+    public Integer getVipCounts() {
+        return vipCounts;
+    }
+
+    public void setVipCounts(Integer vipCounts) {
+        this.vipCounts = vipCounts;
+    }
+
+    public Integer getNormalCounts() {
+        return normalCounts;
+    }
+
+    public void setNormalCounts(Integer normalCounts) {
+        this.normalCounts = normalCounts;
+    }
+
+    public Integer getOtherCounts() {
+        return otherCounts;
+    }
+
+    public void setOtherCounts(Integer otherCounts) {
+        this.otherCounts = otherCounts;
+    }
+
+    public Integer getAssignCounts() {
+        return assignCounts;
+    }
+
+    public void setAssignCounts(Integer assignCounts) {
+        this.assignCounts = assignCounts;
+    }
+
+    public Integer getNotAssignCounts() {
+        return notAssignCounts;
+    }
+
+    public void setNotAssignCounts(Integer notAssignCounts) {
+        this.notAssignCounts = notAssignCounts;
+    }
+
+    public Boolean getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(Boolean bonus) {
+        this.bonus = bonus;
+    }
+
+    public Boolean getSendSms() {
+        return sendSms;
+    }
+
+    public void setSendSms(Boolean sendSms) {
+        this.sendSms = sendSms;
+    }
+
     public Double getTotalMoney() {
         return totalMoney;
     }

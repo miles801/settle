@@ -38,7 +38,13 @@
             },
 
             // 根据id字符串（使用逗号分隔多个值）
-            deleteByIds: {method: 'DELETE', params: {method: 'delete', ids: '@ids'}, isArray: false}
+            deleteByIds: {method: 'DELETE', params: {method: 'delete', ids: '@ids'}, isArray: false},
+
+            // 设置返佣
+            setBonus: {method: 'POST', params: {method: 'bonus'}, isArray: false},
+
+            // 发送短信
+            sendSms: {method: 'POST', params: {method: 'sendSms'}, isArray: false}
         })
     });
 

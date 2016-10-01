@@ -104,6 +104,20 @@
                             </div>
                             <input type="text" class="w120" ng-model="condition.tax" maxlength="5" placeholder=">"/>
                         </div>
+                        <div class="item w200">
+                            <div class="form-label w80">
+                                <label>设置返佣:</label>
+                            </div>
+                            <input type="checkbox" style="width: 14px;" ng-model="condition.bonus"
+                                   ng-change="query();"/>
+                        </div>
+                        <div class="item w200">
+                            <div class="form-label w80">
+                                <label>已发送短信:</label>
+                            </div>
+                            <input type="checkbox" style="width: 14px;" ng-model="condition.sendSms"
+                                   ng-change="query();"/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -116,6 +130,8 @@
                     <span>团队会员列表</span>
                 </div>
                 <span class="header-button">
+                        <a type="button" class="btn btn-green btn-min" ng-click="setBonus();"> 确定返佣 </a>
+                        <a type="button" class="btn btn-green btn-min" ng-click="sendSms();"> 发送短信 </a>
                         <a type="button" class="btn btn-green btn-min" ng-click="exportData();"> 导出 </a>
                 </span>
             </div>
@@ -126,7 +142,6 @@
                             <thead class="table-header">
                             <tr>
                                 <td class="width-min">序号</td>
-                                <td>文交所</td>
                                 <td class="cp" ng-click="order('groupName');">团队名称
                                     <span ng-show="condition.orderBy=='groupName'" ng-cloak>
                                         <span ng-show="condition.reverse">▼</span>
@@ -205,7 +220,8 @@
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
-                                <td>时间</td>
+                                <td>发送短信</td>
+                                <td>错误</td>
                                 <td>操作</td>
                             </tr>
                             </thead>
@@ -215,7 +231,6 @@
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td bo-text="pager.start+$index+1"></td>
-                                <td bo-text="foo.companyName"></td>
                                 <td>
                                     <a ng-click="view(foo.id)" bo-text="foo.groupName" class="cp" title="点击查看详情"></a>
                                 </td>
@@ -231,7 +246,11 @@
                                 <td bo-text="foo.payMoney|number"></td>
                                 <td bo-text="foo.outofTax|number"></td>
                                 <td bo-text="foo.tax|number"></td>
-                                <td bo-text="foo.occurDate|date:'yyyy-MM'"></td>
+                                <td>
+                                    <span class="bgc" bo-text="foo.sendSms?'成功':'否'"
+                                          ng-class="{red:!foo.sendSms,green:foo.sendSms}"></span>
+                                </td>
+                                <td bo-text="foo.errorMsg"></td>
                                 <td class="text-left">
                                     <a class="btn-op blue" ng-click="modify(foo.id);">编辑</a>
                                     <a class="btn-op red" ng-click="remove(foo.id);">删除</a>

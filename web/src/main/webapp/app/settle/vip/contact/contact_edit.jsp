@@ -42,30 +42,32 @@
                     <div class="row float">
                         <div class="item w300">
                             <div class="form-label w100">
-                                <label>姓名:</label>
+                                <label validate-error="form.company">文交所:</label>
+                            </div>
+                            <select class="w200" ng-model="beans.company"
+                                    ng-options="foo.value as foo.name for foo in companys"
+                                    validate validate-required name="company"> </select>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>团队编号:</label>
+                            </div>
+                            <input type="text" class="w200" ng-model="beans.groupId" maxlength="40" validate
+                                   validate-required/>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>团队姓名:</label>
                             </div>
                             <input type="text" class="w200" ng-model="beans.name" validate validate-required
                                    maxlength="40"/>
                         </div>
-                        <div class="item w300">
+                        <div class="item w300 break">
                             <div class="form-label w100">
-                                <label>手机:</label>
+                                <label>手机号:</label>
                             </div>
                             <input type="text" class="w200" ng-model="beans.mobile" validate validate-required
                                    maxlength="20"/>
-                        </div>
-                        <div class="item w300">
-                            <div class="form-label w100">
-                                <label>文交所:</label>
-                            </div>
-                            <select class="w200" ng-model="beans.company"
-                                    ng-options="foo.value as foo.name for foo in companys"> </select>
-                        </div>
-                        <div class="item w300">
-                            <div class="form-label w100">
-                                <label>所属团队:</label>
-                            </div>
-                            <input type="text" class="w200" ng-model="beans.groupId" maxlength="40"/>
                         </div>
                         <div class="item w300 break">
                             <div class="form-label w100">
@@ -78,9 +80,10 @@
                             <div class="form-label w100">
                                 <label>银行账户:</label>
                             </div>
-                            <input type="text" class="w500" ng-model="beans.bankAccount" maxlength="40"/>
+                            <input type="text" class="w500" ng-model="beans.bankAccount" maxlength="40" validate
+                                   validate-required/>
                         </div>
-                        <div class="item w900">
+                        <div class="item w900 break">
                             <div class="form-label w100">
                                 <label>备注:</label>
                             </div>

@@ -148,7 +148,7 @@ public class GroupVipCtrl extends BaseController {
     // 下载模板
     @ResponseBody
     @RequestMapping(value = "/template", method = RequestMethod.GET)
-    public void downloadTemplate(HttpServletResponse response) {
+    public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) {
         InputStream input = GroupVipCtrl.class.getClassLoader().getResourceAsStream("import_groupVip.xlsx");
         Assert.notNull(input, "模板下载失败!团队会员数据导入模板不存在!");
         response.setContentType("application/vnd.ms-excel");
@@ -166,4 +166,23 @@ public class GroupVipCtrl extends BaseController {
         }
     }
 
+
+    // 设置返佣
+    @RequestMapping(value = "/bonus", method = RequestMethod.POST)
+    @ResponseBody
+    public void setBonus(HttpServletRequest request, HttpServletResponse response) {
+        GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
+        groupVipService.setBonus(bo);
+        GsonUtils.printSuccess(response);
+    }
+
+
+    // 发送短信
+    @RequestMapping(value = "/sendSms", method = RequestMethod.POST)
+    @ResponseBody
+    public void sendSms(HttpServletRequest request, HttpServletResponse response) {
+        GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
+        int total = groupVipService.sendSms(bo);
+        GsonUtils.printData(response, total);
+    }
 }

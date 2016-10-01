@@ -12,6 +12,8 @@
         $scope.companys = [{name: '全部'}];
         GroupVipParam.company(function (o) {
             $scope.companys.push.apply($scope.companys, o);
+            $scope.company = o[0].value;
+            $scope.initTab();
         });
         var initTree = function () {
             var setting = {
@@ -62,10 +64,14 @@
 
         initTree();
         $scope.initTab = function () {
+            var company = $scope.company;
+            if (!company) {
+                AlertFactory.warning('请选择文交所!');
+                return;
+            }
             // 删除之前的
             $('#tab').html('');
             $(window.parent.document.body).find('ul.nav-tabs').hide();
-            var company = $scope.company;
             var data = [
                 {
                     title: '团队会员',
@@ -101,8 +107,6 @@
                 });
             });
         };
-
-        $scope.initTab();
     });
 
 })(window, angular, jQuery);

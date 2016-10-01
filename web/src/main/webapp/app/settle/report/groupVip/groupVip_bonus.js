@@ -16,7 +16,9 @@
             company: $('#company').val(),
             reverse: true,
             occurDate1: year + '-' + month + '-01',
-            occurDate2: year + '-' + (month + 1) + '-01'
+            occurDate2: year + '-' + (month + 1) + '-01',
+            sendSms: false,
+            bonus: true
         };
         $scope.condition = angular.extend({}, defaults);
 
@@ -127,5 +129,36 @@
             $scope.query();
         };
 
+
+        // 设置返佣
+        $scope.setBonus = function () {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '<span class="text-danger">对当前所过滤出来的数据进行返佣，一旦确定不可以更改，请确认!</span>',
+                callback: function () {
+                    var promise = GroupVipService.setBonus($scope.condition, function () {
+                        AlertFactory.success('操作成功!');
+                        $scope.condition.bonus = true;
+                        $scope.query();
+                    });
+                    CommonUtils.loading((promise));
+                }
+            });
+        };
+
+        // 发送短信
+        $scope.sendSms = function () {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '<span class="text-danger">对已设置为返佣的团队发送短信通知（已经发送过的将不再重复发送），请确认!</span>',
+                callback: function () {
+                    var promise = GroupVipService.sendSms($scope.condition, function (o) {
+                        AlertFactory.warning('操作成功!共发送短信[' + (o.data || 0) + ']条!');
+                        $scope.query();
+                    });
+                    CommonUtils.loading((promise));
+                }
+            });
+        };
     });
 })(window, angular, jQuery);

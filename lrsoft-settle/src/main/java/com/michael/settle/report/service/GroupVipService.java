@@ -42,5 +42,14 @@ public interface GroupVipService {
      */
     void deleteByIds(String[] ids);
 
+    /**
+     * 发送短信（会自动设置条件：未发送的，已经设置为返佣的）
+     * 查询所有符合条件的，然后发送短信
+     */
+    int sendSms(GroupVipBo bo);
 
+    /**
+     * 设置返佣
+     */
+    void setBonus(GroupVipBo bo);
 }

@@ -104,6 +104,63 @@ public class GroupVip extends CommonDomain {
     @Column(name = "tax")
     private Double tax;
 
+    // 是否返佣
+
+    @Column
+    private Boolean bonus;
+    @ApiField(value = "是否发送短信")
+    @Column
+    private Boolean sendSms;
+    @ApiField(value = "短信内容")
+    @Column(length = 200)
+    private String smsContent;
+    @ApiField(value = "短信发送时间")
+    @Column
+    private Date smsSendDate;
+    @ApiField(value = "短信发送失败的原因!")
+    @Column(length = 200)
+    private String errorMsg;
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public Boolean getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(Boolean bonus) {
+        this.bonus = bonus;
+    }
+
+    public Boolean getSendSms() {
+        return sendSms;
+    }
+
+    public void setSendSms(Boolean sendSms) {
+        this.sendSms = sendSms;
+    }
+
+    public String getSmsContent() {
+        return smsContent;
+    }
+
+    public void setSmsContent(String smsContent) {
+        this.smsContent = smsContent;
+    }
+
+    public Date getSmsSendDate() {
+        return smsSendDate;
+    }
+
+    public void setSmsSendDate(Date smsSendDate) {
+        this.smsSendDate = smsSendDate;
+    }
+
     public Double getFee() {
         return fee;
     }

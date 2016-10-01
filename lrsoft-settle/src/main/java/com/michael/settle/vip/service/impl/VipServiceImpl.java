@@ -195,6 +195,8 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         final Map<String, List<StepPercent>> percentMap = new HashMap<>();  // 阶梯比例
         for (Map<String, Object> foo : o) {
             GroupVip vip = new GroupVip();
+            vip.setBonus(false);
+            vip.setSendSms(false);
             String company = (String) foo.get("company");
             String companyName = ParameterContainer.getInstance().getSystemName(Params.COMPANY, company);
             vip.setCompany(company.toString());
