@@ -9,11 +9,14 @@
         'settle.report.groupVip'
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, GroupVipService, GroupVipParam) {
+        var month = parseInt($('#month').val());
+        var year = parseInt($('#year').val());
         var defaults = {    // 默认查询条件
             orderBy: 'vipCounts',
-            reverse: true
+            reverse: true,
+            occurDate1: year + '-' + month + '-01',
+            occurDate2: year + '-' + (month + 1) + '-01'
         };
-
         $scope.condition = angular.extend({}, defaults);
 
         // 重置查询条件并查询
@@ -35,12 +38,7 @@
         };
         $scope.pager = {
             fetch: function () {
-                var param = angular.extend({}, {start: this.start, limit: this.limit}, $scope.condition);
-                if (param.occurDate) {
-                    param.occurDate1 = param.occurDate + '-01';
-                    param.occurDate2 = param.occurDate + '-30';
-                    param.occurDate = null;
-                }
+                var param = angular.extend({start: this.start, limit: this.limit}, $scope.condition);
                 $scope.beans = [];
                 return CommonUtils.promise(function (defer) {
                     var promise = GroupVipService.pageQuery(param, function (data) {

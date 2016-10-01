@@ -20,6 +20,10 @@
 </head>
 <body>
 <div class="main condition-row-1" ng-app="settle.report.groupVip.list" ng-controller="Ctrl">
+    <div class="dn">
+        <input type="hidden" id="year" value="${param.year}">
+        <input type="hidden" id="month" value="${param.month}">
+    </div>
     <div class="list-condition">
         <div class="block">
             <div class="block-header">
@@ -39,7 +43,7 @@
                                     ng-options="foo.value as foo.name for foo in companys"
                                     ng-change="query();"></select>
                         </div>
-                        <div class="item w300">
+                        <div class="item w300 dn">
                             <div class="form-label w100">
                                 <label>统计时间:</label>
                             </div>
@@ -77,43 +81,43 @@
                                 <td class="width-min">序号</td>
                                 <td>文交所</td>
                                 <td class="cp" ng-click="order('groupName');">团队名称
-                                    <span ng-show="condition.orderBy=='groupName'">
+                                    <span ng-show="condition.orderBy=='groupName'" ng-cloak>
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('vipCounts');">交易商数量
-                                    <span ng-show="condition.orderBy=='vipCounts'">
+                                    <span ng-show="condition.orderBy=='vipCounts'" ng-cloak>
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('normalCounts');">正常数量
-                                    <span ng-show="condition.orderBy=='normalCounts'">
+                                    <span ng-show="condition.orderBy=='normalCounts'" ng-cloak>
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('otherCounts');">其他数量
-                                    <span ng-show="condition.orderBy=='otherCounts'">
+                                    <span ng-show="condition.orderBy=='otherCounts'" ng-cloak>
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('assignCounts');">签约数量
-                                    <span ng-show="condition.orderBy=='assignCounts'">
+                                    <span ng-show="condition.orderBy=='assignCounts'" ng-cloak>
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('notAssignCounts');">未签约数量
-                                    <span ng-show="condition.orderBy=='notAssignCounts'">
+                                    <span ng-show="condition.orderBy=='notAssignCounts'" ng-cloak>
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('occurDate');">统计时间
-                                    <span ng-show="condition.orderBy=='occurDate'">
+                                    <span ng-show="condition.orderBy=='occurDate'" ng-cloak>
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>

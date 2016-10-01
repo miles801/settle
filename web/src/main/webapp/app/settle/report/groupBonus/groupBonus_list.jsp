@@ -20,6 +20,10 @@
 </head>
 <body>
 <div class="main condition-row-1" ng-app="settle.report.groupBonus.list" ng-controller="Ctrl">
+    <div class="dn">
+        <input type="hidden" id="year" value="${param.year}">
+        <input type="hidden" id="month" value="${param.month}">
+    </div>
     <div class="list-condition">
         <div class="block">
             <div class="block-header">
@@ -39,7 +43,7 @@
                                     ng-options="foo.value as foo.name for foo in companys"
                                     ng-change="query();"> </select>
                         </div>
-                        <div class="item w300">
+                        <div class="item w300 dn">
                             <div class="form-label w100">
                                 <label>统计时间:</label>
                             </div>
@@ -78,55 +82,55 @@
                                 <td>文交所</td>
                                 <td>团队名称</td>
                                 <td class="cp" ng-click="order('totalMoney');">成交额
-                                    <span ng-show="condition.orderBy=='totalMoney'">
-                                        <span ng-show="condition.reverse">▼</span>
-                                        <span ng-show="!condition.reverse">▲</span>
+                                    <span ng-cloak ng-show="condition.orderBy=='totalMoney'">
+                                        <span ng-cloak ng-show="condition.reverse">▼</span>
+                                        <span ng-cloak ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('fee');">交易手续费
-                                    <span ng-show="condition.orderBy=='fee'">
+                                    <span ng-cloak ng-show="condition.orderBy=='fee'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('commission');">标准佣金
-                                    <span ng-show="condition.orderBy=='commission'">
+                                    <span ng-cloak ng-show="condition.orderBy=='commission'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('stepPercent');">阶梯比例
-                                    <span ng-show="condition.orderBy=='stepPercent'">
+                                    <span ng-cloak ng-show="condition.orderBy=='stepPercent'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('taxServerFee');">含税服务费
-                                    <span ng-show="condition.orderBy=='taxServerFee'">
+                                    <span ng-cloak ng-show="condition.orderBy=='taxServerFee'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('percent');">设定比例
-                                    <span ng-show="condition.orderBy=='percent'">
+                                    <span ng-cloak ng-show="condition.orderBy=='percent'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('payMoney');">支付金额
-                                    <span ng-show="condition.orderBy=='payMoney'">
+                                    <span ng-cloak ng-show="condition.orderBy=='payMoney'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('outofTax');">除税支付金额
-                                    <span ng-show="condition.orderBy=='outofTax'">
+                                    <span ng-cloak ng-show="condition.orderBy=='outofTax'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
                                 </td>
                                 <td class="cp" ng-click="order('tax');">税金
-                                    <span ng-show="condition.orderBy=='tax'">
+                                    <span ng-cloak ng-show="condition.orderBy=='tax'">
                                         <span ng-show="condition.reverse">▼</span>
                                         <span ng-show="!condition.reverse">▲</span>
                                     </span>
