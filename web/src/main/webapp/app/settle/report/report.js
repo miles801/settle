@@ -2,11 +2,17 @@
     var app = angular.module('settle.report', [
         'eccrm.angular',
         'eccrm.angularstrap',
-        'eccrm.angular.ztree'
+        'eccrm.angular.ztree',
+        'settle.report.groupVip'
     ]);
-    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory) {
+    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, GroupVipParam) {
         var month = 1;
         var year = 0;
+        // 参数：文交所
+        $scope.companys = [{name: '全部'}];
+        GroupVipParam.company(function (o) {
+            $scope.companys.push.apply($scope.companys, o);
+        });
         var initTree = function () {
             var setting = {
                 view: {showIcon: false},
@@ -14,7 +20,7 @@
                     onClick: function (event, treeId, treeNode) {
                         month = treeNode.month;
                         year = treeNode.year;
-                        initTab();
+                        $scope.initTab();
                     }
                 }
             };
@@ -55,23 +61,33 @@
         };
 
         initTree();
-        var initTab = function () {
+        $scope.initTab = function () {
             // 删除之前的
             $('#tab').html('');
             $(window.parent.document.body).find('ul.nav-tabs').hide();
+            var company = $scope.company;
             var data = [
-                {title: '团队会员', url: 'app/settle/report/groupVip/groupVip_list.jsp?month=' + month + '&year=' + year},
+                {
+                    title: '团队会员',
+                    url: 'app/settle/report/groupVip/groupVip_list.jsp?month=' + month + '&year=' + year + '&company=' + company
+                },
                 {
                     title: '团队佣金',
-                    url: 'app/settle/report/groupBonus/groupBonus_list.jsp?month=' + month + '&year=' + year
+                    url: 'app/settle/report/groupBonus/groupBonus_list.jsp?month=' + month + '&year=' + year + '&company=' + company
                 },
                 {
                     title: '会员活跃度',
-                    url: 'app/settle/report/businessLog/businessLog_list.jsp?month=' + month + '&year=' + year
+                    url: 'app/settle/report/groupVip/groupVip_activity.jsp?month=' + month + '&year=' + year + '&company=' + company
                 },
-                {title: '集合原始报表', url: 'app/settle/report/analysis/analysis_list.jsp?month=' + month + '&year=' + year},
-                {title: '返佣', url: 'app/settle/report/groupVip/groupVip_list.jsp?month=' + month + '&year=' + year},
-                {title: '汇总', url: 'app/settle/report/groupVip/groupVip_list.jsp?month=' + month + '&year=' + year}
+                {
+                    title: '集合原始报表',
+                    url: 'app/settle/report/groupVip/groupVip_all.jsp?month=' + month + '&year=' + year + '&company=' + company
+                },
+                {
+                    title: '返佣',
+                    url: 'app/settle/report/groupVip/groupVip_bonus.jsp?month=' + month + '&year=' + year + '&company=' + company
+                },
+                {title: '汇总', url: 'app/settle/report/groupVip/groupVip_all2.jsp?month=' + month + '&year=' + year}
             ];
             angular.forEach(data, function (o, i) {
                 CommonUtils.addTab({
@@ -86,7 +102,7 @@
             });
         };
 
-        initTab();
+        $scope.initTab();
     });
 
 })(window, angular, jQuery);

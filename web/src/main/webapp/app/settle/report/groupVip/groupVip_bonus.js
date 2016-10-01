@@ -1,9 +1,9 @@
 /**
- * 团队佣金列表
+ * 团队会员列表
  * Created by Michael .
  */
 (function (window, angular, $) {
-    var app = angular.module('settle.report.groupBonus.list', [
+    var app = angular.module('settle.report.groupVip.bonus', [
         'eccrm.angular',
         'eccrm.angularstrap',
         'settle.report.groupVip'
@@ -11,14 +11,13 @@
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, GroupVipService, GroupVipParam) {
         var month = parseInt($('#month').val());
         var year = parseInt($('#year').val());
-        var defaults = {// 默认查询条件
-            orderBy: 'totalMoney',
+        var defaults = {    // 默认查询条件
+            orderBy: 'vipCounts',
             company: $('#company').val(),
             reverse: true,
             occurDate1: year + '-' + month + '-01',
             occurDate2: year + '-' + (month + 1) + '-01'
         };
-
         $scope.condition = angular.extend({}, defaults);
 
         // 重置查询条件并查询
@@ -40,7 +39,7 @@
         };
         $scope.pager = {
             fetch: function () {
-                var param = angular.extend({}, {start: this.start, limit: this.limit}, $scope.condition);
+                var param = angular.extend({start: this.start, limit: this.limit}, $scope.condition);
                 $scope.beans = [];
                 return CommonUtils.promise(function (defer) {
                     var promise = GroupVipService.pageQuery(param, function (data) {
@@ -81,8 +80,8 @@
         // 新增
         $scope.add = function () {
             CommonUtils.addTab({
-                title: '新增团队佣金',
-                url: '/settle/report/groupBonus/add',
+                title: '新增团队会员',
+                url: '/settle/report/groupVip/add',
                 onUpdate: $scope.query
             });
         };
@@ -90,8 +89,8 @@
         // 更新
         $scope.modify = function (id) {
             CommonUtils.addTab({
-                title: '更新团队佣金',
-                url: '/settle/report/groupBonus/modify?id=' + id,
+                title: '更新团队会员',
+                url: '/settle/report/groupVip/modify?id=' + id,
                 onUpdate: $scope.query
             });
         };
@@ -99,8 +98,8 @@
         // 查看明细
         $scope.view = function (id) {
             CommonUtils.addTab({
-                title: '查看团队佣金',
-                url: '/settle/report/groupBonus/detail?id=' + id
+                title: '查看团队会员',
+                url: '/settle/report/groupVip/detail?id=' + id
             });
         };
 
@@ -114,8 +113,9 @@
             var o = angular.extend({}, $scope.condition);
             o.start = null;
             o.limit = null;
-            window.open(CommonUtils.contextPathURL('/settle/report/groupBonus/export?' + encodeURI(encodeURI($.param(o)))));
+            window.open(CommonUtils.contextPathURL('/settle/report/groupVip/export?' + encodeURI(encodeURI($.param(o)))));
         };
+
 
         $scope.order = function (key) {
             if ($scope.condition.orderBy == key) {
@@ -125,6 +125,7 @@
                 $scope.condition.reverse = false;
             }
             $scope.query();
-        }
+        };
+
     });
 })(window, angular, jQuery);

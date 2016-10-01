@@ -28,7 +28,6 @@ import com.michael.settle.report.dao.BusinessLogDao;
 import com.michael.settle.report.dao.GroupBonusDao;
 import com.michael.settle.report.dao.GroupVipDao;
 import com.michael.settle.report.domain.BusinessLog;
-import com.michael.settle.report.domain.GroupBonus;
 import com.michael.settle.report.domain.GroupVip;
 import com.michael.settle.vip.bo.BusinessBo;
 import com.michael.settle.vip.bo.VipBo;
@@ -170,10 +169,17 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         Assert.isTrue(total != null && total > 0, "报表生成失败!当前用户还未导入任何会员数据!");
 
         // 获取统计结果
-        String sql = "SELECT v.company company,  v.groupId groupId,g.name as groupName, count(v.id) total, \n" +
-                "sum(case v.assignStatus when '1' then 1 else 0 end)  assignCounts,\n" +
-                "sum(case v.status when '1' then 1 else 0 end)  normalCounts \n" +
-                "FROM settle_vip v left join settle_group g on v.groupId=g.code and v.creatorId=? group by v.company,v.groupId ";
+        String sql = "select t1.*,t2.businessCounts businessCounts ,t3.groupName,t3.money,t3.fee \n" +
+                "\tfrom (SELECT v.company company,  v.groupId groupId, count(v.id) total, \n" +
+                "\t\tsum(case v.assignStatus when '1' then 1 else 0 end)  assignCounts,\n" +
+                "\t\tsum(case v.status when '1' then 1 else 0 end)  normalCounts  FROM " +
+                "settle_vip v where v.creatorId=?  group by v.company, v.groupId) \n" +
+                "t1 left join (\n" +
+                "\t\tselect count(DISTINCT b.vipCode) businessCounts ,b.company company,b.groupCode groupCode from settle_business b group by b.company, b.groupCode) \n" +
+                "t2 on t1.company=t2.company and  t1.groupId=t2.groupCode\n" +
+                "left join (\n" +
+                "\t\tSELECT b.company company,b.groupCode groupCode,b.groupName groupName,sum(b.money) money,sum(b.fee) fee FROM settle_business b group by b.company,b.groupCode,b.groupName\n" +
+                ") t3 on t2.company=t3.company and t1.groupId=t3.groupCode order by t3.money desc";
         List<Map<String, Object>> o = vipDao.sqlQuery(sql, new ArrayList<Object>() {{
             add(SecurityContext.getEmpId());
         }});
@@ -181,10 +187,17 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         // 创建团队会员报表数据
         Assert.notEmpty(o, "报表生成失败!没有查询到符合的结果集!");
         int index = 0;
-        Date occurDate = DateUtils.addDays(new Date(), -7); // 时间往前推一周
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.MONTH, -1);
+        Date occurDate = calendar.getTime();    // 时间设置为上个月的1号
+        final Map<String, CompanyConf> companyMap = new HashMap<>();        // 公式配置
+        final Map<String, List<StepPercent>> percentMap = new HashMap<>();  // 阶梯比例
         for (Map<String, Object> foo : o) {
             GroupVip vip = new GroupVip();
-            vip.setCompany(foo.get("company").toString());
+            String company = (String) foo.get("company");
+            String companyName = ParameterContainer.getInstance().getSystemName(Params.COMPANY, company);
+            vip.setCompany(company.toString());
             vip.setGroupCode(foo.get("groupId").toString());
             String groupName = (String) foo.get("groupName");
             if (StringUtils.isEmpty(groupName)) {
@@ -207,89 +220,75 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             // 未签约数量
             vip.setNotAssignCounts(vip.getVipCounts() - vip.getAssignCounts());
             vip.setOccurDate(occurDate);
-            groupVipDao.save(vip);
-            index++;
-            if (index % 20 == 0) {
-                session.flush();
-                session.clear();
-            }
-        }
 
-        // 创建团队佣金数据
-        logger.info("******** 2. 团队佣金 ********");
-        String sql2 = "SELECT b.company ,b.groupCode,b.groupName,sum(b.money) money,sum(b.fee) fee FROM " +
-                "settle_business b where b.creatorId=? group by b.company,b.groupCode,b.groupName";
-        List<Map<String, Object>> gb = vipDao.sqlQuery(sql2, new ArrayList<Object>() {{
-            add(SecurityContext.getEmpId());
-        }});
-        Assert.notEmpty(gb, "报表生成失败!未获取到交易数据!");
-        index = 0;
-        final Map<String, CompanyConf> companyMap = new HashMap<>();
-        final Map<String, List<StepPercent>> percentMap = new HashMap<>();
-        for (Map<String, Object> foo : gb) {
-            String company = foo.get("company").toString();
-            String companyName = ParameterContainer.getInstance().getSystemName(Params.COMPANY, company);
-            String groupCode = foo.get("groupCode").toString();
-            BigDecimal moneyBD = (BigDecimal) foo.get("money");
-            Double money = new BigDecimal(moneyBD == null ? 0D : Double.parseDouble(moneyBD.toString())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
-            BigDecimal feeBD = (BigDecimal) foo.get("fee");
-            Double fee = new BigDecimal(feeBD == null ? 0D : Double.parseDouble(feeBD.toString())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
-            GroupBonus bonus = new GroupBonus();
-            bonus.setCompany(company);
-            bonus.setGroupCode(groupCode);
-            bonus.setGroupName((String) foo.get("groupName"));
-            bonus.setTotalMoney(money); // 成交额
+            // 有交易的会员数量
+            BigInteger businessCounts = (BigInteger) foo.get("businessCounts");
+            vip.setBusinessCounts(businessCounts == null ? 0 : Integer.parseInt(businessCounts.toString()));
 
-            bonus.setFee(fee);          // 手续费
-            CompanyConf conf = companyMap.get(company);
-            if (conf == null) {
-                conf = companyConfDao.findByCompany(company);
-                companyMap.put(company, conf);
-            }
-            Assert.notNull(conf, "报表生成失败!文交所[" + company + "]所对应的各项系数未配置!");
-            // 标准佣金
-            String commission = conf.getCommission();
-            Double c = null;
-            if (commission.matches("\\d+(\\.\\d+)?")) {
-                c = fee * Double.parseDouble(commission);
-            } else if (commission.matches("\\d+/\\d+")) {
-                String[] tmp = commission.split("/");
-                c = fee * Integer.parseInt(tmp[0]) / Integer.parseInt(tmp[1]);
-            } else {
-                Assert.isTrue(false, "不合法的标准佣金配置：" + commission);
-            }
-            bonus.setCommission(new BigDecimal(c).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
-            // 阶梯比例
-            List<StepPercent> percents = percentMap.get(company);
-            if (percents == null) {
-                percents = stepPercentDao.queryByCompany(company);
-                Assert.notEmpty(percents, "报表生成失败!文交所[" + companyName + "]对应的阶梯比例未配置!");
-                percentMap.put(company, percents);
-            }
-            Double p = null;
-            for (StepPercent sp : percents) {
-                if (sp.getMinValue() < money && sp.getMaxValue() > money) {
-                    p = sp.getPercent();
-                    break;
+            // 成交额
+            BigDecimal totalMoney = (BigDecimal) foo.get("money");
+            final double money = totalMoney == null ? 0 : Double.parseDouble(totalMoney.toString());
+            vip.setTotalMoney(money);
+
+            if (money > 0) {
+                Double p = null;
+                BigDecimal feeBD = (BigDecimal) foo.get("fee");
+                Double fee = new BigDecimal(feeBD == null ? 0D : Double.parseDouble(feeBD.toString())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+
+                vip.setFee(fee);          // 手续费
+                CompanyConf conf = companyMap.get(company);
+                if (conf == null) {
+                    conf = companyConfDao.findByCompany(company);
+                    companyMap.put(company, conf);
                 }
+                Assert.notNull(conf, "报表生成失败!文交所[" + companyName + "]所对应的各项系数未配置!");
+
+                // 标准佣金
+                String commission = conf.getCommission();
+                Double c = null;
+                if (commission.matches("\\d+(\\.\\d+)?")) {
+                    c = fee * Double.parseDouble(commission);
+                } else if (commission.matches("\\d+/\\d+")) {
+                    String[] tmp = commission.split("/");
+                    c = fee * Integer.parseInt(tmp[0]) / Integer.parseInt(tmp[1]);
+                } else {
+                    Assert.isTrue(false, "不合法的标准佣金配置：" + commission);
+                }
+                vip.setCommission(new BigDecimal(c).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+                // 阶梯比例
+                List<StepPercent> percents = percentMap.get(company);
+                if (percents == null) {
+                    percents = stepPercentDao.queryByCompany(company);
+                    Assert.notEmpty(percents, "报表生成失败!文交所[" + companyName + "]对应的阶梯比例未配置!");
+                    percentMap.put(company, percents);
+                }
+
+                for (StepPercent sp : percents) {
+                    if (sp.getMinValue() < money && sp.getMaxValue() > money) {
+                        p = sp.getPercent();
+                        break;
+                    }
+                }
+                Assert.notNull(p, String.format("报表生成失败!文交所[%s]下团队[%s]的交易额为[%s]，不在阶梯比例范围内!", companyName, groupName, money));
+                vip.setStepPercent(p);
+
+                // 含税服务费 = 标准佣金*阶梯比例
+                vip.setTaxServerFee(new BigDecimal(vip.getCommission() * vip.getStepPercent()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+                // 支付金额 = 含税服务费*固定比例
+                vip.setPercent(conf.getPercent());
+                vip.setPayMoney(new BigDecimal(vip.getTaxServerFee() * conf.getPercent()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+                // 除税支付金额 = 支付金额 * 税率
+                vip.setOutofTax(new BigDecimal(vip.getPayMoney() * (1 - conf.getTax())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+                // 税金 = 支付金额 - 除税支付金额
+                vip.setTax(new BigDecimal(vip.getPayMoney() - vip.getOutofTax()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
+                vip.setOccurDate(occurDate);
             }
-            Assert.notNull(p, String.format("报表生成失败!文交所[%s]下团队[%s]的交易额为[%s]，不在阶梯比例范围内!", companyName, groupCode, money));
-            bonus.setStepPercent(p);
 
-            // 含税服务费 = 标准佣金*阶梯比例
-            bonus.setTaxServerFee(new BigDecimal(bonus.getCommission() * bonus.getStepPercent()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
 
-            // 支付金额 = 含税服务费*固定比例
-            bonus.setPercent(conf.getPercent());
-            bonus.setPayMoney(new BigDecimal(bonus.getTaxServerFee() * conf.getPercent()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
-
-            // 除税支付金额 = 支付金额 * 税率
-            bonus.setOutofTax(new BigDecimal(bonus.getPayMoney() * (1 - conf.getTax())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
-
-            // 税金 = 支付金额 - 除税支付金额
-            bonus.setTax(new BigDecimal(bonus.getPayMoney() - bonus.getOutofTax()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
-            bonus.setOccurDate(occurDate);
-            groupBonusDao.save(bonus);
+            groupVipDao.save(vip);
             index++;
             if (index % 20 == 0) {
                 session.flush();

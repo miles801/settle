@@ -23,8 +23,9 @@
     <div class="dn">
         <input type="hidden" id="year" value="${param.year}">
         <input type="hidden" id="month" value="${param.month}">
+        <input type="hidden" id="company" value="${param.company}">
     </div>
-    <div class="list-condition">
+    <div class="list-condition dn">
         <div class="block">
             <div class="block-header">
                     <span class="header-button">
@@ -62,7 +63,7 @@
             </div>
         </div>
     </div>
-    <div class="list-result ">
+    <div class="list-result" style="padding-top: 0;margin-top: 0;">
         <div class="block">
             <div class="block-header">
                 <div class="header-text">

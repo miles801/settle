@@ -22,7 +22,12 @@
 <body>
 <div class="main" ng-app="settle.report" ng-controller="Ctrl">
     <div class="row panel panel-tree">
-        <div class="tree" style="width: 120px;margin-top:40px;">
+        <div style="    position: absolute; width: 120px; padding: 10px 0;">
+            <select class="w120" ng-model="company"
+                    ng-options="foo.value as foo.name for foo in companys"
+                    ng-change="initTab();"></select>
+        </div>
+        <div class="tree" style="width: 120px;margin-top:40px;height: 400px;">
             <ul id="treeDemo" class="ztree"></ul>
         </div>
         <div class="content" style="padding-left: 125px;">
@@ -31,5 +36,6 @@
     </div>
 </div>
 </body>
+<script type="text/javascript" src="<%=contextPath%>/app/settle/report/groupVip/groupVip.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/settle/report/report.js"></script>
 </html>

@@ -28,6 +28,123 @@ public class GroupVipBo implements BO {
     @Condition(matchMode = MatchModel.LT, target = "occurDate")
     private Date occurDate2;
 
+    // 交易商数量
+    @Condition(matchMode = MatchModel.GE)
+    private Integer vipCounts;
+    @Condition(matchMode = MatchModel.GE)
+    private Integer normalCounts;
+    @Condition(matchMode = MatchModel.GE)
+    private Integer otherCounts;
+    @Condition(matchMode = MatchModel.GE)
+    private Integer assignCounts;
+    @Condition(matchMode = MatchModel.GE)
+    private Integer notAssignCounts;
+
+
+
+    // 会员交易数量
+    @Condition(matchMode = MatchModel.GE)
+    private Integer businessCounts;
+
+    @Condition(matchMode = MatchModel.GT)
+    private Double totalMoney;
+    @Condition(matchMode = MatchModel.GT)
+    private Double fee;
+    @Condition(matchMode = MatchModel.GT)
+    private Double commission;
+    @Condition(matchMode = MatchModel.GT)
+    private Double stepPercent;
+    @Condition(matchMode = MatchModel.GT)
+    private Double taxServerFee;
+    @Condition(matchMode = MatchModel.GT)
+    private Double percent;
+    @Condition(matchMode = MatchModel.GT)
+    private Double payMoney;
+    @Condition(matchMode = MatchModel.GT)
+    private Double outofTax;
+    @Condition(matchMode = MatchModel.GT)
+    private Double tax;
+
+    public Double getTotalMoney() {
+        return totalMoney;
+    }
+
+    public void setTotalMoney(Double totalMoney) {
+        this.totalMoney = totalMoney;
+    }
+
+    public Double getFee() {
+        return fee;
+    }
+
+    public void setFee(Double fee) {
+        this.fee = fee;
+    }
+
+    public Double getCommission() {
+        return commission;
+    }
+
+    public void setCommission(Double commission) {
+        this.commission = commission;
+    }
+
+    public Double getStepPercent() {
+        return stepPercent;
+    }
+
+    public void setStepPercent(Double stepPercent) {
+        this.stepPercent = stepPercent;
+    }
+
+    public Double getTaxServerFee() {
+        return taxServerFee;
+    }
+
+    public void setTaxServerFee(Double taxServerFee) {
+        this.taxServerFee = taxServerFee;
+    }
+
+    public Double getPercent() {
+        return percent;
+    }
+
+    public void setPercent(Double percent) {
+        this.percent = percent;
+    }
+
+    public Double getPayMoney() {
+        return payMoney;
+    }
+
+    public void setPayMoney(Double payMoney) {
+        this.payMoney = payMoney;
+    }
+
+    public Double getOutofTax() {
+        return outofTax;
+    }
+
+    public void setOutofTax(Double outofTax) {
+        this.outofTax = outofTax;
+    }
+
+    public Double getTax() {
+        return tax;
+    }
+
+    public void setTax(Double tax) {
+        this.tax = tax;
+    }
+
+    public Integer getBusinessCounts() {
+        return businessCounts;
+    }
+
+    public void setBusinessCounts(Integer businessCounts) {
+        this.businessCounts = businessCounts;
+    }
+
     public Date getOccurDate1() {
         return occurDate1;
     }

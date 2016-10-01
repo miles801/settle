@@ -13,6 +13,7 @@
         var year = parseInt($('#year').val());
         var defaults = {    // 默认查询条件
             orderBy: 'vipCounts',
+            company: $('#company').val(),
             reverse: true,
             occurDate1: year + '-' + month + '-01',
             occurDate2: year + '-' + (month + 1) + '-01'
