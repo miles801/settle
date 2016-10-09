@@ -30,7 +30,9 @@ import com.michael.settle.report.dao.GroupVipDao;
 import com.michael.settle.report.domain.GroupVip;
 import com.michael.settle.vip.bo.VipBo;
 import com.michael.settle.vip.dao.BusinessDao;
+import com.michael.settle.vip.dao.GroupDao;
 import com.michael.settle.vip.dao.VipDao;
+import com.michael.settle.vip.domain.Group;
 import com.michael.settle.vip.domain.Vip;
 import com.michael.settle.vip.dto.VipDTO;
 import com.michael.settle.vip.service.Params;
@@ -83,6 +85,9 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
     @Resource
     private BusinessLogDao businessLogDao;
+
+    @Resource
+    private GroupDao groupDao;
 
     @Override
     public String save(Vip vip) {
@@ -378,6 +383,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         // 获取会员映射模板
         String mapping = mappingDao.getMapping(company, "1");
         Assert.hasText(mapping, "导入会员失败!该文交所还未配置映射模板!");
+        final Map<String, String> groupMap = new HashMap<>(); // key：groupCode，value：groupName
         for (String id : attachmentIds) {
             AttachmentVo vo = AttachmentProvider.getInfo(id);
             Assert.notNull(vo, "附件已经不存在，请刷新后重试!");
@@ -417,6 +423,48 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
                     BeanUtils.copyProperties(dto, vip);
                     if (BeanCopyUtils.isEmpty(vip)) {
                         return;
+                    }
+
+                    // 导入团队
+                    String groupId = dto.getGroupId();
+                    if (StringUtils.isNotEmpty(groupId)) {  // 如果使用的是团队编号
+                        String groupName = groupMap.get(groupId);
+                        if (StringUtils.isEmpty(groupName)) {
+                            Group g = groupDao.findByCode(groupId);
+                            if (g == null) {
+                                g = new Group();
+                                g.setCompany(company);
+                                g.setCode(groupId);
+                                g.setName(groupId);
+                                g.setDeleted(false);
+                                groupDao.save(g);
+                            }
+                            groupMap.put(groupId, g.getName());
+                        }
+                        vip.setGroupId(groupId);
+                        vip.setGroupName(groupName);
+                    }
+                    String groupName = dto.getGroupName();
+                    if (StringUtils.isEmpty(groupId) && StringUtils.isEmpty(groupName)) {
+                        groupName = "默认团队";
+                    }
+                    if (StringUtils.isNotEmpty(groupName)) {
+                        String code = groupMap.get(groupName);
+                        if (StringUtils.isEmpty(code)) {
+                            code = groupDao.findCode(company, groupName);
+                            if (StringUtils.isEmpty(code)) {
+                                Group g = new Group();
+                                g.setCode(groupName);
+                                g.setName(groupName);
+                                g.setCompany(company);
+                                g.setDeleted(false);
+                                groupDao.save(g);
+                                code = groupName;
+                            }
+                            groupMap.put(code, groupName);
+                        }
+                        vip.setGroupId(groupName);
+                        vip.setGroupName(groupName);
                     }
 
                     // 签约状态

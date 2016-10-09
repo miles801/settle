@@ -43,6 +43,7 @@
             fetch: function () {
                 var param = angular.extend({start: this.start, limit: this.limit}, $scope.condition);
                 $scope.beans = [];
+                $scope.items ? $scope.items.length = 0 : '';
                 return CommonUtils.promise(function (defer) {
                     var promise = GroupVipService.pageQuery(param, function (data) {
                         param = null;
@@ -115,7 +116,7 @@
             var o = angular.extend({}, $scope.condition);
             o.start = null;
             o.limit = null;
-            window.open(CommonUtils.contextPathURL('/settle/report/groupVip/export?' + encodeURI(encodeURI($.param(o)))));
+            window.open(CommonUtils.contextPathURL('/settle/report/groupVip/export-total?' + encodeURI(encodeURI($.param(o)))));
         };
 
 

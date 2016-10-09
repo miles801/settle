@@ -18,6 +18,8 @@ public class VipDTO implements DTO {
     // 所属团队
     @Col(index = 2)
     private String groupId;
+    @Col(index = 2)
+    private String groupName;
     // 推荐人
     @Col(index = 3)
     private String recommend;
@@ -96,5 +98,13 @@ public class VipDTO implements DTO {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 }

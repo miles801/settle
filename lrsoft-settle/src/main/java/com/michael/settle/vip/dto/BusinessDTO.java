@@ -20,13 +20,13 @@ public class BusinessDTO implements DTO {
     private String groupCode;
     // 交易金额
     @Col(index = 2)
-    private Double money;
+    private String money;
     // 文交所
     @Col(index = 3)
     private String company;
     // 手续费
     @Col(index = 4)
-    private Double fee;
+    private String fee;
     // 交易时间
     @Col(index = 5)
     private Date businessTime;
@@ -66,13 +66,6 @@ public class BusinessDTO implements DTO {
         return this.groupCode;
     }
 
-    public void setMoney(Double money) {
-        this.money = money;
-    }
-
-    public Double getMoney() {
-        return this.money;
-    }
 
     public void setCompany(String company) {
         this.company = company;
@@ -82,19 +75,27 @@ public class BusinessDTO implements DTO {
         return this.company;
     }
 
-    public Double getFee() {
-        return fee;
-    }
-
-    public void setFee(Double fee) {
-        this.fee = fee;
-    }
-
     public void setBusinessTime(Date businessTime) {
         this.businessTime = businessTime;
     }
 
     public Date getBusinessTime() {
         return this.businessTime;
+    }
+
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(String money) {
+        this.money = money;
+    }
+
+    public String getFee() {
+        return fee;
+    }
+
+    public void setFee(String fee) {
+        this.fee = fee;
     }
 }

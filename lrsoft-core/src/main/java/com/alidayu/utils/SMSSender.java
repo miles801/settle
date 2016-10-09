@@ -58,7 +58,7 @@ public class SMSSender {
      * @param params     可选的参数
      * @return 返回结果
      */
-    public String send(String templateId, String mobiles, Map<String, String> params) {
+    public SmsResponse send(String templateId, String mobiles, Map<String, String> params) {
         Assert.hasText(templateId, "模板不能为空！");
         Assert.hasText(mobiles, "电话号码不能为空!");
         AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
@@ -81,7 +81,9 @@ public class SMSSender {
 
         try {
             AlibabaAliqinFcSmsNumSendResponse rsp = client.execute(req);
-            return rsp.getBody();
+            String body = rsp.getBody();
+            ResponseWrapper wrapper = gson.fromJson(body, ResponseWrapper.class);
+            return wrapper.getResponse();
         } catch (ApiException e) {
             Assert.isTrue(false, "短信发送失败!" + e.getMessage());
             e.printStackTrace();

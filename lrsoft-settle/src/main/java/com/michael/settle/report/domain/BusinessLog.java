@@ -4,8 +4,6 @@ import com.michael.common.CommonDomain;
 import com.michael.docs.annotations.ApiField;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -14,8 +12,8 @@ import java.util.Date;
  *
  * @author Michael
  */
-@Entity
-@Table(name = "settle_business_log")
+//@Entity
+//@Table(name = "settle_business_log")
 public class BusinessLog extends CommonDomain {
     @ApiField(value = "文交所", desc = "参数:VIP_COMPANY")
     @NotNull

@@ -211,4 +211,92 @@ public class GroupVipCtrl extends BaseController {
         List<Map<String, Object>> data = groupVipService.analysis3(StringUtils.decodeByUTF8(request.getParameter("groupName")));
         GsonUtils.printData(response, data);
     }
+
+
+    // 导出数据-- 团队佣金
+    @RequestMapping(value = "/export-bonus", method = RequestMethod.GET)
+    public String exportBonus(HttpServletRequest request, HttpServletResponse response) {
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM"))
+                .create();
+        GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
+        List<GroupVipVo> data = groupVipService.query(bo);
+        String json = gson.toJson(data);
+        JsonElement element = gson.fromJson(json, JsonElement.class);
+        JsonObject o = new JsonObject();
+        o.add("c", element);
+        String disposition = null;//
+        try {
+            disposition = "attachment;filename=" + URLEncoder.encode("团队佣金数据" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xlsx", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", disposition);
+        try {
+            InputStream inputStream = GroupVipCtrl.class.getClassLoader().getResourceAsStream("export_groupBonus.xlsx");
+            Assert.notNull(inputStream, "数据导出失败!模板文件不存在，请与管理员联系!");
+            new ExportEngine().export(response.getOutputStream(), inputStream, o);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 导出数据 -- 会员活跃度
+    @RequestMapping(value = "/export-activity", method = RequestMethod.GET)
+    public String exportVipActivity(HttpServletRequest request, HttpServletResponse response) {
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM"))
+                .create();
+        GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
+        List<GroupVipVo> data = groupVipService.query(bo);
+        String json = gson.toJson(data);
+        JsonElement element = gson.fromJson(json, JsonElement.class);
+        JsonObject o = new JsonObject();
+        o.add("c", element);
+        String disposition = null;//
+        try {
+            disposition = "attachment;filename=" + URLEncoder.encode("会员活跃度数据" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xlsx", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", disposition);
+        try {
+            InputStream inputStream = GroupVipCtrl.class.getClassLoader().getResourceAsStream("export_vipActivity.xlsx");
+            Assert.notNull(inputStream, "数据导出失败!模板文件不存在，请与管理员联系!");
+            new ExportEngine().export(response.getOutputStream(), inputStream, o);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 导出数据 -- 汇总
+    @RequestMapping(value = "/export-total", method = RequestMethod.GET)
+    public String exportTotal(HttpServletRequest request, HttpServletResponse response) {
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM"))
+                .create();
+        GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
+        List<GroupVipVo> data = groupVipService.query(bo);
+        String json = gson.toJson(data);
+        JsonElement element = gson.fromJson(json, JsonElement.class);
+        JsonObject o = new JsonObject();
+        o.add("c", element);
+        String disposition = null;//
+        try {
+            disposition = "attachment;filename=" + URLEncoder.encode("汇总数据" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xlsx", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", disposition);
+        try {
+            InputStream inputStream = GroupVipCtrl.class.getClassLoader().getResourceAsStream("export_abcd.xlsx");
+            Assert.notNull(inputStream, "数据导出失败!模板文件不存在，请与管理员联系!");
+            new ExportEngine().export(response.getOutputStream(), inputStream, o);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

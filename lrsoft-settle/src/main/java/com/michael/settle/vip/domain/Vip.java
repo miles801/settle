@@ -27,10 +27,13 @@ public class Vip extends CommonDomain {
     @Column(name = "name", nullable = false, length = 40)
     private String name;
 
-    @ApiField(value = "所属团队")
-    @NotNull
-    @Column(name = "groupId", nullable = false, length = 40)
+    @ApiField(value = "团队编号")
+    @Column(name = "groupId", length = 40)
     private String groupId;
+
+    @ApiField(value = "团队名称")
+    @Column(length = 40)
+    private String groupName;
 
     @ApiField(value = "签约状态", desc = "参数:VIP_ASSIGN_STATUS")
     @NotNull
@@ -130,5 +133,11 @@ public class Vip extends CommonDomain {
         return this.recommend;
     }
 
+    public String getGroupName() {
+        return groupName;
+    }
 
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
 }

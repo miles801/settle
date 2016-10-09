@@ -1,8 +1,7 @@
 package com.michael.settle.conf.service;
 
 import com.alidayu.utils.SMSSender;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
+import com.alidayu.utils.SmsResponse;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
@@ -39,17 +38,11 @@ public class BonusUtils {
      */
     public static String sendSms(String mobile, Map<String, String> params) {
         String errorMsg = null;
-        String result = SMSSender.getInstance().send(templateId, mobile, params);
-        Gson gson = new Gson();
-        Map map = gson.fromJson(result, Map.class);
-        Object error_response = map.get("error_response");
-        if (error_response != null) {
-            if (error_response instanceof LinkedTreeMap) {
-                LinkedTreeMap treeMap = (LinkedTreeMap) error_response;
-                errorMsg = (String) treeMap.get("sub_msg");
-            }
+        SmsResponse response = SMSSender.getInstance().send(templateId, mobile, params);
+        if (response.isSuccess()) {
+            return null;
         }
-        return errorMsg;
+        return response.getErrorMsg();
     }
 
 }

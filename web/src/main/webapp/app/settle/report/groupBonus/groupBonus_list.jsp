@@ -67,9 +67,12 @@
         <div class="block">
             <div class="block-header">
                 <div class="header-text">
-                    <span>团队佣金列表</span>
                 </div>
                 <span class="header-button">
+                    <a type="button" class="btn btn-green btn-min" ng-click="remove();" ng-disabled="!anyone" ng-cloak>
+                        删除
+                        <span ng-show="anyone">({{items.length}})</span>
+                    </a>
                     <a type="button" class="btn btn-green btn-min" ng-click="exportData();"> 导出 </a>
                 </span>
             </div>
@@ -79,6 +82,10 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-header">
                             <tr>
+                                <td class="width-min">
+                                    <div select-all-checkbox checkboxes="beans.data" selected-items="items"
+                                         anyone-selected="anyone"></div>
+                                </td>
                                 <td class="width-min">序号</td>
                                 <td>文交所</td>
                                 <td>团队名称</td>
@@ -143,9 +150,10 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="15" class="text-center">没有查询到数据！</td>
+                                <td colspan="16" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
+                                <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td bo-text="pager.start+$index+1"></td>
                                 <td bo-text="foo.companyName"></td>
                                 <td>

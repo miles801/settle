@@ -1,12 +1,15 @@
 package com.alidayu.utils;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Michael
  */
-public class SmsSendResponse {
+public class SmsResponse {
     /**
      * id
      */
+    @SerializedName("request_id")
     private String id;
     /**
      * 是否成功：一定存在
@@ -15,10 +18,12 @@ public class SmsSendResponse {
     /**
      * 错误代码：可能为空
      */
+    @SerializedName("code")
     private String errorCode;
     /**
      * 错误消息：一定存在
      */
+    @SerializedName("sub_msg")
     private String errorMsg;
     /**
      * 发送的内容
@@ -29,20 +34,20 @@ public class SmsSendResponse {
      */
     private String mobile;
 
-    public SmsSendResponse() {
+    public SmsResponse() {
     }
 
-    public SmsSendResponse(boolean success) {
+    public SmsResponse(boolean success) {
         this.success = success;
     }
 
-    public SmsSendResponse(boolean success, String errorCode, String errorMsg) {
+    public SmsResponse(boolean success, String errorCode, String errorMsg) {
         this.success = success;
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
     }
 
-    public SmsSendResponse(boolean success, String errorCode, String errorMsg, String mobile, String content) {
+    public SmsResponse(boolean success, String errorCode, String errorMsg, String mobile, String content) {
         this.success = success;
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;

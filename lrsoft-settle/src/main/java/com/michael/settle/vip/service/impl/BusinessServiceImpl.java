@@ -191,10 +191,20 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
                 public void execute(BusinessDTO dto) {
                     Context context = RuntimeContext.get();
                     Business business = new Business();
-                    BeanUtils.copyProperties(dto, business);
+                    BeanUtils.copyProperties(dto, business, "fee", "money");
                     if (BeanCopyUtils.isEmpty(business)) {
                         return;
                     }
+                    String fee = dto.getFee();
+                    if (StringUtils.isEmpty(fee)) {
+                        fee = "0";
+                    }
+                    business.setFee(Double.parseDouble(fee));
+                    String money = dto.getMoney();
+                    if (StringUtils.isEmpty(money)) {
+                        money = "0";
+                    }
+                    business.setMoney(Double.parseDouble(money));
                     // 交易团队的编号，如果值不是数字，则是名称，可以通过名称查询出对应的编号
                     String groupCode = dto.getGroupCode();
                     if (StringUtils.isEmpty(groupCode)) {

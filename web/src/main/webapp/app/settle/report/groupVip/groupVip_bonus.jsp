@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>原始集合汇总</title>
+    <title>返佣</title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/vendor/bootstrap-v3.0/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/style/standard/css/eccrm-common-new.css">
@@ -127,7 +127,6 @@
         <div class="block">
             <div class="block-header">
                 <div class="header-text">
-                    <span>团队会员列表</span>
                 </div>
                 <span class="header-button">
                         <a type="button" class="btn btn-green btn-min" ng-click="setBonus();"> 确定返佣 </a>
@@ -141,6 +140,10 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-header">
                             <tr>
+                                <td class="width-min">
+                                    <div select-all-checkbox checkboxes="beans.data" selected-items="items"
+                                         anyone-selected="anyone"></div>
+                                </td>
                                 <td class="width-min">序号</td>
                                 <td class="cp" ng-click="order('groupName');">团队名称
                                     <span ng-show="condition.orderBy=='groupName'" ng-cloak>
@@ -227,9 +230,10 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="17" class="text-center">没有查询到数据！</td>
+                                <td colspan="18" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
+                                <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td bo-text="pager.start+$index+1"></td>
                                 <td>
                                     <a ng-click="view(foo.id)" bo-text="foo.groupName" class="cp" title="点击查看详情"></a>

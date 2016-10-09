@@ -25,6 +25,7 @@ import com.michael.settle.vip.service.GroupService;
 import com.michael.settle.vip.service.Params;
 import com.michael.settle.vip.vo.GroupVo;
 import com.michael.utils.beans.BeanCopyUtils;
+import com.michael.utils.string.StringUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -202,10 +203,19 @@ public class GroupServiceImpl implements GroupService, BeanWrapCallback<Group, G
                     if (BeanCopyUtils.isEmpty(group)) {
                         return;
                     }
-                    group.setDeleted(false);
-                    group.setCompany(company);
-                    validate(group);
-                    session.save(group);
+                    // 根据团队编号，如果具有这个编号则更新名称，否则保存新的
+                    String groupId = dto.getCode();
+                    Assert.hasText(groupId, "团队导入失败!团队编号不能为空!");
+                    Group g = groupDao.findByCode(groupId);
+                    if (g != null) {
+                        Assert.isTrue(StringUtils.equals(company, g.getCompany()), "团队导入失败!团队【" + groupId + "】所属的文交所必须一致!");
+                        g.setName(dto.getName());
+                    } else {
+                        group.setDeleted(false);
+                        group.setCompany(company);
+                        validate(group);
+                        session.save(group);
+                    }
                     if (context.getRowIndex() % 10 == 0) {
                         session.flush();
                         session.clear();
