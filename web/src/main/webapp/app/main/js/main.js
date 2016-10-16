@@ -5,24 +5,6 @@ $(function () {
             width: '100%'
         }, 500);
     });
-    var socket = new WebSocket('ws://' + window.location.host + '/ws');
-
-    // 打开Socket
-    socket.onopen = function (event) {
-
-        // 发送一个初始化消息
-        socket.send('我发送了一个测试消息!');
-
-        // 监听消息
-        socket.onmessage = function (event) {
-            notify('新消息', {
-                requireInteraction: true,
-                icon: '/app/main/images/clock.jpg',
-                body: event.data
-            });
-        };
-
-    }
 });
 (function (angular, $, window) {
 
