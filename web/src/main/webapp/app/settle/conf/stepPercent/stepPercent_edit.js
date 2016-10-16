@@ -22,6 +22,7 @@
         StepPercentParam.company(function (o) {
             $scope.companys.push.apply($scope.companys, o);
         });
+        $scope.types = [{name: '成交额', value: 1}, {name: '手续费', value: 2}];
 
 
         // 保存
@@ -65,7 +66,9 @@
 
 
         if (pageType == 'add') {
-            $scope.beans = {};
+            $scope.beans = {
+                type: 2
+            };
         } else if (pageType == 'modify') {
             $scope.load(id);
         } else if (pageType == 'detail') {

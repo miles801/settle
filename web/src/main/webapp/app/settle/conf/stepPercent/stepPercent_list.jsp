@@ -66,6 +66,7 @@
                                 </td>
                                 <td style="width: 30px;">序号</td>
                                 <td>文交所</td>
+                                <td>计算方式</td>
                                 <td>最小值</td>
                                 <td>最大值</td>
                                 <td>比例</td>
@@ -76,7 +77,7 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="6" class="text-center">没有查询到数据！</td>
+                                <td colspan="7" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td><input type="checkbox" ng-model="foo.isSelected"/></td>
@@ -84,6 +85,7 @@
                                 <td>
                                     <a ng-click="view(foo.id)" bo-text="foo.companyName" class="cp" title="点击查看详情"></a>
                                 </td>
+                                <td bo-text="foo.type==1?'成交额':'手续费'"></td>
                                 <td bo-text="foo.minValue|number"></td>
                                 <td bo-text="foo.maxValue|number"></td>
                                 <td bo-text="foo.percent"></td>

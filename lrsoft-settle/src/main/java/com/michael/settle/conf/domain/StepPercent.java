@@ -36,6 +36,16 @@ public class StepPercent extends CommonDomain {
     @Column(name = "percent", nullable = false)
     private Double percent;
 
+    @ApiField(value = "类型", desc = "1表示使用成交额，2表示使用手续费")
+    private Integer type;
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
     public void setCompany(String company) {
         this.company = company;

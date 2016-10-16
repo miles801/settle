@@ -50,6 +50,14 @@
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
+                                <label validate-error="form.type">计算方式:</label>
+                            </div>
+                            <select class="w200" ng-model="beans.type" name="type" validate validate-required
+                                    ng-options="foo.value as foo.name for foo in types">
+                            </select>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
                                 <label>最小值:</label>
                             </div>
                             <input type="text" class="w200" ng-model="beans.minValue" validate validate-required
