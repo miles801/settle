@@ -159,15 +159,15 @@
                                 <td>
                                     <a ng-click="view(foo.id)" bo-text="foo.groupName" class="cp" title="点击查看详情"></a>
                                 </td>
-                                <td bo-text="foo.totalMoney|number"></td>
-                                <td bo-text="foo.fee|number"></td>
+                                <td bo-text="foo.totalMoney|number:2"></td>
+                                <td bo-text="foo.fee|number:2"></td>
                                 <td bo-text="foo.commission"></td>
                                 <td bo-text="foo.stepPercent"></td>
-                                <td bo-text="foo.taxServerFee"></td>
+                                <td bo-text="foo.taxServerFee|number:2"></td>
                                 <td bo-text="foo.percent"></td>
-                                <td bo-text="foo.payMoney|number"></td>
-                                <td bo-text="foo.outofTax|number"></td>
-                                <td bo-text="foo.tax|number"></td>
+                                <td bo-text="foo.payMoney|number:2"></td>
+                                <td bo-text="foo.outofTax|number:2"></td>
+                                <td bo-text="foo.tax|number:2"></td>
                                 <td bo-text="foo.occurDate|date:'yyyy-MM'"></td>
                                 <td bo-text="foo.description"></td>
                                 <td class="text-left">

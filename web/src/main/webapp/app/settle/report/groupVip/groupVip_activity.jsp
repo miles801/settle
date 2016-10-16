@@ -128,8 +128,8 @@
                                 </td>
                                 <td bo-text="foo.vipCounts|number"></td>
                                 <td bo-text="foo.businessCounts|number"></td>
-                                <td bo-text="foo.totalMoney|number:3" style="width: 180px;"></td>
-                                <td bo-text="foo.totalMoney/(foo.businessCounts||1)|number:3"
+                                <td bo-text="foo.totalMoney|number:2" style="width: 180px;"></td>
+                                <td bo-text="foo.totalMoney/(foo.businessCounts||1)|number:2"
                                     style="width: 180px;"></td>
                             </tr>
                             </tbody>

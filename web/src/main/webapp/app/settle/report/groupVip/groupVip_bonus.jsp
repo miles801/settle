@@ -242,14 +242,14 @@
                                 <td bo-text="foo.normalCounts"></td>
                                 <td bo-text="foo.assignCounts"></td>
                                 <td bo-text="foo.businessCounts"></td>
-                                <td bo-text="foo.totalMoney|number"></td>
-                                <td bo-text="foo.fee|number"></td>
+                                <td bo-text="foo.totalMoney|number:2"></td>
+                                <td bo-text="foo.fee|number:2"></td>
                                 <td bo-text="foo.commission"></td>
                                 <td bo-text="foo.stepPercent"></td>
                                 <td bo-text="foo.taxServerFee"></td>
-                                <td bo-text="foo.payMoney|number"></td>
-                                <td bo-text="foo.outofTax|number"></td>
-                                <td bo-text="foo.tax|number"></td>
+                                <td bo-text="foo.payMoney|number:2"></td>
+                                <td bo-text="foo.outofTax|number:2"></td>
+                                <td bo-text="foo.tax|number:2"></td>
                                 <td>
                                     <span class="bgc" bo-text="foo.sendSms?'成功':'否'"
                                           ng-class="{red:!foo.sendSms,green:foo.sendSms}"></span>

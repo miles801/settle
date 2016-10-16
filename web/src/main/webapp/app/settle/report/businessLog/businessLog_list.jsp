@@ -80,7 +80,7 @@
                                 </td>
                                 <td bo-text="foo.groupName"></td>
                                 <td bo-text="foo.vipName"></td>
-                                <td bo-text="foo.money|number"></td>
+                                <td bo-text="foo.money|number:2"></td>
                                 <td bo-text="foo.occurDate|eccrmDate"></td>
                                 <td bo-text="foo.recommend"></td>
                                 <td class="text-left">
