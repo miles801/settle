@@ -24,50 +24,13 @@
         <input type="hidden" id="year" value="${param.year}">
         <input type="hidden" id="month" value="${param.month}">
     </div>
-    <div class="list-condition">
-        <div class="block">
-            <div class="block-header">
-                    <span class="header-button">
-                        <a type="button" class="btn btn-green btn-min" ng-click="reset();"> 重置 </a>
-                        <a type="button" class="btn btn-green btn-min" ng-click="query();"> 查询 </a>
-                    </span>
-            </div>
-            <div class="block-content">
-                <div class="content-wrap">
-                    <div class="row float">
-                        <div class="item w300">
-                            <div class="form-label w100">
-                                <label>文交所:</label>
-                            </div>
-                            <select class="w200" ng-model="condition.company"
-                                    ng-options="foo.value as foo.name for foo in companys"
-                                    ng-change="query();"></select>
-                        </div>
-                        <div class="item w300 dn">
-                            <div class="form-label w100">
-                                <label>统计时间:</label>
-                            </div>
-                            <div class="w200 pr">
-                                <input type="text" class="w200" ng-model="condition.occurDate"
-                                       eccrm-my97="{dateFmt:'yyyy-MM'}" readonly placeholder="点击选择日期"
-                                       ng-change="query();"/>
-                                <span class="add-on">
-                                    <i class="icons icon clock" ng-click="condition.occurDate=null"
-                                       title="点击清除日期"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="list-result">
+    <div class="list-result" style="padding-top: 0;margin-top: 0;">
         <div class="block">
             <div class="block-header">
                 <div class="header-text">
                 </div>
                 <span class="header-button">
+                    <a type="button" class="btn btn-green btn-min" ng-click="query();"> 查询 </a>
                     <a type="button" class="btn btn-green btn-min" ng-click="remove();" ng-disabled="!anyone" ng-cloak>
                         删除
                         <span ng-show="anyone">({{items.length}})</span>
@@ -209,5 +172,5 @@
 </div>
 </body>
 <script type="text/javascript" src="<%=contextPath%>/app/settle/report/groupVip/groupVip.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/app/settle/report/groupVip/groupVip_all.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/settle/report/groupVip/groupVip_all2.js"></script>
 </html>

@@ -1,9 +1,8 @@
 package com.michael.settle.report.web;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.michael.common.JspAccessType;
 import com.michael.core.pager.PageVo;
 import com.michael.core.web.BaseController;
@@ -30,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -274,9 +274,32 @@ public class GroupVipCtrl extends BaseController {
     // 导出数据 -- 汇总
     @RequestMapping(value = "/export-total", method = RequestMethod.GET)
     public String exportTotal(HttpServletRequest request, HttpServletResponse response) {
+        final DecimalFormat df = new DecimalFormat("##,###.###");
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM"))
+                .registerTypeAdapter(Double.class, new TypeAdapter<Double>() {
+
+                    @Override
+                    public void write(JsonWriter out, Double value) throws IOException {
+                        if (value == null) {
+                            out.value("0");
+                            return;
+                        }
+                        out.value(df.format(value));
+                    }
+
+                    @Override
+                    public Double read(JsonReader in) throws IOException {
+                        return null;
+                    }
+                })
                 .create();
         GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
+        String name = request.getParameter("_name");
+        if (StringUtils.isEmpty(name)) {
+            name = "汇总数据";
+        } else {
+            name = StringUtils.decodeByUTF8(name);
+        }
         List<GroupVipVo> data = groupVipService.query(bo);
         String json = gson.toJson(data);
         JsonElement element = gson.fromJson(json, JsonElement.class);
@@ -284,7 +307,7 @@ public class GroupVipCtrl extends BaseController {
         o.add("c", element);
         String disposition = null;//
         try {
-            disposition = "attachment;filename=" + URLEncoder.encode("汇总数据" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xlsx", "UTF-8");
+            disposition = "attachment;filename=" + URLEncoder.encode(name + "-" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xlsx", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
