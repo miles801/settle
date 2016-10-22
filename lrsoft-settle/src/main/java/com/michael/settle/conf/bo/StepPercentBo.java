@@ -11,6 +11,17 @@ public class StepPercentBo implements BO {
     @Condition
     private String company;
 
+    @Condition
+    private String orgId;
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
+    }
+
     public void setCompany(String company) {
         this.company = company;
     }

@@ -77,9 +77,6 @@ public class Emp extends CommonDomain implements AttachmentSymbol {
     @Column
     private Integer locked;
 
-    @ApiField(value = "所属组织机构ID")
-    @Column(length = 40)
-    private String orgId;
     @ApiField(value = "所属组织机构名称")
     @Column(length = 40)
     private String orgName;
@@ -158,14 +155,6 @@ public class Emp extends CommonDomain implements AttachmentSymbol {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getOrgId() {
-        return orgId;
-    }
-
-    public void setOrgId(String orgId) {
-        this.orgId = orgId;
     }
 
     public String getOrgName() {

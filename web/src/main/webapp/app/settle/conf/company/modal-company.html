@@ -1,0 +1,67 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width: 700px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <h4 class="modal-title">
+                    <span>选择岗位</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="form" class="form-horizontal">
+                    <div class="row float">
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>名称:</label>
+                            </div>
+                            <input type="text" class="w200" ng-model="beans.name" validate validate-required
+                                   maxlength="100"/>
+                        </div>
+                        <div class="item w600 break">
+                            <div class="form-label w100">
+                                <label>描述:</label>
+                            </div>
+                            <textarea class="w500" rows="4" ng-model="beans.description" maxlength="1000"></textarea>
+                        </div>
+                    </div>
+                    <div class="row float break" ng-cloak ng-if="pageType!=='add'">
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>创建人:</label>
+                            </div>
+                            <span class="w200 sl">{{beans.creatorName}}</span>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>创建时间:</label>
+                            </div>
+                            <div class="w200 sl">{{beans.createdDatetime|eccrmDatetime}}</div>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>最后更新人:</label>
+                            </div>
+                            <span class="w200 sl">{{beans.modifierName}}</span>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>最后时间:</label>
+                            </div>
+                            <div class="w200 sl">{{beans.modifiedDatetime|eccrmDatetime}}</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-cloak class="btn btn-default btn-primary" ng-click="save();"
+                        ng-disabled="form.$invalid" ng-cloak ng-if="pageType=='add'">保存
+                </button>
+                <button type="button" ng-cloak class="btn btn-default btn-primary" ng-click="update();"
+                        ng-disabled="form.$invalid" ng-cloak ng-if="pageType=='modify'">更新
+                </button>
+                <button type="button" class="btn btn-default" ng-click="$hide()">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+

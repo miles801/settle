@@ -44,6 +44,18 @@ public class CommonDomain {
     @Column
     private Date modifiedDatetime;
 
+    @ApiField("组织机构")
+    @Column(length = 40)
+    private String orgId;
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
+    }
+
     public String getId() {
         return id;
     }

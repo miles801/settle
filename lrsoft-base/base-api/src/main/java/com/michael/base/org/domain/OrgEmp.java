@@ -14,8 +14,6 @@ import javax.persistence.Table;
 @Table(name = "sys_org_emp")
 public class OrgEmp extends CommonDomain {
 
-    // 机构ID
-    private String orgId;
     // 员工ID
     private String empId;
 
@@ -23,16 +21,8 @@ public class OrgEmp extends CommonDomain {
     }
 
     public OrgEmp(String orgId, String empId) {
-        this.orgId = orgId;
+        setOrgId(orgId);
         this.empId = empId;
-    }
-
-    public String getOrgId() {
-        return orgId;
-    }
-
-    public void setOrgId(String orgId) {
-        this.orgId = orgId;
     }
 
     public String getEmpId() {
