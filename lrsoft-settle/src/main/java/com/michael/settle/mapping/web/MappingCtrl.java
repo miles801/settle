@@ -1,6 +1,7 @@
 package com.michael.settle.mapping.web;
 
 import com.michael.common.JspAccessType;
+import com.michael.core.context.SecurityContext;
 import com.michael.core.pager.PageVo;
 import com.michael.core.web.BaseController;
 import com.michael.settle.mapping.bo.MappingBo;
@@ -81,6 +82,10 @@ public class MappingCtrl extends BaseController {
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)
     public void pageQuery(HttpServletRequest request, HttpServletResponse response) {
         MappingBo bo = GsonUtils.wrapDataToEntity(request, MappingBo.class);
+        if (bo == null) {
+            bo = new MappingBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         PageVo pageVo = mappingService.pageQuery(bo);
         GsonUtils.printData(response, pageVo);
     }
@@ -89,6 +94,10 @@ public class MappingCtrl extends BaseController {
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public void query(HttpServletRequest request, HttpServletResponse response) {
         MappingBo bo = GsonUtils.wrapDataToEntity(request, MappingBo.class);
+        if (bo == null) {
+            bo = new MappingBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<MappingVo> vos = mappingService.query(bo);
         GsonUtils.printData(response, vos);
     }
@@ -114,6 +123,10 @@ public class MappingCtrl extends BaseController {
     @RequestMapping(value = "/query-valid", method = RequestMethod.POST)
     public void queryValid(HttpServletRequest request, HttpServletResponse response) {
         MappingBo bo = GsonUtils.wrapDataToEntity(request, MappingBo.class);
+        if (bo == null) {
+            bo = new MappingBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<Mapping> data = mappingService.queryValid(bo);
         GsonUtils.printData(response, data);
     }

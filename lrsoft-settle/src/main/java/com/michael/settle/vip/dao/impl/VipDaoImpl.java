@@ -1,5 +1,6 @@
 package com.michael.settle.vip.dao.impl;
 
+import com.michael.core.context.SecurityContext;
 import com.michael.core.hibernate.HibernateDaoHelper;
 import com.michael.core.hibernate.criteria.CriteriaUtils;
 import com.michael.core.pager.Pager;
@@ -85,7 +86,8 @@ public class VipDaoImpl extends HibernateDaoHelper implements VipDao {
     public boolean hasCode(String code, String id) {
         Assert.hasText(code, "查询失败!编号不能为空!");
         Criteria criteria = createRowCountsCriteria(Vip.class)
-                .add(Restrictions.eq("code", code));
+                .add(Restrictions.eq("code", code))
+                .add(Restrictions.eq("orgId", SecurityContext.getOrgId()));
         if (StringUtils.isNotEmpty(id)) {
             criteria.add(Restrictions.ne("id", id));
         }

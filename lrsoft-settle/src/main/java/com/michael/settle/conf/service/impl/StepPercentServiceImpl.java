@@ -1,11 +1,11 @@
 package com.michael.settle.conf.service.impl;
 
-import com.michael.base.parameter.service.ParameterContainer;
 import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
 import com.michael.core.hibernate.validator.ValidatorUtils;
 import com.michael.core.pager.PageVo;
 import com.michael.settle.conf.bo.StepPercentBo;
+import com.michael.settle.conf.dao.CompanyDao;
 import com.michael.settle.conf.dao.StepPercentDao;
 import com.michael.settle.conf.domain.StepPercent;
 import com.michael.settle.conf.service.StepPercentService;
@@ -22,6 +22,8 @@ import java.util.List;
 public class StepPercentServiceImpl implements StepPercentService, BeanWrapCallback<StepPercent, StepPercentVo> {
     @Resource
     private StepPercentDao stepPercentDao;
+    @Resource
+    private CompanyDao companyDao;
 
     @Override
     public String save(StepPercent stepPercent) {
@@ -79,13 +81,8 @@ public class StepPercentServiceImpl implements StepPercentService, BeanWrapCallb
         return vos;
     }
 
-
     @Override
     public void doCallback(StepPercent stepPercent, StepPercentVo vo) {
-        ParameterContainer container = ParameterContainer.getInstance();
-
-        // 文交所
-        vo.setCompanyName(container.getSystemName("VIP_COMPANY", stepPercent.getCompany()));
-
+        vo.setCompanyName(companyDao.getName(stepPercent.getCompany()));
     }
 }

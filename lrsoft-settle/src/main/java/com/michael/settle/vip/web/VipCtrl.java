@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.michael.common.JspAccessType;
+import com.michael.core.context.SecurityContext;
 import com.michael.core.pager.PageVo;
 import com.michael.core.web.BaseController;
 import com.michael.poi.exp.ExportEngine;
@@ -96,6 +97,10 @@ public class VipCtrl extends BaseController {
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)
     public void pageQuery(HttpServletRequest request, HttpServletResponse response) {
         VipBo bo = GsonUtils.wrapDataToEntity(request, VipBo.class);
+        if (bo == null) {
+            bo = new VipBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         PageVo pageVo = vipService.pageQuery(bo);
         GsonUtils.printData(response, pageVo);
     }
@@ -104,6 +109,10 @@ public class VipCtrl extends BaseController {
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public void query(HttpServletRequest request, HttpServletResponse response) {
         VipBo bo = GsonUtils.wrapDataToEntity(request, VipBo.class);
+        if (bo == null) {
+            bo = new VipBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<VipVo> vos = vipService.query(bo);
         GsonUtils.printData(response, vos);
     }
@@ -122,6 +131,10 @@ public class VipCtrl extends BaseController {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
                 .create();
         VipBo bo = GsonUtils.wrapDataToEntity(request, VipBo.class);
+        if (bo == null) {
+            bo = new VipBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<VipVo> data = vipService.query(bo);
         String json = gson.toJson(data);
         JsonElement element = gson.fromJson(json, JsonElement.class);

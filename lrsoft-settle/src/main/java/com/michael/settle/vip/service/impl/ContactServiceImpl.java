@@ -15,6 +15,7 @@ import com.michael.poi.core.Handler;
 import com.michael.poi.core.ImportEngine;
 import com.michael.poi.core.RuntimeContext;
 import com.michael.poi.imp.cfg.Configuration;
+import com.michael.settle.conf.dao.CompanyDao;
 import com.michael.settle.vip.bo.ContactBo;
 import com.michael.settle.vip.dao.ContactDao;
 import com.michael.settle.vip.domain.Contact;
@@ -44,6 +45,8 @@ public class ContactServiceImpl implements ContactService, BeanWrapCallback<Cont
     @Resource
     private ContactDao contactDao;
 
+    @Resource
+    private CompanyDao companyDao;
     @Override
     public String save(Contact contact) {
         contact.setDeleted(false);
@@ -200,8 +203,7 @@ public class ContactServiceImpl implements ContactService, BeanWrapCallback<Cont
     public void doCallback(Contact contact, ContactVo vo) {
         ParameterContainer container = ParameterContainer.getInstance();
 
-        // 文交所
-        vo.setCompanyName(container.getSystemName(Params.COMPANY, contact.getCompany()));
+        vo.setCompanyName(companyDao.getName(contact.getCompany()));
 
         // 返佣银行
         vo.setBankName(container.getSystemName(Params.BANK, contact.getBank()));

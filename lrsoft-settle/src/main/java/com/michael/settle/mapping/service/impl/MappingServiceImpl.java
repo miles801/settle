@@ -5,12 +5,12 @@ import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
 import com.michael.core.hibernate.validator.ValidatorUtils;
 import com.michael.core.pager.PageVo;
+import com.michael.settle.conf.dao.CompanyDao;
 import com.michael.settle.mapping.bo.MappingBo;
 import com.michael.settle.mapping.dao.MappingDao;
 import com.michael.settle.mapping.domain.Mapping;
 import com.michael.settle.mapping.service.MappingService;
 import com.michael.settle.mapping.vo.MappingVo;
-import com.michael.settle.vip.service.Params;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -24,6 +24,9 @@ import java.util.List;
 public class MappingServiceImpl implements MappingService, BeanWrapCallback<Mapping, MappingVo> {
     @Resource
     private MappingDao mappingDao;
+
+    @Resource
+    private CompanyDao companyDao;
 
     @Override
     public String save(Mapping mapping) {
@@ -120,8 +123,7 @@ public class MappingServiceImpl implements MappingService, BeanWrapCallback<Mapp
     public void doCallback(Mapping mapping, MappingVo vo) {
         ParameterContainer container = ParameterContainer.getInstance();
 
-        // 文交所
-        vo.setCompanyName(container.getSystemName(Params.COMPANY, mapping.getCompany()));
+        vo.setCompanyName(companyDao.getName(mapping.getCompany()));
 
         // 表名称
         vo.setNameName(container.getSystemName("TABLE_NAME", mapping.getName()));

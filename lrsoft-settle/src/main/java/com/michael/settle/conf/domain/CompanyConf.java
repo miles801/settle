@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 public class CompanyConf extends CommonDomain {
     @ApiField(value = "文交所", desc = "参数:VIP_COMPANY")
     @NotNull
-    @Column(name = "company", nullable = false, length = 40, unique = true, updatable = false)
+    @Column(name = "company", nullable = false, length = 40, updatable = false)
     private String company;
 
     @ApiField(value = "标准佣金")

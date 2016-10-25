@@ -39,4 +39,10 @@ public interface CompanyDao {
      */
     void delete(Company company);
 
+    /**
+     * 根据ID获取名称（缓存的数据）
+     *
+     * @param id ID
+     */
+    String getName(String id);
 }

@@ -44,12 +44,19 @@
         })
     });
 
-    app.service('MappingParam', function (ParameterLoader, Parameter, CommonUtils, MappingService) {
+    app.service('MappingParam', function (ParameterLoader, Parameter, CommonUtils, MappingService, $http) {
         var o = {};
 
         // 文交所
         o['company'] = function (callback) {
-            ParameterLoader.loadSysParam('VIP_COMPANY', callback);
+            $http.post(CommonUtils.contextPathURL('/settle/conf/company/query'))
+                .success(function (data) {
+                    data = data.data || [];
+                    angular.forEach(data, function (o) {
+                        o.value = o.id;
+                    });
+                    callback(data || []);
+                });
         };
 
         // 表名称

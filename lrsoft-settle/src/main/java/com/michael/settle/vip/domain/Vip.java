@@ -19,7 +19,7 @@ import java.util.Date;
 public class Vip extends CommonDomain {
     @ApiField(value = "编号")
     @NotNull
-    @Column(name = "code", nullable = false, unique = true, length = 40)
+    @Column(name = "code", nullable = false, length = 40)
     private String code;
 
     @ApiField(value = "名称")

@@ -62,7 +62,7 @@
         })
     });
 
-    app.service('VipParam', function (ParameterLoader) {
+    app.service('VipParam', function (ParameterLoader, $http, CommonUtils) {
         var o = {};
 
         // 签约状态
@@ -79,7 +79,14 @@
 
         // 文交所
         o['company'] = function (callback) {
-            ParameterLoader.loadSysParam('VIP_COMPANY', callback);
+            $http.post(CommonUtils.contextPathURL('/settle/conf/company/query'))
+                .success(function (data) {
+                    data = data.data || [];
+                    angular.forEach(data, function (o) {
+                        o.value = o.id;
+                    });
+                    callback(data || []);
+                });
         };
 
         return o;

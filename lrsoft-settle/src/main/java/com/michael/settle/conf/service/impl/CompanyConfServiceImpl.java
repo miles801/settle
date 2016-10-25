@@ -1,12 +1,12 @@
 package com.michael.settle.conf.service.impl;
 
-import com.michael.base.parameter.service.ParameterContainer;
 import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
 import com.michael.core.hibernate.validator.ValidatorUtils;
 import com.michael.core.pager.PageVo;
 import com.michael.settle.conf.bo.CompanyConfBo;
 import com.michael.settle.conf.dao.CompanyConfDao;
+import com.michael.settle.conf.dao.CompanyDao;
 import com.michael.settle.conf.domain.CompanyConf;
 import com.michael.settle.conf.service.CompanyConfService;
 import com.michael.settle.conf.vo.CompanyConfVo;
@@ -23,6 +23,9 @@ import java.util.List;
 public class CompanyConfServiceImpl implements CompanyConfService, BeanWrapCallback<CompanyConf, CompanyConfVo> {
     @Resource
     private CompanyConfDao companyConfDao;
+
+    @Resource
+    private CompanyDao companyDao;
 
     @Override
     public String save(CompanyConf companyConf) {
@@ -86,10 +89,8 @@ public class CompanyConfServiceImpl implements CompanyConfService, BeanWrapCallb
 
     @Override
     public void doCallback(CompanyConf companyConf, CompanyConfVo vo) {
-        ParameterContainer container = ParameterContainer.getInstance();
 
-        // 文交所
-        vo.setCompanyName(container.getSystemName("VIP_COMPANY", companyConf.getCompany()));
+        vo.setCompanyName(companyDao.getName(companyConf.getCompany()));
 
     }
 }

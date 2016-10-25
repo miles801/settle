@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.michael.common.JspAccessType;
+import com.michael.core.context.SecurityContext;
 import com.michael.core.pager.PageVo;
 import com.michael.core.web.BaseController;
 import com.michael.poi.exp.ExportEngine;
@@ -109,6 +110,10 @@ public class GroupCtrl extends BaseController {
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)
     public void pageQuery(HttpServletRequest request, HttpServletResponse response) {
         GroupBo bo = GsonUtils.wrapDataToEntity(request, GroupBo.class);
+        if (bo == null) {
+            bo = new GroupBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         PageVo pageVo = groupService.pageQuery(bo);
         GsonUtils.printData(response, pageVo);
     }
@@ -117,6 +122,10 @@ public class GroupCtrl extends BaseController {
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public void query(HttpServletRequest request, HttpServletResponse response) {
         GroupBo bo = GsonUtils.wrapDataToEntity(request, GroupBo.class);
+        if (bo == null) {
+            bo = new GroupBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<GroupVo> vos = groupService.query(bo);
         GsonUtils.printData(response, vos);
     }
@@ -142,6 +151,10 @@ public class GroupCtrl extends BaseController {
     @RequestMapping(value = "/query-valid", method = RequestMethod.POST)
     public void queryValid(HttpServletRequest request, HttpServletResponse response) {
         GroupBo bo = GsonUtils.wrapDataToEntity(request, GroupBo.class);
+        if (bo == null) {
+            bo = new GroupBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<Group> data = groupService.queryValid(bo);
         GsonUtils.printData(response, data);
     }
@@ -160,6 +173,10 @@ public class GroupCtrl extends BaseController {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
                 .create();
         GroupBo bo = GsonUtils.wrapDataToEntity(request, GroupBo.class);
+        if (bo == null) {
+            bo = new GroupBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<GroupVo> data = groupService.query(bo);
         String json = gson.toJson(data);
         JsonElement element = gson.fromJson(json, JsonElement.class);

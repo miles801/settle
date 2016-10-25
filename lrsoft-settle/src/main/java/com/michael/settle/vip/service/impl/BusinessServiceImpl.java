@@ -3,7 +3,6 @@ package com.michael.settle.vip.service.impl;
 import com.michael.base.attachment.AttachmentProvider;
 import com.michael.base.attachment.utils.AttachmentHolder;
 import com.michael.base.attachment.vo.AttachmentVo;
-import com.michael.base.parameter.service.ParameterContainer;
 import com.michael.core.SystemContainer;
 import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
@@ -16,6 +15,7 @@ import com.michael.poi.core.ImportEngine;
 import com.michael.poi.core.RuntimeContext;
 import com.michael.poi.imp.cfg.ColMapping;
 import com.michael.poi.imp.cfg.Configuration;
+import com.michael.settle.conf.dao.CompanyDao;
 import com.michael.settle.mapping.dao.MappingDao;
 import com.michael.settle.vip.bo.BusinessBo;
 import com.michael.settle.vip.dao.BusinessDao;
@@ -56,6 +56,9 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
 
     @Resource
     private GroupDao groupDao;
+
+    @Resource
+    private CompanyDao companyDao;
 
     @Override
     public String save(Business business) {
@@ -275,10 +278,6 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
 
     @Override
     public void doCallback(Business business, BusinessVo vo) {
-        ParameterContainer container = ParameterContainer.getInstance();
-
-        // 文交所
-        vo.setCompanyName(container.getSystemName("VIP_COMPANY", business.getCompany()));
-
+        vo.setCompanyName(companyDao.getName(business.getCompany()));
     }
 }

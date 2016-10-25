@@ -40,6 +40,17 @@ public class VipBo implements BO {
     @Condition
     private String creatorId;
 
+    @Condition
+    private String orgId;
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
+    }
+
     public String getCreatorId() {
         return creatorId;
     }

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.michael.common.JspAccessType;
+import com.michael.core.context.SecurityContext;
 import com.michael.core.pager.PageVo;
 import com.michael.core.web.BaseController;
 import com.michael.poi.exp.ExportEngine;
@@ -95,6 +96,10 @@ public class ContactCtrl extends BaseController {
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)
     public void pageQuery(HttpServletRequest request, HttpServletResponse response) {
         ContactBo bo = GsonUtils.wrapDataToEntity(request, ContactBo.class);
+        if (bo == null) {
+            bo = new ContactBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         PageVo pageVo = contactService.pageQuery(bo);
         GsonUtils.printData(response, pageVo);
     }
@@ -103,6 +108,10 @@ public class ContactCtrl extends BaseController {
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public void query(HttpServletRequest request, HttpServletResponse response) {
         ContactBo bo = GsonUtils.wrapDataToEntity(request, ContactBo.class);
+        if (bo == null) {
+            bo = new ContactBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<ContactVo> vos = contactService.query(bo);
         GsonUtils.printData(response, vos);
     }
@@ -128,6 +137,10 @@ public class ContactCtrl extends BaseController {
     @RequestMapping(value = "/query-valid", method = RequestMethod.POST)
     public void queryValid(HttpServletRequest request, HttpServletResponse response) {
         ContactBo bo = GsonUtils.wrapDataToEntity(request, ContactBo.class);
+        if (bo == null) {
+            bo = new ContactBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<Contact> data = contactService.queryValid(bo);
         GsonUtils.printData(response, data);
     }
@@ -146,6 +159,10 @@ public class ContactCtrl extends BaseController {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
                 .create();
         ContactBo bo = GsonUtils.wrapDataToEntity(request, ContactBo.class);
+        if (bo == null) {
+            bo = new ContactBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<ContactVo> data = contactService.query(bo);
         String json = gson.toJson(data);
         JsonElement element = gson.fromJson(json, JsonElement.class);

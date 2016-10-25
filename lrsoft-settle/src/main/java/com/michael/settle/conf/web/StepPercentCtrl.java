@@ -1,6 +1,7 @@
 package com.michael.settle.conf.web;
 
 import com.michael.common.JspAccessType;
+import com.michael.core.context.SecurityContext;
 import com.michael.core.pager.PageVo;
 import com.michael.core.web.BaseController;
 import com.michael.settle.conf.bo.StepPercentBo;
@@ -81,6 +82,10 @@ public class StepPercentCtrl extends BaseController {
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)
     public void pageQuery(HttpServletRequest request, HttpServletResponse response) {
         StepPercentBo bo = GsonUtils.wrapDataToEntity(request, StepPercentBo.class);
+        if (bo == null) {
+            bo = new StepPercentBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         PageVo pageVo = stepPercentService.pageQuery(bo);
         GsonUtils.printData(response, pageVo);
     }
@@ -89,6 +94,10 @@ public class StepPercentCtrl extends BaseController {
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public void query(HttpServletRequest request, HttpServletResponse response) {
         StepPercentBo bo = GsonUtils.wrapDataToEntity(request, StepPercentBo.class);
+        if (bo == null) {
+            bo = new StepPercentBo();
+        }
+        bo.setOrgId(SecurityContext.getOrgId());
         List<StepPercentVo> vos = stepPercentService.query(bo);
         GsonUtils.printData(response, vos);
     }

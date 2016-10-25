@@ -5,11 +5,14 @@ import com.michael.core.hibernate.criteria.CriteriaUtils;
 import com.michael.settle.conf.bo.CompanyBo;
 import com.michael.settle.conf.dao.CompanyDao;
 import com.michael.settle.conf.domain.Company;
+import com.michael.utils.string.StringUtils;
 import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -17,6 +20,9 @@ import java.util.List;
  */
 @Repository("companyDao")
 public class CompanyDaoImpl extends HibernateDaoHelper implements CompanyDao {
+
+    // key为ID，value为Name
+    private Map<String, String> names = new HashMap<>();
 
     @Override
     public String save(Company company) {
@@ -71,6 +77,20 @@ public class CompanyDaoImpl extends HibernateDaoHelper implements CompanyDao {
         return (Company) getSession().get(Company.class, id);
     }
 
+    @Override
+    public String getName(String id) {
+        if (StringUtils.isEmpty(id)) {
+            return null;
+        }
+        String name = names.get(id);
+        if (name == null) {
+            name = (String) getSession().createQuery(" select c.name from " + Company.class.getName() + " c where c.id=?")
+                    .setParameter(0, id)
+                    .uniqueResult();
+            names.put(id, name);
+        }
+        return name;
+    }
 
     private void initCriteria(Criteria criteria, CompanyBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");

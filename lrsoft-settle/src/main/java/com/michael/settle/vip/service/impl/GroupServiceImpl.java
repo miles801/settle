@@ -16,13 +16,13 @@ import com.michael.poi.core.ImportEngine;
 import com.michael.poi.core.RuntimeContext;
 import com.michael.poi.imp.cfg.ColMapping;
 import com.michael.poi.imp.cfg.Configuration;
+import com.michael.settle.conf.dao.CompanyDao;
 import com.michael.settle.mapping.dao.MappingDao;
 import com.michael.settle.vip.bo.GroupBo;
 import com.michael.settle.vip.dao.GroupDao;
 import com.michael.settle.vip.domain.Group;
 import com.michael.settle.vip.dto.GroupDTO;
 import com.michael.settle.vip.service.GroupService;
-import com.michael.settle.vip.service.Params;
 import com.michael.settle.vip.vo.GroupVo;
 import com.michael.utils.beans.BeanCopyUtils;
 import com.michael.utils.string.StringUtils;
@@ -51,6 +51,8 @@ public class GroupServiceImpl implements GroupService, BeanWrapCallback<Group, G
     @Resource
     private MappingDao mappingDao;
 
+    @Resource
+    private CompanyDao companyDao;
     @Override
     public String save(Group group) {
         group.setDeleted(false);
@@ -239,8 +241,7 @@ public class GroupServiceImpl implements GroupService, BeanWrapCallback<Group, G
     public void doCallback(Group group, GroupVo vo) {
         ParameterContainer container = ParameterContainer.getInstance();
 
-        // 文交所
-        vo.setCompanyName(container.getSystemName(Params.COMPANY, group.getCompany()));
+        vo.setCompanyName(companyDao.getName(group.getCompany()));
 
     }
 }

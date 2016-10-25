@@ -20,6 +20,7 @@ import com.michael.poi.core.RuntimeContext;
 import com.michael.poi.imp.cfg.ColMapping;
 import com.michael.poi.imp.cfg.Configuration;
 import com.michael.settle.conf.dao.CompanyConfDao;
+import com.michael.settle.conf.dao.CompanyDao;
 import com.michael.settle.conf.dao.StepPercentDao;
 import com.michael.settle.conf.domain.CompanyConf;
 import com.michael.settle.conf.domain.StepPercent;
@@ -88,6 +89,9 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
     @Resource
     private GroupDao groupDao;
+
+    @Resource
+    private CompanyDao companyDao;
 
     @Override
     public String save(Vip vip) {
@@ -199,7 +203,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             vip.setBonus(false);
             vip.setSendSms(false);
             String company = (String) foo.get("company");
-            String companyName = ParameterContainer.getInstance().getSystemName(Params.COMPANY, company);
+            String companyName = companyDao.getName(company);
             vip.setCompany(company.toString());
             vip.setGroupCode(foo.get("groupId").toString());
             String groupName = (String) foo.get("groupName");
@@ -535,8 +539,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
         // 状态
         vo.setStatusName(container.getSystemName(Params.VIP_STATUS, vip.getStatus()));
 
-        // 文交所
-        vo.setCompanyName(container.getSystemName(Params.COMPANY, vip.getCompany()));
+        vo.setCompanyName(companyDao.getName(vip.getCompany()));
 
     }
 }

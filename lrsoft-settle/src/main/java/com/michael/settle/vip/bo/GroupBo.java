@@ -27,6 +27,17 @@ public class GroupBo implements BO {
     @Condition
     private Boolean deleted;
 
+    @Condition
+    private String orgId;
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
+    }
+
     public Boolean getDeleted() {
         return deleted;
     }
