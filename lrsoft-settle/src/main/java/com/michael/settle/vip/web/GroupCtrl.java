@@ -14,6 +14,7 @@ import com.michael.settle.vip.domain.Group;
 import com.michael.settle.vip.service.GroupService;
 import com.michael.settle.vip.vo.GroupVo;
 import com.michael.utils.gson.DateStringConverter;
+import com.michael.utils.gson.DoubleConverter;
 import com.michael.utils.gson.GsonUtils;
 import com.michael.utils.string.StringUtils;
 import org.apache.commons.io.IOUtils;
@@ -171,6 +172,7 @@ public class GroupCtrl extends BaseController {
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public String export(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
+                .registerTypeAdapter(Double.class, new DoubleConverter())
                 .create();
         GroupBo bo = GsonUtils.wrapDataToEntity(request, GroupBo.class);
         if (bo == null) {

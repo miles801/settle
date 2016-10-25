@@ -22,7 +22,7 @@
         StepPercentParam.company(function (o) {
             $scope.companys.push.apply($scope.companys, o);
         });
-        $scope.types = [{name: '成交额', value: 1}, {name: '手续费', value: 2}];
+        $scope.types = [{name: '成交额', value: 1}, {name: '手续费', value: 2}, {name: '标准佣金', value: 3}];
 
 
         // 保存

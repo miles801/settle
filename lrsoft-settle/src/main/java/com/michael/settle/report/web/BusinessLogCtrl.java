@@ -13,6 +13,7 @@ import com.michael.settle.report.domain.BusinessLog;
 import com.michael.settle.report.service.BusinessLogService;
 import com.michael.settle.report.vo.BusinessLogVo;
 import com.michael.utils.gson.DateStringConverter;
+import com.michael.utils.gson.DoubleConverter;
 import com.michael.utils.gson.GsonUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
@@ -119,6 +120,7 @@ public class BusinessLogCtrl extends BaseController {
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public String export(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
+                .registerTypeAdapter(Double.class, new DoubleConverter())
                 .create();
         BusinessLogBo bo = GsonUtils.wrapDataToEntity(request, BusinessLogBo.class);
         List<BusinessLogVo> data = businessLogService.query(bo);

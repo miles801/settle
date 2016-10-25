@@ -198,6 +198,10 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
                     if (BeanCopyUtils.isEmpty(business)) {
                         return;
                     }
+                    // 如果没有交易商，则不读取这一行
+                    if (StringUtils.isEmpty(business.getVipCode())) {
+                        return;
+                    }
                     String fee = dto.getFee();
                     if (StringUtils.isEmpty(fee)) {
                         fee = "0";

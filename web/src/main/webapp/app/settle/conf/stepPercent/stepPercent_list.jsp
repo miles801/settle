@@ -85,7 +85,7 @@
                                 <td>
                                     <a ng-click="view(foo.id)" bo-text="foo.companyName" class="cp" title="点击查看详情"></a>
                                 </td>
-                                <td bo-text="foo.type==1?'成交额':'手续费'"></td>
+                                <td bo-text="foo.type|type"></td>
                                 <td bo-text="foo.minValue|number"></td>
                                 <td bo-text="foo.maxValue|number"></td>
                                 <td bo-text="foo.percent"></td>

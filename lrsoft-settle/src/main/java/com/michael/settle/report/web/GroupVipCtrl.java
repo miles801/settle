@@ -1,8 +1,9 @@
 package com.michael.settle.report.web;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.michael.common.JspAccessType;
 import com.michael.core.pager.PageVo;
 import com.michael.core.web.BaseController;
@@ -12,6 +13,7 @@ import com.michael.settle.report.domain.GroupVip;
 import com.michael.settle.report.service.GroupVipService;
 import com.michael.settle.report.vo.GroupVipVo;
 import com.michael.utils.gson.DateStringConverter;
+import com.michael.utils.gson.DoubleConverter;
 import com.michael.utils.gson.GsonUtils;
 import com.michael.utils.string.StringUtils;
 import org.apache.commons.io.IOUtils;
@@ -29,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -217,6 +218,7 @@ public class GroupVipCtrl extends BaseController {
     @RequestMapping(value = "/export-bonus", method = RequestMethod.GET)
     public String exportBonus(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM"))
+                .registerTypeAdapter(Double.class, new DoubleConverter())
                 .create();
         GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
         List<GroupVipVo> data = groupVipService.query(bo);
@@ -246,6 +248,7 @@ public class GroupVipCtrl extends BaseController {
     @RequestMapping(value = "/export-activity", method = RequestMethod.GET)
     public String exportVipActivity(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM"))
+                .registerTypeAdapter(Double.class, new DoubleConverter())
                 .create();
         GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
         List<GroupVipVo> data = groupVipService.query(bo);
@@ -274,24 +277,8 @@ public class GroupVipCtrl extends BaseController {
     // 导出数据 -- 汇总
     @RequestMapping(value = "/export-total", method = RequestMethod.GET)
     public String exportTotal(HttpServletRequest request, HttpServletResponse response) {
-        final DecimalFormat df = new DecimalFormat("##,###.###");
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM"))
-                .registerTypeAdapter(Double.class, new TypeAdapter<Double>() {
-
-                    @Override
-                    public void write(JsonWriter out, Double value) throws IOException {
-                        if (value == null) {
-                            out.value("0");
-                            return;
-                        }
-                        out.value(df.format(value));
-                    }
-
-                    @Override
-                    public Double read(JsonReader in) throws IOException {
-                        return null;
-                    }
-                })
+                .registerTypeAdapter(Double.class, new DoubleConverter())
                 .create();
         GroupVipBo bo = GsonUtils.wrapDataToEntity(request, GroupVipBo.class);
         String name = request.getParameter("_name");

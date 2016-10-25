@@ -105,7 +105,6 @@ public class GroupVip extends CommonDomain {
     private Double tax;
 
     // 是否返佣
-
     @Column
     private Boolean bonus;
     @ApiField(value = "是否发送短信")

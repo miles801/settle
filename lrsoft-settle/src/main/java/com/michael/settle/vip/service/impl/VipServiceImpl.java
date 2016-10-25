@@ -281,25 +281,24 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
                     percentMap.put(company, percents);
                 }
 
-                int type = 0;
+                int type = percents.get(0).getType();
+                double cm = money;
+                if (type == 2) {
+                    cm = vip.getFee();
+                } else if (type == 3) {
+                    cm = vip.getCommission();
+                }
                 for (StepPercent sp : percents) {
-                    if (sp.getMinValue() < money && sp.getMaxValue() > money) {
+                    if (sp.getMinValue() < cm && sp.getMaxValue() > cm) {
                         p = sp.getPercent();
-                        type = sp.getType();
                         break;
                     }
                 }
                 Assert.notNull(p, String.format("报表生成失败!文交所[%s]下团队[%s]的交易额为[%s]，不在阶梯比例范围内!", companyName, groupName, money));
                 vip.setStepPercent(p);
 
-                // 含税服务费 = x*阶梯比例 (南京使用的是成交额，其他文交所使用手续费）
-                if (type == 1) {
-                    vip.setTaxServerFee(new BigDecimal(vip.getTotalMoney() * vip.getStepPercent()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
-                } else if (type == 2) {
-                    vip.setTaxServerFee(new BigDecimal(vip.getFee() * vip.getStepPercent()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
-                } else {
-                    Assert.isTrue(false, "错误的类型!1表示成交额，2表示手续费");
-                }
+                // 含税服务费 = 标准佣金*阶梯比例 (南京使用的是成交额，其他文交所使用手续费）
+                vip.setTaxServerFee(new BigDecimal(vip.getCommission() * vip.getStepPercent()).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
 
                 // 支付金额 = 含税服务费*固定比例
                 vip.setPercent(conf.getPercent());

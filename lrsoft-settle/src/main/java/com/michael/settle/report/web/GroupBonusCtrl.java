@@ -13,6 +13,7 @@ import com.michael.settle.report.domain.GroupBonus;
 import com.michael.settle.report.service.GroupBonusService;
 import com.michael.settle.report.vo.GroupBonusVo;
 import com.michael.utils.gson.DateStringConverter;
+import com.michael.utils.gson.DoubleConverter;
 import com.michael.utils.gson.GsonUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
@@ -119,6 +120,7 @@ public class GroupBonusCtrl extends BaseController {
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public String export(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM"))
+                .registerTypeAdapter(Double.class, new DoubleConverter())
                 .create();
         GroupBonusBo bo = GsonUtils.wrapDataToEntity(request, GroupBonusBo.class);
         List<GroupBonusVo> data = groupBonusService.query(bo);

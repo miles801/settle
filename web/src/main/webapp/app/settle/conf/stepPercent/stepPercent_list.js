@@ -110,4 +110,17 @@
         };
 
     });
+
+    app.filter('type', function () {
+        return function (value) {
+            if (value == 1) {
+                return '成交额';
+            } else if (value == 2) {
+                return '手续费';
+            } else if (value == 3) {
+                return '标准佣金';
+            }
+            return value;
+        }
+    });
 })(window, angular, jQuery);

@@ -14,6 +14,7 @@ import com.michael.settle.vip.domain.Business;
 import com.michael.settle.vip.service.BusinessService;
 import com.michael.settle.vip.vo.BusinessVo;
 import com.michael.utils.gson.DateStringConverter;
+import com.michael.utils.gson.DoubleConverter;
 import com.michael.utils.gson.GsonUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
@@ -157,6 +158,7 @@ public class BusinessCtrl extends BaseController {
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public String export(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
+                .registerTypeAdapter(Double.class, new DoubleConverter())
                 .create();
         BusinessBo bo = GsonUtils.wrapDataToEntity(request, BusinessBo.class);
         if (bo == null) {

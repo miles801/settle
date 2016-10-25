@@ -36,7 +36,7 @@ public class StepPercent extends CommonDomain {
     @Column(name = "percent", nullable = false)
     private Double percent;
 
-    @ApiField(value = "类型", desc = "1表示使用成交额，2表示使用手续费")
+    @ApiField(value = "类型", desc = "1表示使用成交额，2表示使用手续费,3使用标准佣金")
     private Integer type;
 
     public Integer getType() {

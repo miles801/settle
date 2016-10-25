@@ -14,6 +14,7 @@ import com.michael.settle.vip.domain.Vip;
 import com.michael.settle.vip.service.VipService;
 import com.michael.settle.vip.vo.VipVo;
 import com.michael.utils.gson.DateStringConverter;
+import com.michael.utils.gson.DoubleConverter;
 import com.michael.utils.gson.GsonUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
@@ -129,6 +130,7 @@ public class VipCtrl extends BaseController {
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public String export(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
+                .registerTypeAdapter(Double.class, new DoubleConverter())
                 .create();
         VipBo bo = GsonUtils.wrapDataToEntity(request, VipBo.class);
         if (bo == null) {
