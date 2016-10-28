@@ -79,20 +79,11 @@
             });
         };
 
-        // 新增
-        $scope.add = function () {
-            CommonUtils.addTab({
-                title: '新增团队会员',
-                url: '/settle/report/groupVip/add',
-                onUpdate: $scope.query
-            });
-        };
-
         // 更新
         $scope.modify = function (id) {
             CommonUtils.addTab({
-                title: '更新团队会员',
-                url: '/settle/report/groupVip/modify?id=' + id,
+                title: '更新数据',
+                url: '/app/settle/report/groupVip/groupVip_edit_all.jsp?pageType=modify&id=' + id,
                 onUpdate: $scope.query
             });
         };
@@ -100,8 +91,8 @@
         // 查看明细
         $scope.view = function (id) {
             CommonUtils.addTab({
-                title: '查看团队会员',
-                url: '/settle/report/groupVip/detail?id=' + id
+                title: '查看明细',
+                url: '/app/settle/report/groupVip/groupVip_edit_all.jsp?pageType=view&id=' + id
             });
         };
 

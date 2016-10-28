@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>团队佣金编辑</title>
+    <title>团队会员编辑</title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/vendor/bootstrap-v3.0/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/style/standard/css/eccrm-common-new.css">
@@ -37,16 +37,24 @@
             <div class="content-wrap">
                 <form name="form" class="form-horizontal" role="form">
                     <div style="display: none;">
-                        <input type="hidden" id="pageType" value="${pageType}"/>
-                        <input type="hidden" id="id" value="${id}"/>
+                        <input type="hidden" id="pageType" value="${param.pageType}"/>
+                        <input type="hidden" id="id" value="${param.id}"/>
                     </div>
                     <div class="row float">
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>文交所:</label>
+                            </div>
+                            <select class="w200" ng-model="beans.company"
+                                    ng-options="foo.value as foo.name for foo in companys" validate
+                                    validate-required disabled></select>
+                        </div>
                         <div class="item w300">
                             <div class="form-label w100">
                                 <label>团队编号:</label>
                             </div>
                             <input type="text" class="w200" ng-model="beans.groupCode" validate validate-required
-                                   maxlength="20"/>
+                                   maxlength="20" disabled/>
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
@@ -57,11 +65,36 @@
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
-                                <label validate-error="form.company">文交所:</label>
+                                <label>交易商数量:</label>
                             </div>
-                            <select class="w200" ng-model="beans.company" name="company" validate validate-required
-                                    ng-options="foo.value as foo.name for foo in companys">
-                            </select>
+                            <input type="text" class="w200" ng-model="beans.vipCounts" validate validate-required/>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>正常数量:</label>
+                            </div>
+                            <input type="text" class="w200" ng-model="beans.normalCounts" validate validate-required/>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>其他数量:</label>
+                            </div>
+                            <input type="text" class="w200" ng-model="beans.otherCounts" validate validate-required
+                            />
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>已签约数量:</label>
+                            </div>
+                            <input type="text" class="w200" ng-model="beans.assignCounts" validate validate-required
+                            />
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>未签约数量:</label>
+                            </div>
+                            <input type="text" class="w200" ng-model="beans.notAssignCounts" validate validate-required
+                            />
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
@@ -79,63 +112,55 @@
                                 <label>成交额:</label>
                             </div>
                             <input type="text" class="w200" ng-model="beans.totalMoney" validate validate-required
-                                   maxlength=""/>
+                            />
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
                                 <label>交易手续费:</label>
                             </div>
-                            <input type="text" class="w200" ng-model="beans.fee" validate validate-required
-                                   maxlength=""/>
+                            <input type="text" class="w200" ng-model="beans.fee" validate validate-required/>
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
                                 <label>标准佣金:</label>
                             </div>
-                            <input type="text" class="w200" ng-model="beans.commission" validate validate-required
-                                   maxlength=""/>
+                            <input type="text" class="w200" ng-model="beans.commission" validate validate-required/>
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
                                 <label>阶梯比例:</label>
                             </div>
-                            <input type="text" class="w200" ng-model="beans.stepPercent" validate validate-required
-                                   maxlength=""/>
+                            <input type="text" class="w200" ng-model="beans.stepPercent" validate validate-required/>
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
                                 <label>含税服务费:</label>
                             </div>
-                            <input type="text" class="w200" ng-model="beans.taxServerFee" validate validate-required
-                                   maxlength=""/>
+                            <input type="text" class="w200" ng-model="beans.taxServerFee" validate validate-required/>
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
                                 <label>设定比例:</label>
                             </div>
-                            <input type="text" class="w200" ng-model="beans.percent" validate validate-required
-                                   maxlength=""/>
+                            <input type="text" class="w200" ng-model="beans.percent" validate validate-required/>
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
                                 <label>支付金额:</label>
                             </div>
-                            <input type="text" class="w200" ng-model="beans.payMoney" validate validate-required
-                                   maxlength=""/>
+                            <input type="text" class="w200" ng-model="beans.payMoney" validate validate-required/>
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
                                 <label>除税支付金额:</label>
                             </div>
-                            <input type="text" class="w200" ng-model="beans.outofTax" validate validate-required
-                                   maxlength=""/>
+                            <input type="text" class="w200" ng-model="beans.outofTax" validate validate-required/>
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
                                 <label>税金:</label>
                             </div>
-                            <input type="text" class="w200" ng-model="beans.tax" validate validate-required
-                                   maxlength=""/>
+                            <input type="text" class="w200" ng-model="beans.tax" validate validate-required/>
                         </div>
                         <div class="item w900 break">
                             <div class="form-label w100">
