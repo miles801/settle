@@ -204,7 +204,8 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             vip.setSendSms(false);
             String company = (String) foo.get("company");
             String companyName = companyDao.getName(company);
-            vip.setCompany(company.toString());
+            vip.setCompany(company);
+            vip.setCompanyName(companyName);
             vip.setGroupCode(foo.get("groupId").toString());
             String groupName = (String) foo.get("groupName");
             if (StringUtils.isEmpty(groupName)) {
@@ -233,8 +234,8 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             vip.setBusinessCounts(businessCounts == null ? 0 : Integer.parseInt(businessCounts.toString()));
 
             // 成交额
-            BigDecimal totalMoney = (BigDecimal) foo.get("money");
-            final double money = totalMoney == null ? 0 : Double.parseDouble(totalMoney.toString());
+            Double totalMoney = (Double) foo.get("money");
+            final double money = totalMoney == null ? 0 : totalMoney;
             vip.setTotalMoney(money);
 
             // 交易时间
@@ -242,8 +243,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
             if (money > 0) {
                 Double p = null;
-                BigDecimal feeBD = (BigDecimal) foo.get("fee");
-                Double fee = new BigDecimal(feeBD == null ? 0D : Double.parseDouble(feeBD.toString())).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+                Double fee = (Double) foo.get("fee");
 
 
                 // 交易时间
@@ -361,7 +361,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
     @Override
     public List<Map<String, Object>> analysis(final Map<String, Object> params) {
         String sql = "SELECT " +
-                "v.company,v.groupCode,v.groupName,v.vipCounts,v.normalCounts,v.assignCounts,b.totalMoney,b.fee,b.commission,b.stepPercent,b.taxServerFee,b.payMoney,b.percent,b.outofTax,b.tax,b.occurDate,b.description " +
+                "v.company,v.companyName ,v.groupCode,v.groupName,v.vipCounts,v.normalCounts,v.assignCounts,b.totalMoney,b.fee,b.commission,b.stepPercent,b.taxServerFee,b.payMoney,b.percent,b.outofTax,b.tax,b.occurDate,b.description " +
                 "FROM settle_group_vip v left join " +
                 "settle_group_bonus b on v.company=b.company where v.groupCode=b.groupCode and b.occurDate between ? and ? and v.creatorId=? ";
         final String company = (String) params.get("company");
@@ -387,7 +387,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
     public void importData(final String company, String[] attachmentIds) {
         Assert.hasText(company, "导入失败!会员文交所不能为空!");
-        Logger logger = Logger.getLogger(VipServiceImpl.class);
+        final Logger logger = Logger.getLogger(VipServiceImpl.class);
         Assert.notEmpty(attachmentIds, "数据导入失败!数据文件不能为空，请重试!");
         final String[] parsePatterns = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.0", "yyyy-MM-dd HH:mm:ss.SSS"};
 
@@ -435,6 +435,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
                     if (BeanCopyUtils.isEmpty(vip)) {
                         return;
                     }
+                    logger.info(String.format("数据导入进度：%d/%d", RuntimeContext.get().getRowIndex(), RuntimeContext.get().getEndRow()));
 
                     // 导入团队
                     String groupId = dto.getGroupId();

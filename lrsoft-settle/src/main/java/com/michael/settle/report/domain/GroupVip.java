@@ -61,6 +61,10 @@ public class GroupVip extends CommonDomain {
     @Column(name = "company", nullable = false, length = 40)
     private String company;
 
+
+    @Column(length = 40)
+    private String companyName;
+
     @ApiField(value = "统计时间")
     @NotNull
     @Column(name = "occurDate", nullable = false)
@@ -119,6 +123,14 @@ public class GroupVip extends CommonDomain {
     @ApiField(value = "短信发送失败的原因!")
     @Column(length = 200)
     private String errorMsg;
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 
     public String getErrorMsg() {
         return errorMsg;

@@ -1,6 +1,5 @@
 package com.michael.settle.report.service.impl;
 
-import com.michael.base.parameter.service.ParameterContainer;
 import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
 import com.michael.core.hibernate.HibernateUtils;
@@ -18,7 +17,6 @@ import com.michael.settle.vip.bo.ContactBo;
 import com.michael.settle.vip.dao.ContactDao;
 import com.michael.settle.vip.dao.VipDao;
 import com.michael.settle.vip.domain.Contact;
-import com.michael.settle.vip.service.Params;
 import com.michael.utils.string.StringUtils;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
@@ -218,10 +216,6 @@ public class GroupVipServiceImpl implements GroupVipService, BeanWrapCallback<Gr
 
     @Override
     public void doCallback(GroupVip groupVip, GroupVipVo vo) {
-        ParameterContainer container = ParameterContainer.getInstance();
-
-        // 文交所
-        vo.setCompanyName(container.getSystemName(Params.COMPANY, groupVip.getCompany()));
 
     }
 }

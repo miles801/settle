@@ -31,6 +31,7 @@ public class CompanyDaoImpl extends HibernateDaoHelper implements CompanyDao {
 
     @Override
     public void update(Company company) {
+        names.put(company.getId(), company.getName());
         getSession().update(company);
     }
 
