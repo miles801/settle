@@ -149,7 +149,7 @@
                                 <td bo-text="foo.businessCounts"></td>
                                 <td bo-text="foo.totalMoney|number:2"></td>
                                 <td bo-text="foo.fee|number:2"></td>
-                                <td bo-text="foo.commission"></td>
+                                <td bo-text="foo.commission|number:2"></td>
                                 <td bo-text="foo.stepPercent"></td>
                                 <td bo-text="foo.taxServerFee|number:2"></td>
                                 <td bo-text="foo.payMoney|number:2"></td>

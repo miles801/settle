@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
  * @author Michael
  */
 public class DoubleConverter extends TypeAdapter<Double> {
-    final DecimalFormat df = new DecimalFormat("##,###.###");
+    final DecimalFormat df = new DecimalFormat("##,###.##");
 
     @Override
     public void write(JsonWriter out, Double value) throws IOException {
