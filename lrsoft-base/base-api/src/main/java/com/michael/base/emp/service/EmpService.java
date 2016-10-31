@@ -75,4 +75,12 @@ public interface EmpService {
      * @return 分页对象
      */
     PageVo queryByPosition(String positionId, EmpBo bo);
+
+
+    /**
+     * 重置指定用户的密码（不包含自己）
+     *
+     * @param ids 用户ID列表
+     */
+    void resetPwd(String[] ids);
 }

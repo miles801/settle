@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.Date;
 
 /**
  * 员工
@@ -88,6 +89,18 @@ public class Emp extends CommonDomain implements AttachmentSymbol {
     @ApiField(value = "角色ID", desc = "多个值使用逗号进行分隔")
     @Transient
     private String roles;
+
+    @ApiField("过期时间")
+    @Column
+    private Date expiredDate;
+
+    public Date getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(Date expiredDate) {
+        this.expiredDate = expiredDate;
+    }
 
     public String getRoles() {
         return roles;

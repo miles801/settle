@@ -70,10 +70,14 @@
                         <input class="col-2-half" type="text" ng-model="beans.loginName" validate validate-required
                                maxlength="20" placeholder="字母和数字组成，用于系统登录..." ng-disabled="beans.id"/>
                         <div class="form-label col-1-half">
-                            <label>拼音:</label>
+                            <label>有效期:</label>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="beans.pinyin" maxlength="20"
-                               placeholder="如果为空则由系统自动生成"/>
+                        <div class="col-2-half">
+                            <input type="text" class="col-12" eccrm-my97="{}" validate validate-required
+                                   placeholder="请选择用户的有效期"
+                                   ng-model="beans.expiredDate"/>
+                            <span class="add-on"><i class="icons icon clock"></i></span>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">

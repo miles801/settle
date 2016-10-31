@@ -15,6 +15,7 @@ import com.michael.core.SystemContainer;
 import com.michael.core.beans.BeanWrapBuilder;
 import com.michael.core.beans.BeanWrapCallback;
 import com.michael.core.context.SecurityContext;
+import com.michael.core.hibernate.HibernateUtils;
 import com.michael.core.hibernate.validator.ValidatorUtils;
 import com.michael.core.pager.PageVo;
 import com.michael.pinyin.SimplePinYin;
@@ -153,7 +154,9 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
         Assert.notNull(emp, "登录失败!用户名/密码不正确!");
         Assert.isTrue(emp.getLocked().equals(Emp.STATUS_NORMAL), "登录失败!用户已经被锁定!");
         Assert.isTrue(password.equals(emp.getPassword()), "登录失败!用户名/密码不正确!");
-
+        if (emp.getExpiredDate() != null) {
+            Assert.isTrue(emp.getExpiredDate().getTime() > System.currentTimeMillis(), "登录失败!用户已过期，请与管理员联系!");
+        }
         return BeanWrapBuilder.newInstance()
                 .addProperties(new String[]{"password"})
                 .exclude()
@@ -225,6 +228,18 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
     }
 
     @Override
+    public void resetPwd(String[] ids) {
+        if (ids == null || ids.length < 1) {
+            return;
+        }
+        HibernateUtils.getSession(false)
+                .createQuery("update " + Emp.class.getName() + " e set e.password=? where e.id in:ids")
+                .setParameter(0, MD5Utils.encode("123"))
+                .setParameterList("ids", ids)
+                .executeUpdate();
+    }
+
+    @Override
     public void doCallback(Emp emp, EmpVo vo) {
         Integer locked = emp.getLocked();
         if (locked == null) {
@@ -256,6 +271,5 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
             vo.setRoleIds(builderIds.substring(1));
             vo.setRoleNames(builderNames.substring(1));
         }
-
     }
 }

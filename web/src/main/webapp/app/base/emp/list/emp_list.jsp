@@ -55,10 +55,14 @@
                 </div>
                 <span class="header-button">
                     <a type="button" class="btn btn-green btn-min" ng-click="add();">
-                        <span class="glyphicons plus"></span> 新建
+                        新建
                     </a>
-                    <a type="button" class="btn btn-green btn-min" ng-click="remove();">
-                        <span class="glyphicons plus"></span> 禁用
+                    <a type="button" class="btn btn-green btn-min" ng-click="remove();" ng-cloak ng-disabled="!anyone">
+                        禁用
+                    </a>
+                    <a type="button" class="btn btn-green btn-min" ng-click="resetPwd();" ng-cloak
+                       ng-disabled="!anyone">
+                        重置密码
                     </a>
                 </span>
             </div>
@@ -76,6 +80,7 @@
                                 <td>登录名</td>
                                 <td>电话</td>
                                 <td>性别</td>
+                                <td>有效期</td>
                                 <td>岗位</td>
                                 <td>账号状态</td>
                                 <td>组织机构</td>
@@ -84,7 +89,7 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="9" class="text-center">没有查询到数据！</td>
+                                <td colspan="10" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td><input type="checkbox" ng-model="foo.isSelected"/></td>
@@ -94,6 +99,7 @@
                                 <td bo-text="foo.loginName"></td>
                                 <td bo-text="foo.mobile"></td>
                                 <td bo-text="foo.sexName"></td>
+                                <td bo-text="foo.expiredDate|eccrmDate"></td>
                                 <td bo-text="foo.roleNames"></td>
                                 <td bo-text="foo.lockedName"></td>
                                 <td bo-text="foo.orgName"></td>

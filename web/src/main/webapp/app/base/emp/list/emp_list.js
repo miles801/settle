@@ -8,7 +8,10 @@
         'base.emp'
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, EmpService, EmpParam) {
-        $scope.condition = {};
+        $scope.condition = {
+            orderBy: 'expiredDate',
+            reverse: true
+        };
 
         //查询数据
         $scope.query = function () {
@@ -17,8 +20,9 @@
 
         $scope.pager = {
             fetch: function () {
-                var param = angular.extend({}, {start: this.start, limit: this.limit}, $scope.condition);
+                var param = angular.extend({start: this.start, limit: this.limit}, $scope.condition);
                 $scope.beans = [];
+                $scope.items && ($scope.items.length = 0);
                 return CommonUtils.promise(function (defer) {
                     var promise = EmpService.pageQuery(param, function (data) {
                         param = null;
@@ -93,6 +97,25 @@
                 title: '查看员工',
                 url: '/base/emp/detail?id=' + id
             });
-        }
+        };
+
+        // 重置密码
+        $scope.resetPwd = function () {
+            var ids = [];
+            angular.forEach($scope.items, function (o) {
+                ids.push(o.id);
+            });
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '重置选中的[' + ids.length + ']个用户的密码，请确认!',
+                callback: function () {
+                    var promise = EmpService.resetPwd({ids: ids.join(',')}, function () {
+                        AlertFactory.success('操作成功!');
+                        $scope.query();
+                    });
+                    CommonUtils.loading(promise)
+                }
+            });
+        };
     });
 })(window, angular, jQuery);

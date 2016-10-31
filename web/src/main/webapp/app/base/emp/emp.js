@@ -24,7 +24,13 @@
             // 分页查询
             pageQuery: {
                 method: 'POST',
-                params: {method: 'pageQuery', limit: '@limit', start: '@start'},
+                params: {
+                    method: 'pageQuery',
+                    limit: '@limit',
+                    start: '@start',
+                    orderBy: '@orderBy',
+                    reverse: '@reverse'
+                },
                 isArray: false
             },
 
@@ -33,6 +39,9 @@
 
             // 启用员工
             start: {method: 'POST', params: {method: 'start', ids: '@ids'}, isArray: false},
+
+            // 重置密码
+            resetPwd: {method: 'POST', params: {method: 'resetPwd', ids: '@ids'}, isArray: false},
 
 
             // 根据id字符串（使用逗号分隔多个值）

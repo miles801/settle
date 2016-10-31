@@ -105,6 +105,14 @@ public class EmpCtrl extends BaseController {
         GsonUtils.printSuccess(response);
     }
 
+    // 重置密码
+    @ResponseBody
+    @RequestMapping(value = "/resetPwd", params = "ids", method = RequestMethod.POST)
+    public void resetPwd(String ids, HttpServletRequest request, HttpServletResponse response) {
+        empService.resetPwd(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/delete", params = {"ids"}, method = RequestMethod.DELETE)
