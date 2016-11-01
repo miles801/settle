@@ -65,7 +65,7 @@ public interface GroupVipService {
      *
      * @param company 文交所
      */
-    List<Map<String, Object>> analysis1(String company);
+    List<Map<String, Object>> analysis1(String m1, String m2, String company);
 
     /**
      * 同一平台当月不同团队的情况

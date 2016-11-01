@@ -39,6 +39,22 @@
                                     ng-options="foo.value as foo.name for foo in companys"
                                     ng-change="query();"> </select>
                         </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>月份1:</label>
+                            </div>
+                            <input type="text" class="w200" eccrm-my97="{dateFmt:'yyyy-MM'}" readonly
+                                   ng-model="condition.m1"
+                                   placeholder="点击选择" validate validate-required/>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w100">
+                                <label>月份2:</label>
+                            </div>
+                            <input type="text" class="w200" eccrm-my97="{dateFmt:'yyyy-MM'}" readonly
+                                   ng-model="condition.m2"
+                                   placeholder="点击选择" validate validate-required/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -90,12 +106,18 @@
                                 <td bo-text="foo.groupName"></td>
                                 <td>
                                     <span bo-text="foo.assignCounts"></span>
+                                    <span style="color: red;margin-left: 3px;" ng-if="foo.assignCounts>0">↑</span>
+                                    <span style="color: green;margin-left: 3px;" ng-if="foo.assignCounts<0">↓</span>
                                 </td>
                                 <td>
                                     <span bo-text="foo.businessCounts"></span>
+                                    <span style="color: red;margin-left: 3px;" ng-if="foo.businessCounts>0">↑</span>
+                                    <span style="color: green;margin-left: 3px;" ng-if="foo.businessCounts<0">↓</span>
                                 </td>
                                 <td>
                                     <span bo-text="foo.payMoney"></span>
+                                    <span style="color: red;margin-left: 3px;" ng-if="foo.payMoney>0">↑</span>
+                                    <span style="color: green;margin-left: 3px;" ng-if="foo.payMoney<0">↓</span>
                                 </td>
                             </tr>
                             </tbody>

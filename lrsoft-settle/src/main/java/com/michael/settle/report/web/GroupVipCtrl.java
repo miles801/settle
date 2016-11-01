@@ -193,7 +193,7 @@ public class GroupVipCtrl extends BaseController {
     @RequestMapping(value = "/analysis1", method = RequestMethod.POST)
     @ResponseBody
     public void analysis1(HttpServletRequest request, HttpServletResponse response) {
-        List<Map<String, Object>> data = groupVipService.analysis1(request.getParameter("company"));
+        List<Map<String, Object>> data = groupVipService.analysis1(request.getParameter("m1"), request.getParameter("m2"), request.getParameter("company"));
         GsonUtils.printData(response, data);
     }
 

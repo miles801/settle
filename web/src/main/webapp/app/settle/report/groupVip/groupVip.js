@@ -48,7 +48,12 @@
             // 分析1
             analysis1: {
                 method: 'POST', params: {
-                    method: 'analysis1', company: '@company', orderBy: '@orderBy', reverse: '@reverse'
+                    method: 'analysis1',
+                    company: '@company',
+                    m1: '@m1',
+                    m2: '@m2',
+                    orderBy: '@orderBy',
+                    reverse: '@reverse'
                 }, isArray: false
             },
             // 分析2

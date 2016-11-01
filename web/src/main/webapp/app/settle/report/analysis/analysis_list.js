@@ -36,6 +36,9 @@
                 AlertFactory.warning('请选择文交所!');
                 return;
             }
+            if (!$scope.condition.m1 || !$scope.condition.m2) {
+                return;
+            }
             $scope.beans = [];
             var promise = GroupVipService.analysis1($scope.condition, function (data) {
                 $scope.beans = data.data || [];

@@ -24,6 +24,7 @@ import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -179,17 +180,20 @@ public class GroupVipServiceImpl implements GroupVipService, BeanWrapCallback<Gr
     }
 
     @Override
-    public List<Map<String, Object>> analysis1(final String company) {
-        final Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        String sql = "select t1.company company, t1.groupName groupName," +
-                "t2.assignCounts-t1.assignCounts assignCounts, " +
-                "t2.businessCounts-t1.businessCounts businessCounts, " +
-                "t2.payMoney-t1.payMoney payMoney " +
-                "from settle_group_vip t1 " +
-                " join settle_group_vip t2 on month(t1.occurDate)+1  = month(t2.occurDate) " +
-                " where month(t1.occurDate)=? and year(t1.occurDate)=? and t1.company=? " +
-                " group by t1.company, t1.groupName ";
+    public List<Map<String, Object>> analysis1(String m1, String m2, final String company) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+        final int year1 = Integer.parseInt(m1.substring(0, 4));
+        final int year2 = Integer.parseInt(m2.substring(0, 4));
+        final int month1 = Integer.parseInt(m1.substring(5));
+        final int month2 = Integer.parseInt(m2.substring(5));
+        Assert.isTrue(year1 * 100 + month1 < year2 * 100 + month2, "查询失败!初始月份必须小于目标月份!");
+        String sql = "select t1.company,t1.groupName groupName," +
+                "ifnull(t2.assignCounts,0)-ifnull(t1.assignCounts,0) assignCounts, " +
+                "ifnull(t2.businessCounts,0)-ifnull(t1.businessCounts,0) businessCounts, " +
+                "ifnull(t2.payMoney,0)-ifnull(t1.payMoney,0) payMoney from " +
+                "(select * from settle_group_vip where  year(occurDate)=? and  month(occurDate)=? and  company=?) t1 left join " +
+                "(select * from settle_group_vip where  year(occurDate)=? and  month(occurDate)=? and  company=?) t2 " +
+                "on t1.groupName=t2.groupName group by t1.groupName ";
         if (Pager.getOrder() != null && Pager.getOrder().hasNext()) {
             Order order = Pager.getOrder().next();
             sql += " order by " + order.getName() + (order.isReverse() ? " desc " : " asc ");
@@ -197,8 +201,11 @@ public class GroupVipServiceImpl implements GroupVipService, BeanWrapCallback<Gr
             sql += " order by assignCounts desc";
         }
         List<Map<String, Object>> o = vipDao.sqlQuery(sql, new ArrayList<Object>() {{
-            add(calendar.get(Calendar.MONTH));
-            add(calendar.get(Calendar.YEAR));
+            add(year1);
+            add(month1);
+            add(company);
+            add(year2);
+            add(month2);
             add(company);
         }});
         return o;
