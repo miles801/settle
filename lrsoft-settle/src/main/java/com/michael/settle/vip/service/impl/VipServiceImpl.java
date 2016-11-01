@@ -320,41 +320,6 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             }
         }
 
-        // 保存交易历史
-        /*
-        logger.info("******** 3. 交易历史 ********");
-        BusinessBo bb = new BusinessBo();
-        bb.setCreatorId(SecurityContext.getEmpId());
-        Long bbTotal = businessDao.getTotal(bb);
-        Assert.isTrue(bbTotal != null && bbTotal > 0, "报表生成失败!未查询到交易记录!");
-        long times = IntegerUtils.times(bbTotal, 20);
-        index = 0;
-        for (int i = 0; i < times; i++) {
-            Pager.setLimit(20);
-            Pager.setStart(i * 20);
-            logger.info(String.format("******** 交易历史明细： %d/%d ********", i + 1, times));
-            List<Business> data = businessDao.pageQuery(bb);
-            for (Business b : data) {
-                BusinessLog bl = new BusinessLog();
-                bl.setCompany(b.getCompany());
-                bl.setGroupCode(b.getGroupCode());
-                bl.setGroupName(b.getGroupCode());
-                bl.setVipName(b.getVipName());
-                if (StringUtils.isEmpty(bl.getVipName())) {
-                    bl.setVipName("匿名");
-                }
-                bl.setOccurDate(b.getBusinessTime());
-                bl.setMoney(b.getMoney());
-                businessLogDao.save(bl);
-                index++;
-                if (index % 20 == 0) {
-                    session.flush();
-                    session.clear();
-                }
-            }
-        }
-        */
-
         logger.info("******** 产生报表数据 : end ********");
     }
 
@@ -401,7 +366,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             final File file = AttachmentHolder.newInstance().getTempFile(id);
             logger.info("准备导入数据：" + file.getAbsolutePath());
             logger.info("初始化导入引擎....");
-            long start = System.currentTimeMillis();
+            final long start = System.currentTimeMillis();
 
             // 初始化引擎
             Configuration configuration = new Configuration();
@@ -425,6 +390,16 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
             // 获取session
             SessionFactory sessionFactory = (SessionFactory) SystemContainer.getInstance().getBean("sessionFactory");
             final Session session = sessionFactory.getCurrentSession();
+
+            // 获取vip的编号
+            @SuppressWarnings("unchecked") List<String> codeList = session.createQuery("select v.code from " + Vip.class.getName() + " v where v.orgId=? and v.company=?")
+                    .setParameter(0, SecurityContext.getOrgId())
+                    .setParameter(1, company)
+                    .list();
+            final Set<String> codes = new HashSet<>();
+            codes.addAll(codeList);
+            codeList.clear();
+
             configuration.setPath(newFilePath);
             configuration.setHandler(new Handler<VipDTO>() {
                 @Override
@@ -481,14 +456,25 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
 
                     // 签约状态
                     String assignStatus = dto.getAssignStatus();
-                    Assert.hasText(assignStatus, "签约状态不能为空!");
+                    if (StringUtils.isEmpty(assignStatus)) {
+                        assignStatus = "未签约";
+                    }
+                    if (StringUtils.include(assignStatus, "已绑定")) {
+                        assignStatus = "已签约";
+                    }
+                    if (StringUtils.include(assignStatus, "未绑定")) {
+                        assignStatus = "未签约";
+                    }
                     ParameterContainer container = ParameterContainer.getInstance();
                     String assignStatusValue = container.getSysValue(Params.VIP_ASSIGN_STATUS, assignStatus);
                     Assert.hasText(assignStatusValue, "签约状态[" + assignStatus + "]在系统中不存在!");
                     vip.setAssignStatus(assignStatusValue);
                     // 状态
                     String status = dto.getStatus();
-                    Assert.hasText(status, "签约状态不能为空!");
+                    Assert.hasText(status, "会员状态不能为空!");
+                    if (StringUtils.include(status, "已审核")) {
+                        status = "正常";
+                    }
                     String statusValue = container.getSysValue(Params.VIP_STATUS, status);
                     Assert.hasText(statusValue, "状态[" + assignStatus + "]在系统中不存在!");
                     vip.setStatus(statusValue);
@@ -509,7 +495,8 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
                     }
                     vip.setOccurDate(occurDate);
                     vip.setCompany(company);
-                    validate(vip);
+                    Assert.isTrue(!codes.contains(vip.getCode()), "会员编号[" + vip.getCompany() + "]重复!");
+                    codes.add(vip.getCode());
                     session.save(vip);
                     if (context.getRowIndex() % 10 == 0) {
                         session.flush();
@@ -523,10 +510,14 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
                 engine.execute();
             } catch (Exception e) {
                 Assert.isTrue(false, String.format("数据异常!发生在第%d行,%d列!原因:%s", RuntimeContext.get().getRowIndex(), RuntimeContext.get().getCellIndex(), e.getCause() == null ? e.getMessage() : e.getCause().getMessage()));
+            } finally {
+                new File(newFilePath).delete();
+                session.clear();
+                logger.info(String.format("执行GC操作之前：%d / %d...", Runtime.getRuntime().freeMemory() / 1000000, Runtime.getRuntime().maxMemory() / 1000000));
+                System.gc();
+                logger.info(String.format("执行GC操作之后：%d / %d...", Runtime.getRuntime().freeMemory() / 1000000, Runtime.getRuntime().maxMemory() / 1000000));
             }
             logger.info(String.format("导入数据成功,用时(%d)s....", (System.currentTimeMillis() - start) / 1000));
-            new File(newFilePath).delete();
-
         }
     }
 

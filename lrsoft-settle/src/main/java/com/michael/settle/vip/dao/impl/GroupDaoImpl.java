@@ -1,5 +1,6 @@
 package com.michael.settle.vip.dao.impl;
 
+import com.michael.core.context.SecurityContext;
 import com.michael.core.hibernate.HibernateDaoHelper;
 import com.michael.core.hibernate.criteria.CriteriaUtils;
 import com.michael.settle.vip.bo.GroupBo;
@@ -81,6 +82,7 @@ public class GroupDaoImpl extends HibernateDaoHelper implements GroupDao {
     public boolean hasCode(String code, String id) {
         Assert.hasText(code, "查询失败!编号不能为空!");
         Criteria criteria = createRowCountsCriteria(Group.class)
+                .add(Restrictions.eq("orgId", SecurityContext.getOrgId()))
                 .add(Restrictions.eq("code", code));
         if (StringUtils.isNotEmpty(id)) {
             criteria.add(Restrictions.ne("id", id));
@@ -93,6 +95,7 @@ public class GroupDaoImpl extends HibernateDaoHelper implements GroupDao {
         Assert.hasText(code, "查询失败!团队编号不能为空!");
         return (Group) createCriteria(Group.class)
                 .add(Restrictions.eq("code", code))
+                .add(Restrictions.eq("orgId", SecurityContext.getOrgId()))
                 .setMaxResults(1)
                 .uniqueResult();
     }
@@ -105,6 +108,7 @@ public class GroupDaoImpl extends HibernateDaoHelper implements GroupDao {
                 .setProjection(Projections.property("code"))
                 .add(Restrictions.eq("company", company))
                 .add(Restrictions.eq("name", groupName))
+                .add(Restrictions.eq("orgId", SecurityContext.getOrgId()))
                 .setMaxResults(1)
                 .uniqueResult();
     }

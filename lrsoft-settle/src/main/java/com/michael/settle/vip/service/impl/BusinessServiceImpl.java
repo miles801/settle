@@ -149,7 +149,7 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
 
     public void importData(final String company, final Long date, String[] attachmentIds) {
         Assert.hasText(company, "数据导入失败!请选择文交所!");
-        Logger logger = Logger.getLogger(BusinessServiceImpl.class);
+        final Logger logger = Logger.getLogger(BusinessServiceImpl.class);
         Assert.notEmpty(attachmentIds, "数据导入失败!数据文件不能为空，请重试!");
 
         // 获取会员映射模板
@@ -189,6 +189,7 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
             final String batchNo = new SimpleDateFormat("yyyyMMddHHmm").format(new Date()) + "-" + RandomUtils.generate(3);
             final Map<String, String> codeMap = new HashMap<>();    // key为团队名称，value为团队编号
             final Map<String, String> nameMap = new HashMap<>();    // key为团队编号，value为团队名称
+            final String companyName = companyDao.getName(company);
             configuration.setHandler(new Handler<BusinessDTO>() {
                 @Override
                 public void execute(BusinessDTO dto) {
@@ -198,6 +199,7 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
                     if (BeanCopyUtils.isEmpty(business)) {
                         return;
                     }
+                    logger.info(String.format("交易数据导入进度：%d/%d", RuntimeContext.get().getRowIndex(), RuntimeContext.get().getEndRow()));
                     // 如果没有交易商，则不读取这一行
                     if (StringUtils.isEmpty(business.getVipCode())) {
                         return;
@@ -223,7 +225,7 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
                         String groupName = nameMap.get(groupCode);
                         if (StringUtils.isEmpty(groupName)) {
                             Group group = groupDao.findByCode(groupCode);
-                            Assert.notNull(group, String.format("导入失败!文交所[%s]对应的团队编号[%s]在系统中还未注册!", company, groupCode));
+                            Assert.notNull(group, String.format("导入失败!文交所[%s]对应的团队编号[%s]在系统中还未注册!", companyName, groupCode));
                             groupName = group.getName();
                             nameMap.put(groupCode, groupName);
                         }
@@ -232,7 +234,7 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
                         String code = codeMap.get(groupCode);
                         if (StringUtils.isEmpty(code)) {// 根据名称查询编号
                             code = groupDao.findCode(company, groupCode);
-                            Assert.hasText(code, String.format("导入失败!文交所[%s]对应的团队[%s]在系统中还未注册!", company, groupCode));
+                            Assert.hasText(code, String.format("导入失败!文交所[%s]对应的团队[%s]在系统中还未注册!", companyName, groupCode));
                             codeMap.put(groupCode, code);
                         }
                         business.setGroupName(groupCode);
@@ -267,10 +269,14 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
                 engine.execute();
             } catch (Exception e) {
                 Assert.isTrue(false, String.format("数据异常!发生在第%d行,%d列!原因:%s", RuntimeContext.get().getRowIndex(), RuntimeContext.get().getCellIndex(), e.getCause() == null ? e.getMessage() : e.getCause().getMessage()));
+            } finally {
+                new File(newFilePath).delete();
+                session.clear();
+                logger.info(String.format("执行GC操作之前：%d / %d...", Runtime.getRuntime().freeMemory() / 1000000, Runtime.getRuntime().maxMemory() / 1000000));
+                System.gc();
+                logger.info(String.format("执行GC操作之后：%d / %d...", Runtime.getRuntime().freeMemory() / 1000000, Runtime.getRuntime().maxMemory() / 1000000));
             }
             logger.info(String.format("导入数据成功,用时(%d)s....", (System.currentTimeMillis() - start) / 1000));
-            new File(newFilePath).delete();
-
         }
     }
 
