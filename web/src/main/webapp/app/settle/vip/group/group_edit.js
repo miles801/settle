@@ -31,7 +31,9 @@
                 AlertFactory.success('保存成功!');
                 CommonUtils.addTab('update');
                 if (createNew === true) {
-                    $scope.beans = {};
+                    $scope.beans.name = null;
+                    $scope.beans.code = null;
+                    $scope.beans.description = null;
                 } else {
                     $scope.form.$setValidity('committed', false);
                     CommonUtils.delay($scope.back, 2000);
