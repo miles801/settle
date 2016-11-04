@@ -289,7 +289,7 @@ public class VipServiceImpl implements VipService, BeanWrapCallback<Vip, VipVo> 
                     cm = vip.getCommission();
                 }
                 for (StepPercent sp : percents) {
-                    if (sp.getMinValue() < cm && sp.getMaxValue() > cm) {
+                    if (sp.getMinValue() <= cm && sp.getMaxValue() >= cm) {
                         p = sp.getPercent();
                         break;
                     }

@@ -31,10 +31,9 @@
                 AlertFactory.success('保存成功!');
                 CommonUtils.addTab('update');
                 if (createNew === true) {
-                    $scope.beans = {
-                        company: $scope.beans.company,
-                        minValue: $scope.beans.maxValue
-                    };
+                    $scope.beans.minValue = parseInt($scope.beans.maxValue) + 1;
+                    $scope.beans.percent = null;
+                    $scope.beans.maxValue = null;
                 } else {
                     $scope.form.$setValidity('committed', false);
                     CommonUtils.delay($scope.back, 2000);
