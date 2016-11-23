@@ -65,7 +65,7 @@
             $scope.beans = {};
         } else if (pageType == 'modify') {
             $scope.load(id);
-        } else if (pageType == 'detail') {
+        } else if (pageType == 'detail' || pageType == 'view') {
             $scope.load(id);
             $('input,textarea,select').attr('disabled', 'disabled');
             $('span.add-on>.icons').remove();

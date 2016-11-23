@@ -268,7 +268,7 @@ public class BusinessServiceImpl implements BusinessService, BeanWrapCallback<Bu
             try {
                 engine.execute();
             } catch (Exception e) {
-                Assert.isTrue(false, String.format("数据异常!发生在第%d行,%d列!原因:%s", RuntimeContext.get().getRowIndex(), RuntimeContext.get().getCellIndex(), e.getCause() == null ? e.getMessage() : e.getCause().getMessage()));
+                Assert.isTrue(false, String.format("数据异常!发生在第%d行,%d列!原因:%s", RuntimeContext.get().getRowIndex(), RuntimeContext.get().getCellIndex(), e.getLocalizedMessage()));
             } finally {
                 new File(newFilePath).delete();
                 session.clear();
